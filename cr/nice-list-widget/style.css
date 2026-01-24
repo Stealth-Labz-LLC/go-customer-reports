@@ -1,0 +1,530 @@
+/* Nice List Quiz Widget Styles */
+/* Designed for 350px sidebar or standalone use */
+/* All classes prefixed with nlw- to avoid conflicts */
+/* NO :root variables - uses hardcoded values to avoid overriding page styles */
+
+* {
+    box-sizing: border-box;
+}
+
+/* Standalone page wrapper - only applies when viewing widget directly */
+.nlw-page {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f8fafc;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nlw-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sidebar embedded version - more compact */
+.nlw-sidebar .nlw-container {
+    max-width: 100%;
+    padding: 0;
+}
+
+/* Card Styles */
+.nlw-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: nlwSlideUp 0.4s ease-out;
+}
+
+@keyframes nlwSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nlw-card-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f1629 100%);
+    color: white;
+    padding: 24px 20px;
+    text-align: center;
+}
+
+.nlw-card-header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0 0 8px;
+    color: inherit;
+}
+
+.nlw-card-header p {
+    font-size: 0.95rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.nlw-card-body {
+    padding: 24px 20px;
+}
+
+/* Welcome Screen */
+.nlw-welcome-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #FFB84D 0%, #E6A43D 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    box-shadow: 0 4px 20px rgba(255, 184, 77, 0.4);
+}
+
+.nlw-welcome-text {
+    text-align: center;
+    color: #333;
+}
+
+.nlw-welcome-text h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #0b0f21;
+}
+
+.nlw-welcome-text p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* Progress Bar */
+.nlw-progress {
+    margin-bottom: 24px;
+}
+
+.nlw-progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.nlw-progress-fill {
+    height: 100%;
+    background: #4ECDC4;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.nlw-progress-text {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Question Styles */
+.nlw-question-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* Answer Options */
+.nlw-answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nlw-answer-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.nlw-answer-btn:hover {
+    border-color: #4ECDC4;
+    background: #e0f7f6;
+    transform: translateX(4px);
+}
+
+.nlw-answer-btn.selected {
+    border-color: #4ECDC4;
+    background: #e0f7f6;
+}
+
+.nlw-answer-icon {
+    width: 44px;
+    height: 44px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nlw-answer-text {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+/* Result Card */
+.nlw-result-card {
+    text-align: center;
+}
+
+.nlw-result-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #FFB84D 0%, #E6A43D 100%);
+    color: #0b0f21;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.nlw-result-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #43A047 0%, #388E3C 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);
+}
+
+.nlw-result-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0b0f21;
+    margin-bottom: 8px;
+}
+
+.nlw-result-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.nlw-result-details {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.nlw-result-details p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #2B2D42;
+    line-height: 1.6;
+}
+
+/* Coupon Teaser */
+.nlw-coupon-teaser {
+    background: #E8F5E9;
+    border: 2px dashed #43A047;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.nlw-coupon-label {
+    font-size: 0.95rem;
+    color: #6C7A9B;
+}
+
+.nlw-coupon-code {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #EF5350;
+    letter-spacing: 2px;
+    margin: 6px 0;
+}
+
+.nlw-coupon-discount {
+    font-size: 1rem;
+    color: #43A047;
+    font-weight: 600;
+}
+
+/* Buttons */
+.nlw-btn {
+    display: block;
+    width: 100%;
+    padding: 16px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.nlw-btn-primary {
+    background: linear-gradient(135deg, #C41E3A 0%, #9b111e 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);
+}
+
+.nlw-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4);
+    color: white;
+}
+
+.nlw-btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    margin-top: 10px;
+}
+
+.nlw-btn-secondary:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+/* Snowflake decoration - only for standalone page */
+.nlw-page .nlw-snowflakes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.nlw-page .nlw-snowflake {
+    position: absolute;
+    top: -10px;
+    color: rgba(239, 83, 80, 0.15);
+    font-size: 1rem;
+    animation: nlwFall linear infinite;
+}
+
+@keyframes nlwFall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+/* Footer note */
+.nlw-footer {
+    text-align: center;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.nlw-footer p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* ==========================================================================
+   SIDEBAR COMPACT VERSION
+   ========================================================================== */
+
+.nlw-sidebar .nlw-card {
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #dddddd;
+}
+
+.nlw-sidebar .nlw-card-header {
+    padding: 16px;
+}
+
+.nlw-sidebar .nlw-card-header h1 {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.nlw-sidebar .nlw-card-header p {
+    font-size: 0.9rem;
+}
+
+.nlw-sidebar .nlw-card-body {
+    padding: 16px;
+}
+
+.nlw-sidebar .nlw-welcome-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.nlw-sidebar .nlw-welcome-text h2 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+.nlw-sidebar .nlw-welcome-text p {
+    font-size: 1rem;
+}
+
+.nlw-sidebar .nlw-question-text {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+.nlw-sidebar .nlw-answer-btn {
+    padding: 12px 14px;
+    gap: 10px;
+}
+
+.nlw-sidebar .nlw-answer-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+}
+
+.nlw-sidebar .nlw-answer-text {
+    font-size: 1rem;
+}
+
+.nlw-sidebar .nlw-btn {
+    padding: 14px 18px;
+    font-size: 1rem;
+}
+
+.nlw-sidebar .nlw-result-checkmark {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.nlw-sidebar .nlw-result-title {
+    font-size: 1.4rem;
+}
+
+.nlw-sidebar .nlw-result-subtitle {
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.nlw-sidebar .nlw-result-details {
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.nlw-sidebar .nlw-result-details p {
+    font-size: 0.95rem;
+}
+
+.nlw-sidebar .nlw-coupon-teaser {
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+
+.nlw-sidebar .nlw-coupon-code {
+    font-size: 1.5rem;
+}
+
+.nlw-sidebar .nlw-coupon-label {
+    font-size: 0.9rem;
+}
+
+.nlw-sidebar .nlw-coupon-discount {
+    font-size: 0.95rem;
+}
+
+.nlw-sidebar .nlw-footer {
+    padding: 12px 16px;
+}
+
+.nlw-sidebar .nlw-footer p {
+    font-size: 0.85rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .nlw-container {
+        padding: 12px;
+    }
+
+    .nlw-card-header {
+        padding: 20px 16px;
+    }
+
+    .nlw-card-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .nlw-card-body {
+        padding: 20px 16px;
+    }
+
+    .nlw-welcome-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+    }
+
+    .nlw-answer-btn {
+        padding: 14px 16px;
+    }
+
+    .nlw-answer-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
+
+    .nlw-result-checkmark {
+        width: 70px;
+        height: 70px;
+    }
+
+    .nlw-result-title {
+        font-size: 1.4rem;
+    }
+}
