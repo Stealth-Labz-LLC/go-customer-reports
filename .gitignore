@@ -1,3 +1,40 @@
+# Server / Hosting
 cgi-bin/
 .well-known/
 error_log
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# PHP
+vendor/
+composer.lock
+*.cache
+
+# Environment
+.env
+.env.*
+
+# Secrets (never commit)
+config/secrets.php
+
+# Storage data (keep structure, ignore data)
+storage/leads/*.jsonl
+storage/leads/**/*.jsonl
+storage/logs/*.log
+
+# Local dev
+docker-compose.override.yml
