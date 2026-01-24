@@ -1,32 +1,21 @@
-<?php $headerStyle = $site->config['header_style'] ?? 'left'; ?>
-<header class="border-bottom bg-white">
-    <div class="container">
-        <?php if ($headerStyle === 'centered'): ?>
-        <div class="text-center py-4">
-            <a href="/" class="text-decoration-none">
-                <span class="fs-3 fw-bold" style="color: var(--color-primary)"><?= htmlspecialchars($site->name) ?></span>
+<header class="cr-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt me-2" style="color: var(--cr-green);"></i><?= htmlspecialchars($site->name) ?>
             </a>
-            <nav class="mt-3">
-                <a href="/" class="me-3 text-decoration-none">Home</a>
-                <a href="/articles" class="me-3 text-decoration-none">Articles</a>
-                <a href="/reviews" class="me-3 text-decoration-none">Reviews</a>
-                <a href="/about" class="me-3 text-decoration-none">About</a>
-                <a href="/contact" class="text-decoration-none">Contact</a>
-            </nav>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reviews">Reviews</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                </ul>
+            </div>
         </div>
-        <?php else: ?>
-        <div class="d-flex justify-content-between align-items-center py-3">
-            <a href="/" class="text-decoration-none">
-                <span class="fs-4 fw-bold" style="color: var(--color-primary)"><?= htmlspecialchars($site->name) ?></span>
-            </a>
-            <nav class="d-none d-md-flex gap-3">
-                <a href="/" class="text-decoration-none">Home</a>
-                <a href="/articles" class="text-decoration-none">Articles</a>
-                <a href="/reviews" class="text-decoration-none">Reviews</a>
-                <a href="/about" class="text-decoration-none">About</a>
-                <a href="/contact" class="text-decoration-none">Contact</a>
-            </nav>
-        </div>
-        <?php endif; ?>
-    </div>
+    </nav>
 </header>

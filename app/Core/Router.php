@@ -76,7 +76,19 @@ class Router
         $latestListicles = \App\Models\Listicle::latest($siteId, 4);
         $categories = \App\Models\Category::topLevel($siteId);
 
-        $this->render('home', compact('site', 'latestArticles', 'latestReviews', 'latestListicles', 'categories'));
+        // Articles grouped by category for homepage sections
+        $articlesByCategory = [];
+        foreach ($categories as $cat) {
+            $catArticles = \App\Models\Article::byCategory($siteId, $cat->id, 6);
+            if (!empty($catArticles)) {
+                $articlesByCategory[] = [
+                    'category' => $cat,
+                    'articles' => $catArticles,
+                ];
+            }
+        }
+
+        $this->render('home', compact('site', 'latestArticles', 'latestReviews', 'latestListicles', 'categories', 'articlesByCategory'));
     }
 
     private function articleIndex(): void

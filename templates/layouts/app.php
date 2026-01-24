@@ -4,7 +4,6 @@
  * All pages are wrapped in this layout
  * Expects: $site, $pageTitle (optional), $metaDescription (optional)
  */
-$config = $site->config ?? [];
 $pageTitle = $pageTitle ?? $site->name;
 $metaDescription = $metaDescription ?? ($site->tagline ?? '');
 ?>
@@ -23,29 +22,10 @@ $metaDescription = $metaDescription ?? ($site->tagline ?? '');
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=<?= urlencode($config['font_heading'] ?? 'Merriweather') ?>:wght@400;600;700&family=<?= urlencode($config['font_body'] ?? 'Source Sans Pro') ?>:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --color-primary: <?= $config['colors']['primary'] ?? '#1e40af' ?>;
-            --color-secondary: <?= $config['colors']['secondary'] ?? '#3b82f6' ?>;
-            --color-accent: <?= $config['colors']['accent'] ?? '#f59e0b' ?>;
-            --color-background: <?= $config['colors']['background'] ?? '#ffffff' ?>;
-            --color-text: <?= $config['colors']['text'] ?? '#1f2937' ?>;
-            --font-heading: '<?= $config['font_heading'] ?? 'Merriweather' ?>', serif;
-            --font-body: '<?= $config['font_body'] ?? 'Source Sans Pro' ?>', sans-serif;
-        }
-        body { font-family: var(--font-body); background: var(--color-background); color: var(--color-text); }
-        h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
-        a { color: var(--color-primary); }
-        a:hover { color: var(--color-secondary); }
-        .btn-primary { background-color: var(--color-primary); border-color: var(--color-primary); }
-        .btn-primary:hover { background-color: var(--color-secondary); border-color: var(--color-secondary); }
-        .text-accent { color: var(--color-accent); }
-        .card { border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: box-shadow 0.2s; }
-        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 
     <?php if ($site->gtm_container_id): ?>
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -62,7 +42,7 @@ $metaDescription = $metaDescription ?? ($site->tagline ?? '');
 
     <?php require __DIR__ . '/../partials/header.php'; ?>
 
-    <main class="py-4">
+    <main>
         <?= $__content ?? '' ?>
     </main>
 
