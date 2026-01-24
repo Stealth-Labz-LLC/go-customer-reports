@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-shield-alt me-2" style="color: var(--cr-green);"></i><?= htmlspecialchars($site->name) ?>
+                <img src="/images/logo.svg" alt="<?= htmlspecialchars($site->name) ?>" height="32" style="filter: brightness(0) invert(1);">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
