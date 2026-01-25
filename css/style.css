@@ -256,3 +256,233 @@ a:hover {
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
+
+/* ===== Listicle Product Cards (Top 10 Style) ===== */
+
+.cr-listicle-header {
+    background: linear-gradient(135deg, var(--cr-navy) 0%, var(--cr-navy-light) 100%);
+    color: #fff;
+    padding: 2.5rem 0;
+    margin-bottom: 2rem;
+}
+.cr-listicle-header h1 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.cr-listicle-header .lead {
+    color: rgba(255,255,255,0.8);
+    font-size: 1rem;
+}
+.cr-listicle-header .updated-date {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+}
+
+/* Product Card */
+.cr-product-card {
+    background: #fff;
+    border: 1px solid var(--cr-border);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.cr-product-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+/* Rank Badge */
+.cr-rank-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    background: var(--cr-navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-bottom-right-radius: 8px;
+    z-index: 2;
+}
+.cr-rank-badge.rank-1 { background: var(--cr-gold); color: #1a1a1a; }
+.cr-rank-badge.rank-2 { background: #c0c0c0; color: #1a1a1a; }
+.cr-rank-badge.rank-3 { background: #cd7f32; color: #fff; }
+
+/* Ribbon Badge (Best Overall, etc.) */
+.cr-ribbon {
+    position: absolute;
+    top: 12px;
+    right: -35px;
+    background: var(--cr-green);
+    color: #fff;
+    padding: 0.35rem 2.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transform: rotate(45deg);
+    z-index: 2;
+}
+.cr-ribbon.ribbon-gold { background: var(--cr-gold); color: #1a1a1a; }
+.cr-ribbon.ribbon-blue { background: #3b82f6; }
+
+/* Card Body Layout */
+.cr-product-card-body {
+    padding: 1.5rem;
+    padding-left: 70px; /* Space for rank badge */
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+}
+@media (max-width: 768px) {
+    .cr-product-card-body {
+        grid-template-columns: 1fr;
+        padding-left: 70px;
+    }
+}
+
+/* Product Image */
+.cr-product-image {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    background: var(--cr-bg-light);
+    border-radius: 6px;
+    padding: 0.5rem;
+}
+@media (max-width: 768px) {
+    .cr-product-image {
+        width: 100%;
+        height: 180px;
+    }
+}
+
+/* Product Info */
+.cr-product-info {
+    flex: 1;
+}
+.cr-product-brand {
+    font-size: 0.8rem;
+    color: var(--cr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+.cr-product-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--cr-navy);
+}
+.cr-product-description {
+    font-size: 0.9rem;
+    color: var(--cr-text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+/* Rating Section */
+.cr-rating-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.cr-rating-large {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cr-navy);
+    line-height: 1;
+}
+.cr-rating-stars {
+    color: var(--cr-gold);
+    font-size: 1rem;
+}
+.cr-rating-stars i {
+    margin-right: 2px;
+}
+
+/* Features List */
+.cr-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+.cr-features li {
+    position: relative;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    color: var(--cr-text);
+}
+.cr-features li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    color: var(--cr-green);
+    font-size: 0.75rem;
+}
+
+/* CTA Section */
+.cr-cta-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+    min-width: 160px;
+}
+@media (max-width: 768px) {
+    .cr-cta-section {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+.cr-product-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cr-green);
+}
+.cr-cta-btn {
+    display: inline-block;
+    background: var(--cr-green);
+    color: #fff;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-align: center;
+    transition: background 0.2s, transform 0.2s;
+    min-width: 140px;
+}
+.cr-cta-btn:hover {
+    background: var(--cr-green-hover);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* Listicle Content Sections */
+.cr-listicle-intro,
+.cr-listicle-conclusion {
+    background: var(--cr-bg-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+.cr-listicle-conclusion h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
