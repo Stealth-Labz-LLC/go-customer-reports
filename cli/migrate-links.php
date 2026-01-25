@@ -343,39 +343,67 @@ echo "\nDone!\n";
 
 /**
  * Convert external links to internal relative links
+ * Uses string operations instead of regex for reliability
  */
 function convertLinks(string $content, array $domains, bool $verbose, int &$linkCount): string
 {
     $linkCount = 0;
 
     foreach ($domains as $domain) {
-        // Build pattern for this specific domain
-        $escapedDomain = preg_quote($domain, '/');
-        $pattern = '/href=["\']https?:\/\/' . $escapedDomain . '([^"\']*)["\'/i';
+        // Look for href="http(s)://domain patterns
+        foreach (['https://', 'http://'] as $protocol) {
+            $search = $protocol . $domain;
 
-        $content = preg_replace_callback($pattern, function($matches) use ($verbose, &$linkCount, $domain) {
-            $path = $matches[1] ?? '';
+            $pos = 0;
+            while (($pos = stripos($content, 'href="' . $search, $pos)) !== false) {
+                // Find the closing quote
+                $urlStart = $pos + 6; // skip 'href="'
+                $urlEnd = strpos($content, '"', $urlStart);
+                if ($urlEnd === false) {
+                    $pos++;
+                    continue;
+                }
 
-            // Clean up the path
-            $path = rtrim($path, '/');
-            if (empty($path)) {
-                $path = '/';
-            } elseif ($path[0] !== '/') {
-                $path = '/' . $path;
+                $fullUrl = substr($content, $urlStart, $urlEnd - $urlStart);
+                $path = parse_url($fullUrl, PHP_URL_PATH) ?? '/';
+                if (empty($path)) $path = '/';
+
+                $replacement = 'href="' . $path . '"';
+                $content = substr($content, 0, $pos) . $replacement . substr($content, $urlEnd + 1);
+                $linkCount++;
+
+                if ($verbose) {
+                    echo "    Converting: {$fullUrl} -> {$path}\n";
+                }
+
+                $pos += strlen($replacement);
             }
 
-            // Remove any query strings or fragments for cleaner URLs
-            $pathParts = parse_url($path);
-            $cleanPath = $pathParts['path'] ?? '/';
+            // Also check single quotes
+            $pos = 0;
+            while (($pos = stripos($content, "href='" . $search, $pos)) !== false) {
+                $urlStart = $pos + 6;
+                $urlEnd = strpos($content, "'", $urlStart);
+                if ($urlEnd === false) {
+                    $pos++;
+                    continue;
+                }
 
-            $linkCount++;
+                $fullUrl = substr($content, $urlStart, $urlEnd - $urlStart);
+                $path = parse_url($fullUrl, PHP_URL_PATH) ?? '/';
+                if (empty($path)) $path = '/';
 
-            if ($verbose) {
-                echo "    Converting: {$domain}{$matches[1]} -> {$cleanPath}\n";
+                $replacement = 'href="' . $path . '"';
+                $content = substr($content, 0, $pos) . $replacement . substr($content, $urlEnd + 1);
+                $linkCount++;
+
+                if ($verbose) {
+                    echo "    Converting: {$fullUrl} -> {$path}\n";
+                }
+
+                $pos += strlen($replacement);
             }
-
-            return 'href="' . $cleanPath . '"';
-        }, $content) ?? $content;
+        }
     }
 
     return $content;
