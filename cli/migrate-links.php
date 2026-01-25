@@ -265,56 +265,6 @@ while ($offset < $totalListicles) {
 }
 echo "  Done. {$stats['listicles_updated']} listicles updated.\n\n";
 
-// ============================================================================
-// MIGRATE LISTICLE ITEMS
-// ============================================================================
-
-echo "=== Processing Listicle Items ===\n\n";
-
-$countResult = $db->fetchOne(
-    "SELECT COUNT(*) as total FROM content_listicle_items li
-     JOIN content_listicles l ON li.listicle_id = l.id
-     WHERE l.site_id = ? AND li.description IS NOT NULL",
-    [$SITE_ID]
-);
-$totalItems = (int) $countResult->total;
-echo "  Found {$totalItems} listicle items to scan.\n";
-flush();
-
-$itemsUpdated = 0;
-$itemsScanned = 0;
-$offset = 0;
-
-while ($offset < $totalItems) {
-    $items = $db->fetchAll(
-        "SELECT li.id, li.description
-         FROM content_listicle_items li
-         JOIN content_listicles l ON li.listicle_id = l.id
-         WHERE l.site_id = ? AND li.description IS NOT NULL
-         LIMIT ? OFFSET ?",
-        [$SITE_ID, $batchSize, $offset]
-    );
-
-    if (empty($items)) break;
-
-    foreach ($items as $item) {
-        $itemsScanned++;
-        $linkCount = 0;
-        $newDesc = convertLinks($item->description, $domains, $verbose, $linkCount);
-
-        if ($newDesc !== $item->description) {
-            $itemsUpdated++;
-            $stats['links_converted'] += $linkCount;
-
-            if (!$dryRun) {
-                $db->query("UPDATE content_listicle_items SET description = ? WHERE id = ?", [$newDesc, $item->id]);
-            }
-        }
-    }
-
-    $offset += $batchSize;
-}
-echo "  Done. {$itemsUpdated} listicle items updated.\n\n";
 
 // ============================================================================
 // RESULTS
@@ -326,7 +276,6 @@ echo "=========================================\n";
 echo " Articles:  {$stats['articles_scanned']} scanned, {$stats['articles_updated']} updated\n";
 echo " Reviews:   {$stats['reviews_scanned']} scanned, {$stats['reviews_updated']} updated\n";
 echo " Listicles: {$stats['listicles_scanned']} scanned, {$stats['listicles_updated']} updated\n";
-echo " Listicle Items: {$itemsUpdated} updated\n";
 echo "-----------------------------------------\n";
 echo " Total Links Converted: {$stats['links_converted']}\n";
 echo "=========================================\n";
