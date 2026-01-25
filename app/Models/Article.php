@@ -52,6 +52,18 @@ class Article
         return (int) ($result->total ?? 0);
     }
 
+    public static function countByCategory(int $siteId, int $categoryId): int
+    {
+        $db = Database::getInstance();
+        $result = $db->fetchOne(
+            "SELECT COUNT(*) as total FROM content_articles a
+             JOIN content_article_category ac ON a.id = ac.article_id
+             WHERE a.site_id = ? AND ac.category_id = ? AND a.status = 'published'",
+            [$siteId, $categoryId]
+        );
+        return (int) ($result->total ?? 0);
+    }
+
     public static function getCategories(int $articleId): array
     {
         $db = Database::getInstance();
