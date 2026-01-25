@@ -32,4 +32,19 @@ class Category
             [$siteId]
         );
     }
+
+    public static function allWithCounts(int $siteId): array
+    {
+        $db = Database::getInstance();
+        return $db->fetchAll(
+            "SELECT c.*,
+                (SELECT COUNT(*) FROM content_article_category ac WHERE ac.category_id = c.id) AS article_count,
+                (SELECT COUNT(*) FROM content_review_category rc WHERE rc.category_id = c.id) AS review_count,
+                (SELECT COUNT(*) FROM content_listicle_category lc WHERE lc.category_id = c.id) AS listicle_count
+            FROM content_categories c
+            WHERE c.site_id = ?
+            ORDER BY c.sort_order, c.name",
+            [$siteId]
+        );
+    }
 }

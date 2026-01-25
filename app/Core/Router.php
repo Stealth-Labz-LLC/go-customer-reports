@@ -54,6 +54,10 @@ class Router
                 $this->listicleShow(strtolower($m[1]));
                 break;
 
+            case $path === '/categories':
+                $this->categoryIndex();
+                break;
+
             case preg_match('#^/category/([a-zA-Z0-9\-_]+)$#i', $path, $m):
                 $this->categoryShow(strtolower($m[1]));
                 break;
@@ -178,6 +182,14 @@ class Router
 
         $listicle->items = !empty($listicle->items) ? json_decode($listicle->items, true) : [];
         $this->render('listicles/show', compact('site', 'listicle'));
+    }
+
+    private function categoryIndex(): void
+    {
+        $site = $this->site;
+        $categories = \App\Models\Category::allWithCounts($site->id);
+
+        $this->render('categories/index', compact('site', 'categories'));
     }
 
     private function categoryShow(string $slug): void

@@ -198,6 +198,82 @@ a:hover {
     margin: 0;
 }
 
+/* Category Index Cards */
+a.cr-category-card {
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    padding: 1.5rem;
+}
+
+a.cr-category-card:hover {
+    text-decoration: none;
+}
+
+.cr-category-card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.cr-category-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--cr-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.cr-category-card-desc {
+    font-size: 0.9rem;
+    color: var(--cr-text-muted);
+    margin: 0 0 1rem 0;
+    flex-grow: 1;
+}
+
+.cr-category-card-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.cr-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--cr-text-muted);
+    background: var(--cr-bg-light);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+}
+
+.cr-count-badge i {
+    font-size: 0.75rem;
+    color: var(--cr-green);
+}
+
+.cr-count-badge.cr-count-empty {
+    color: var(--cr-text-muted);
+    font-style: italic;
+}
+
+.cr-category-card-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--cr-green);
+    margin-top: auto;
+}
+
+.cr-category-card-link i {
+    margin-left: 0.25rem;
+    transition: transform 0.2s;
+}
+
+a.cr-category-card:hover .cr-category-card-link i {
+    transform: translateX(4px);
+}
+
 /* Category buttons */
 .cr-category-btn {
     display: inline-block;

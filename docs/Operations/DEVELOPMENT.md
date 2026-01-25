@@ -6,7 +6,7 @@ Local development setup and workflow.
 
 ## Requirements
 
-- PHP 7.4+
+- PHP 8.3
 - MySQL 5.7+
 - Apache with mod_rewrite (or nginx equivalent)
 - Git

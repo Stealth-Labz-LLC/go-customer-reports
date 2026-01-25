@@ -8,7 +8,7 @@ A high-level overview of the technology stack, architecture, and design philosop
 
 | Layer | Technology | Notes |
 |-------|------------|-------|
-| **Backend** | PHP 7.4+ | Custom MVC framework, no dependencies |
+| **Backend** | PHP 8.3 | Custom MVC framework, no dependencies |
 | **Frontend** | Bootstrap 5 + Vanilla JS | Responsive, no build step |
 | **CSS** | Custom CSS with design tokens | CSS variables for theming |
 | **Templates** | PHP server-side rendering | Templates + reusable partials |
