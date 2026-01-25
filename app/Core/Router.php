@@ -34,25 +34,25 @@ class Router
                 $this->articleIndex();
                 break;
 
-            case preg_match('#^/articles/([a-z0-9\-]+)$#', $path, $m):
-                $this->articleShow($m[1]);
+            case preg_match('#^/articles/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->articleShow(strtolower($m[1]));
                 break;
 
             case $path === '/reviews':
                 $this->reviewIndex();
                 break;
 
-            case preg_match('#^/reviews/([a-z0-9\-]+)$#', $path, $m):
-                $this->reviewShow($m[1]);
+            case preg_match('#^/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->reviewShow(strtolower($m[1]));
                 break;
 
-            case preg_match('#^/best-([a-z0-9\-]+)$#', $path, $m):
-            case preg_match('#^/top-([a-z0-9\-]+)$#', $path, $m):
-                $this->listicleShow($m[1]);
+            case preg_match('#^/best-([a-zA-Z0-9\-_]+)$#i', $path, $m):
+            case preg_match('#^/top-([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->listicleShow(strtolower($m[1]));
                 break;
 
-            case preg_match('#^/category/([a-z0-9\-]+)$#', $path, $m):
-                $this->categoryShow($m[1]);
+            case preg_match('#^/category/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->categoryShow(strtolower($m[1]));
                 break;
 
             case $path === '/sitemap.xml':
