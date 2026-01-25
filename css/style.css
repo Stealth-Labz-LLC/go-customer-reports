@@ -500,3 +500,136 @@ a:hover {
         justify-content: flex-start;
     }
 }
+
+/* ===== Sidebar Widgets ===== */
+
+.cr-sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+.cr-sidebar-widget {
+    background: #fff;
+    border: 1px solid var(--cr-border);
+    border-radius: 0;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.cr-sidebar-widget .widget-title {
+    font-size: 0.95rem;
+    color: var(--cr-text);
+    margin-bottom: 10px;
+}
+
+.cr-sidebar-widget .widget-break {
+    border: none;
+    border-top: 1px solid var(--cr-border);
+    margin: 10px 0;
+}
+
+.cr-sidebar-widget .widget-content {
+    font-size: 0.875rem;
+    color: var(--cr-text);
+    line-height: 1.5;
+}
+
+.cr-sidebar-widget .widget-link {
+    display: block;
+    color: #00a585;
+    padding: 4px 0;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.cr-sidebar-widget .widget-link:hover {
+    color: var(--cr-green-hover);
+    text-decoration: underline;
+}
+
+.cr-sidebar-widget .compare-item {
+    text-align: center;
+    padding: 8px 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.cr-sidebar-widget .vs-text {
+    color: var(--cr-text-muted);
+    font-style: italic;
+}
+
+.cr-sidebar-widget .widget-review-link {
+    display: block;
+    padding: 8px 0;
+    color: #00a585;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--cr-border);
+}
+
+.cr-sidebar-widget .widget-review-link:last-child {
+    border-bottom: none;
+}
+
+.cr-sidebar-widget .widget-review-link:hover {
+    text-decoration: underline;
+}
+
+.cr-sidebar-widget .widget-logo {
+    max-width: 80px;
+    max-height: 40px;
+    object-fit: contain;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.cr-sidebar-widget .widget-icon {
+    text-align: center;
+    margin-top: 15px;
+    color: #00a585;
+    font-size: 2rem;
+}
+
+/* Research Stats */
+.cr-sidebar-widget .research-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.cr-sidebar-widget .stat-item {
+    text-align: center;
+    flex: 1 1 45%;
+    padding: 8px;
+}
+
+.cr-sidebar-widget .stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #00a585;
+}
+
+.cr-sidebar-widget .stat-label {
+    font-size: 0.75rem;
+    color: var(--cr-text-muted);
+}
+
+/* Trust Badges */
+.cr-sidebar-widget .trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 15px;
+    font-size: 1.5rem;
+    color: #00a585;
+}
+
+/* Sidebar Responsive */
+@media (max-width: 991px) {
+    .cr-sidebar {
+        position: static;
+        margin-top: 30px;
+    }
+}
