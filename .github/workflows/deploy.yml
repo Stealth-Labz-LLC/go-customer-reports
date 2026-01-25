@@ -1,0 +1,82 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Restore file mtimes from Git history
+        uses: chetan/git-restore-mtime-action@v2.2
+
+      - name: Add remote host key to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          FTP_HOST="${{ secrets.FTP_HOST }}"
+          SSH_PORT="${{ secrets.SSH_PORT }}"
+          if [ -z "$SSH_PORT" ]; then
+            ssh-keyscan -H "$FTP_HOST" >> ~/.ssh/known_hosts
+          else
+            ssh-keyscan -H -p "$SSH_PORT" "$FTP_HOST" >> ~/.ssh/known_hosts
+          fi
+          chmod 644 ~/.ssh/known_hosts
+        env:
+          LC_ALL: C.UTF-8
+          LANG: C.UTF-8
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y lftp
+
+      - name: Deploy with lftp
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          FTP_HOST="${{ secrets.FTP_HOST }}"
+          FTP_USER="${{ secrets.FTP_USER }}"
+          FTP_PASS="${{ secrets.FTP_PASS }}"
+          SSH_PORT="${{ secrets.SSH_PORT }}"
+          SFTP_PROTOCOL="${{ secrets.SFTP_PROTOCOL }}"
+
+          if [[ -z "$SFTP_PROTOCOL" ]] || [[ "$SFTP_PROTOCOL" == "sftp" ]]; then
+            PROTO="sftp"
+          else
+            PROTO="$SFTP_PROTOCOL"
+          fi
+
+          if [[ -z "$SSH_PORT" ]]; then
+            TARGET="${PROTO}://${FTP_HOST}"
+          else
+            TARGET="${PROTO}://${FTP_HOST}:${SSH_PORT}"
+          fi
+
+          REMOTE_DIR="public_html/"
+
+          echo "Uploading to: ${TARGET}${REMOTE_DIR}"
+
+          lftp -u "$FTP_USER","$FTP_PASS" \
+            -e "set ssl:verify-certificate no; \
+                set sftp:connect-program 'ssh -a -x -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=yes'; \
+                lcd ./; \
+                cd ${REMOTE_DIR}; \
+                mirror -R --only-newer --parallel=3 --verbose \
+                  --exclude .git/ \
+                  --exclude .github/ \
+                  --exclude node_modules/ \
+                  --exclude config/secrets.php \
+                . .; \
+                bye" "$TARGET"
+        env:
+          LC_ALL: C.UTF-8
+          LANG: C.UTF-8
