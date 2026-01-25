@@ -5228,3 +5228,89 @@ a.cr-category-card:hover .cr-category-card-link i {
         min-height: 100px;
     }
 }
+
+/* ==========================================================================
+   UTILITY CLASSES (Extracted from inline styles)
+   ========================================================================== */
+
+/* Section Utilities */
+.cr-section-no-top-padding {
+    padding-top: 0;
+}
+
+/* Header Logo */
+.cr-logo-inverted {
+    filter: brightness(0) invert(1);
+}
+
+/* View All Links */
+.cr-view-all-link {
+    color: var(--cr-green);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.cr-view-all-link:hover {
+    color: var(--cr-green-hover);
+    text-decoration: underline;
+}
+
+/* Sidebar Icon Gold */
+.cr-sidebar-icon-gold {
+    color: var(--cr-gold);
+    margin-right: 8px;
+}
+
+/* Sidebar Rating Highlight */
+.cr-sidebar-rating-highlight {
+    color: var(--cr-green);
+    font-weight: 600;
+}
+
+/* Author Icon Large */
+.cr-author-icon-large {
+    font-size: 2.5rem;
+    color: var(--cr-green);
+}
+
+/* ==========================================================================
+   TRUST WIDGET (Dark variant for sidebars)
+   ========================================================================== */
+
+.cr-trust-widget-dark {
+    background: linear-gradient(135deg, var(--cr-navy) 0%, #0d0d1a 100%);
+    color: #fff;
+}
+
+.cr-trust-widget-dark .cr-trust-widget-title {
+    color: #fff;
+    border-bottom-color: var(--cr-green-light);
+}
+
+.cr-trust-widget-dark .cr-trust-widget-icon {
+    color: var(--cr-green-light);
+    margin-right: 8px;
+}
+
+.cr-trust-list-dark {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cr-trust-list-dark li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9rem;
+}
+
+.cr-trust-list-dark li:last-child {
+    border-bottom: none;
+}
+
+.cr-trust-list-dark .cr-trust-check {
+    color: var(--cr-green-light);
+}

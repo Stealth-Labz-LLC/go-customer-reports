@@ -214,7 +214,7 @@ ob_start();
                     <!-- Author Meta -->
                     <div class="cr-review-author-meta">
                         <div class="cr-review-author-avatar">
-                            <i class="fas fa-user-circle" style="font-size: 2.5rem; color: var(--cr-green);"></i>
+                            <i class="fas fa-user-circle cr-author-icon-large"></i>
                         </div>
                         <div class="cr-review-author-info">
                             <span class="cr-review-author-name">by <?= htmlspecialchars($site->name) ?> Team</span>

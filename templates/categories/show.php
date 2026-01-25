@@ -280,21 +280,21 @@ ob_start();
                 </div>
 
                 <!-- Trust Widget -->
-                <div class="cr-cat-widget" style="background: linear-gradient(135deg, var(--cr-navy) 0%, #0d0d1a 100%); color: #fff;">
-                    <h3 class="cr-cat-widget-title" style="color: #fff; border-bottom-color: var(--cr-green-light);">
-                        <i class="fas fa-shield-alt" style="color: var(--cr-green-light);"></i> Why Trust Us?
+                <div class="cr-cat-widget cr-trust-widget-dark">
+                    <h3 class="cr-cat-widget-title cr-trust-widget-title">
+                        <i class="fas fa-shield-alt cr-trust-widget-icon"></i> Why Trust Us?
                     </h3>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                    <ul class="cr-trust-list-dark">
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>Expert Reviews</span>
                         </li>
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>Unbiased Ratings</span>
                         </li>
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 0.9rem;">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>Real Research</span>
                         </li>
                     </ul>

@@ -173,10 +173,10 @@ ob_start();
                 <!-- Articles by Category Sections -->
                 <?php if (!empty($articlesByCategory)): ?>
                 <?php foreach (array_slice($articlesByCategory, 0, 3) as $group): ?>
-                <section class="cr-section" style="padding-top: 0;">
+                <section class="cr-section cr-section-no-top-padding">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="cr-section-title mb-0"><?= htmlspecialchars($group['category']->name) ?></h2>
-                        <a href="/category/<?= htmlspecialchars($group['category']->slug) ?>" class="text-decoration-none" style="color:var(--cr-green);font-size:0.9rem;">View All &rarr;</a>
+                        <a href="/category/<?= htmlspecialchars($group['category']->slug) ?>" class="cr-view-all-link">View All &rarr;</a>
                     </div>
                     <div class="row g-3">
                         <?php foreach (array_slice($group['articles'], 0, 4) as $article): ?>
@@ -197,7 +197,7 @@ ob_start();
                 <!-- Latest Reviews Widget -->
                 <?php if (!empty($latestReviews)): ?>
                 <div class="cr-sidebar-featured">
-                    <h3 class="cr-sidebar-featured-title"><i class="fas fa-star" style="color: var(--cr-gold); margin-right: 8px;"></i>Latest Reviews</h3>
+                    <h3 class="cr-sidebar-featured-title"><i class="fas fa-star cr-sidebar-icon-gold"></i>Latest Reviews</h3>
                     <?php foreach (array_slice($latestReviews, 0, 4) as $review):
                         $reviewUrl = !empty($review->category_slug)
                             ? '/category/' . htmlspecialchars($review->category_slug) . '/reviews/' . htmlspecialchars($review->slug)
@@ -215,7 +215,7 @@ ob_start();
                             </h4>
                             <div class="cr-mini-card-meta">
                                 <?php if ($review->rating_overall): ?>
-                                <span style="color: var(--cr-green); font-weight: 600;"><?= number_format(floatval($review->rating_overall), 1) ?></span> Rating
+                                <span class="cr-sidebar-rating-highlight"><?= number_format(floatval($review->rating_overall), 1) ?></span> Rating
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -228,7 +228,7 @@ ob_start();
                 <!-- Top Lists Widget -->
                 <?php if (!empty($latestListicles)): ?>
                 <div class="cr-sidebar-featured">
-                    <h3 class="cr-sidebar-featured-title"><i class="fas fa-trophy" style="color: var(--cr-gold); margin-right: 8px;"></i>Buying Guides</h3>
+                    <h3 class="cr-sidebar-featured-title"><i class="fas fa-trophy cr-sidebar-icon-gold"></i>Buying Guides</h3>
                     <?php foreach (array_slice($latestListicles, 0, 3) as $listicle):
                         $listicleUrl = !empty($listicle->category_slug)
                             ? '/category/' . htmlspecialchars($listicle->category_slug) . '/top/' . htmlspecialchars($listicle->slug)
@@ -251,25 +251,25 @@ ob_start();
                 <?php endif; ?>
 
                 <!-- Trust Signals Widget -->
-                <div class="cr-sidebar-featured" style="background: linear-gradient(135deg, var(--cr-navy) 0%, #0d0d1a 100%); color: #fff;">
-                    <h3 class="cr-sidebar-featured-title" style="color: #fff; border-bottom-color: var(--cr-green-light);">
-                        <i class="fas fa-shield-alt" style="color: var(--cr-green-light); margin-right: 8px;"></i>Why Trust Us?
+                <div class="cr-sidebar-featured cr-trust-widget-dark">
+                    <h3 class="cr-sidebar-featured-title cr-trust-widget-title">
+                        <i class="fas fa-shield-alt cr-trust-widget-icon"></i>Why Trust Us?
                     </h3>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                    <ul class="cr-trust-list-dark">
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>Unbiased Expert Reviews</span>
                         </li>
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>Thorough Research</span>
                         </li>
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>Real User Insights</span>
                         </li>
-                        <li style="display: flex; align-items: center; gap: 10px; padding: 10px 0;">
-                            <i class="fas fa-check-circle" style="color: var(--cr-green-light);"></i>
+                        <li>
+                            <i class="fas fa-check-circle cr-trust-check"></i>
                             <span>No Hidden Agendas</span>
                         </li>
                     </ul>
