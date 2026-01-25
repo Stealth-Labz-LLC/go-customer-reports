@@ -157,7 +157,24 @@ class Router
         $articleCategories = \App\Models\Article::getCategories($article->id);
         $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, $article->title);
 
-        $this->render('articles/show', compact('site', 'article', 'articleCategories', 'primaryCategory', 'breadcrumbs'));
+        // Get related articles from same category (exclude current)
+        $relatedArticles = [];
+        if ($primaryCategory) {
+            $categoryArticles = \App\Models\Article::byCategory($site->id, $primaryCategory->id, 7);
+            $relatedArticles = array_filter($categoryArticles, fn($a) => $a->id !== $article->id);
+            $relatedArticles = array_slice($relatedArticles, 0, 6);
+        }
+
+        // Get all categories for sidebar
+        $allCategories = \App\Models\Category::all($site->id);
+
+        // Get related reviews from same category for cross-linking
+        $relatedReviews = [];
+        if ($primaryCategory) {
+            $relatedReviews = \App\Models\Review::byCategory($site->id, $primaryCategory->id, 3);
+        }
+
+        $this->render('articles/show', compact('site', 'article', 'articleCategories', 'primaryCategory', 'breadcrumbs', 'relatedArticles', 'allCategories', 'relatedReviews'));
     }
 
     private function reviewIndex(): void
