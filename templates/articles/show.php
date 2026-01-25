@@ -1,8 +1,55 @@
 <?php
 $pageTitle = ($article->meta_title ?? $article->title) . ' | ' . $site->name;
 $metaDescription = $article->meta_description ?? ($article->excerpt ?? '');
+$ogImage = $article->featured_image ?? null;
+$ogType = 'article';
+
+// Article schema
+$schemaData = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Article',
+    'headline' => $article->title,
+    'description' => $article->excerpt ?? $article->meta_description ?? '',
+    'author' => [
+        '@type' => 'Organization',
+        'name' => $site->name
+    ],
+    'publisher' => [
+        '@type' => 'Organization',
+        'name' => $site->name,
+        'logo' => [
+            '@type' => 'ImageObject',
+            'url' => 'https://' . $site->domain . '/images/logo.svg'
+        ]
+    ],
+    'datePublished' => $article->published_at ? date('c', strtotime($article->published_at)) : date('c'),
+    'dateModified' => $article->updated_at ? date('c', strtotime($article->updated_at)) : date('c'),
+    'mainEntityOfPage' => [
+        '@type' => 'WebPage',
+        '@id' => 'https://' . $site->domain . '/category/' . ($primaryCategory->slug ?? '') . '/' . $article->slug
+    ]
+];
+
+// Add author if available
+if (!empty($article->author_name)) {
+    $schemaData['author'] = [
+        '@type' => 'Person',
+        'name' => $article->author_name
+    ];
+}
+
+// Add image if available
+if (!empty($article->featured_image)) {
+    $schemaData['image'] = $article->featured_image;
+}
+
 ob_start();
 ?>
+
+<!-- Schema.org Article structured data -->
+<script type="application/ld+json">
+<?= json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+</script>
 
 <?php if (!empty($breadcrumbs)): ?>
     <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>

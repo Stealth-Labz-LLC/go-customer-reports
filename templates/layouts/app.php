@@ -6,6 +6,9 @@
  */
 $pageTitle = $pageTitle ?? $site->name;
 $metaDescription = $metaDescription ?? ($site->tagline ?? '');
+$ogImage = $ogImage ?? ($featuredImage ?? null);
+$ogType = $ogType ?? 'website';
+$canonicalUrl = 'https://' . $site->domain . strtok($_SERVER['REQUEST_URI'], '?');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,11 +17,25 @@ $metaDescription = $metaDescription ?? ($site->tagline ?? '');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
     <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
+    <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>">
 
+    <!-- Open Graph -->
     <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?>">
     <meta property="og:description" content="<?= htmlspecialchars($metaDescription) ?>">
     <meta property="og:site_name" content="<?= htmlspecialchars($site->name) ?>">
-    <link rel="canonical" href="https://<?= htmlspecialchars($site->domain) ?><?= $_SERVER['REQUEST_URI'] ?>">
+    <meta property="og:type" content="<?= htmlspecialchars($ogType) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>">
+    <?php if ($ogImage): ?>
+    <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
+    <?php endif; ?>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($pageTitle) ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($metaDescription) ?>">
+    <?php if ($ogImage): ?>
+    <meta name="twitter:image" content="<?= htmlspecialchars($ogImage) ?>">
+    <?php endif; ?>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

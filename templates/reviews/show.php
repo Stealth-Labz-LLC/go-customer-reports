@@ -1,12 +1,76 @@
 <?php
 $pageTitle = ($review->meta_title ?? $review->name . ' Review') . ' | ' . $site->name;
 $metaDescription = $review->meta_description ?? ($review->short_description ?? '');
+$ogImage = $review->featured_image ?? null;
+$ogType = 'product';
 $rating = floatval($review->rating_overall ?? 0);
 $isTopPick = $rating >= 4.5;
 $fullStars = floor($rating);
 $hasHalf = ($rating - $fullStars) >= 0.5;
+
+// Schema.org structured data
+$schemaData = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Product',
+    'name' => $review->name,
+    'description' => $review->short_description ?? $review->meta_description ?? '',
+    'brand' => [
+        '@type' => 'Brand',
+        'name' => $review->brand ?? $review->name
+    ],
+    'review' => [
+        '@type' => 'Review',
+        'reviewRating' => [
+            '@type' => 'Rating',
+            'ratingValue' => number_format($rating, 1),
+            'bestRating' => '5',
+            'worstRating' => '1'
+        ],
+        'author' => [
+            '@type' => 'Organization',
+            'name' => $site->name
+        ],
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => $site->name
+        ],
+        'datePublished' => $review->published_at ? date('Y-m-d', strtotime($review->published_at)) : date('Y-m-d'),
+        'reviewBody' => strip_tags($review->short_description ?? '')
+    ],
+    'aggregateRating' => [
+        '@type' => 'AggregateRating',
+        'ratingValue' => number_format($rating, 1),
+        'bestRating' => '5',
+        'worstRating' => '1',
+        'ratingCount' => '1'
+    ]
+];
+
+// Add image if available
+if (!empty($review->featured_image)) {
+    $schemaData['image'] = $review->featured_image;
+}
+
+// Add offers if affiliate URL exists
+if (!empty($review->affiliate_url)) {
+    $schemaData['offers'] = [
+        '@type' => 'Offer',
+        'url' => $review->affiliate_url,
+        'availability' => 'https://schema.org/InStock'
+    ];
+    if (!empty($review->price)) {
+        $schemaData['offers']['price'] = $review->price;
+        $schemaData['offers']['priceCurrency'] = 'USD';
+    }
+}
+
 ob_start();
 ?>
+
+<!-- Schema.org Product/Review structured data -->
+<script type="application/ld+json">
+<?= json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+</script>
 
 <?php if (!empty($breadcrumbs)): ?>
     <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>

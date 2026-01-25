@@ -85,6 +85,10 @@ class Router
 
             // === UTILITY ROUTES ===
 
+            case $path === '/robots.txt':
+                $this->robotsTxt();
+                break;
+
             case $path === '/sitemap.xml':
                 $this->sitemap();
                 break;
@@ -281,6 +285,23 @@ class Router
 
         header('Content-Type: application/xml; charset=utf-8');
         require $this->templateDir . '/sitemap.php';
+        exit;
+    }
+
+    private function robotsTxt(): void
+    {
+        $site = $this->site;
+        header('Content-Type: text/plain; charset=utf-8');
+        echo "# robots.txt for {$site->name}\n\n";
+        echo "User-agent: *\n";
+        echo "Allow: /\n\n";
+        echo "# Sitemap\n";
+        echo "Sitemap: https://{$site->domain}/sitemap.xml\n\n";
+        echo "# Disallow admin/API paths\n";
+        echo "Disallow: /api/\n";
+        echo "Disallow: /cli/\n";
+        echo "Disallow: /config/\n";
+        echo "Disallow: /app/\n";
         exit;
     }
 

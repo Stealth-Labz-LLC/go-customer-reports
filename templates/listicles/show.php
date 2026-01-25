@@ -1,8 +1,60 @@
 <?php
 $pageTitle = ($listicle->meta_title ?? $listicle->title) . ' | ' . $site->name;
 $metaDescription = $listicle->meta_description ?? ($listicle->excerpt ?? '');
+$ogImage = $listicle->featured_image ?? null;
+$ogType = 'article';
+
+// Build ItemList schema for listicle
+$itemListElements = [];
+if (!empty($listicle->items)) {
+    foreach ($listicle->items as $index => $item) {
+        $listItem = [
+            '@type' => 'ListItem',
+            'position' => $index + 1,
+            'item' => [
+                '@type' => 'Product',
+                'name' => $item['name'] ?? '',
+            ]
+        ];
+        if (!empty($item['rating'])) {
+            $listItem['item']['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => number_format(floatval($item['rating']), 1),
+                'bestRating' => '10',
+                'worstRating' => '1',
+                'ratingCount' => '1'
+            ];
+        }
+        if (!empty($item['image']) || !empty($item['product_image'])) {
+            $listItem['item']['image'] = $item['product_image'] ?? $item['image'];
+        }
+        if (!empty($item['affiliate_url'])) {
+            $listItem['item']['offers'] = [
+                '@type' => 'Offer',
+                'url' => $item['affiliate_url'],
+                'availability' => 'https://schema.org/InStock'
+            ];
+        }
+        $itemListElements[] = $listItem;
+    }
+}
+
+$schemaData = [
+    '@context' => 'https://schema.org',
+    '@type' => 'ItemList',
+    'name' => $listicle->title,
+    'description' => $listicle->excerpt ?? $listicle->meta_description ?? '',
+    'numberOfItems' => count($listicle->items ?? []),
+    'itemListElement' => $itemListElements
+];
+
 ob_start();
 ?>
+
+<!-- Schema.org ItemList structured data -->
+<script type="application/ld+json">
+<?= json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+</script>
 
 <?php if (!empty($breadcrumbs)): ?>
     <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>
