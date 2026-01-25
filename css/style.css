@@ -633,3 +633,127 @@ a:hover {
         margin-top: 30px;
     }
 }
+
+/* ===== Phase 1: High Priority Features ===== */
+
+/* Header Meta & Disclosure Links */
+.cr-header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    margin-top: 0.75rem;
+}
+
+.cr-disclosure-links {
+    display: flex;
+    gap: 15px;
+}
+
+.cr-disclosure-links a {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.cr-disclosure-links a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Savings Badge */
+.cr-savings-badge {
+    position: absolute;
+    top: 8px;
+    right: 180px;
+    background: #e74c3c;
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 3px;
+    z-index: 3;
+}
+
+/* Trust Signal */
+.cr-trust-signal {
+    font-size: 0.75rem;
+    color: var(--cr-text-muted);
+    text-align: center;
+    margin-top: 10px;
+    font-family: 'Helvetica', sans-serif;
+}
+
+/* Product Image Column */
+.cr-product-image-col {
+    width: 168px;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-left: 1px solid var(--cr-border);
+}
+
+.cr-product-image {
+    max-width: 150px;
+    max-height: 170px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Adjust CTA column when product image exists */
+.cr-item-row:has(.cr-product-image-col) .cr-cta-col {
+    border-right: none;
+}
+
+/* Modal Styling */
+.modal-header {
+    border-bottom: 1px solid var(--cr-border);
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cr-text);
+}
+
+.modal-body p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--cr-text-muted);
+}
+
+/* Responsive adjustments for new features */
+@media (max-width: 991px) {
+    .cr-savings-badge {
+        right: 10px;
+        top: auto;
+        bottom: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cr-header-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cr-product-image-col {
+        width: 100%;
+        min-height: auto;
+        border-left: none;
+        border-top: 1px solid var(--cr-border);
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .cr-savings-badge {
+        position: static;
+        display: inline-block;
+        margin: 5px 0 0 50px;
+    }
+}

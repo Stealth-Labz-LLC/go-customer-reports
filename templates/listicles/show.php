@@ -11,9 +11,15 @@ ob_start();
         <?php if (!empty($listicle->excerpt)): ?>
         <p class="lead"><?= htmlspecialchars($listicle->excerpt) ?></p>
         <?php endif; ?>
-        <?php if ($listicle->published_at): ?>
-        <span class="updated-date">Updated <?= date('F Y', strtotime($listicle->published_at)) ?></span>
-        <?php endif; ?>
+        <div class="cr-header-meta">
+            <?php if ($listicle->published_at): ?>
+            <span class="updated-date">Updated <?= date('F Y', strtotime($listicle->published_at)) ?></span>
+            <?php endif; ?>
+            <div class="cr-disclosure-links">
+                <a href="#advertiserDisclosureModal" data-bs-toggle="modal">Advertiser disclosure</a>
+                <a href="#aboutRankingsModal" data-bs-toggle="modal">About our rankings</a>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -41,6 +47,13 @@ ob_start();
                     <?php if (!empty($item['badge'])): ?>
                     <div class="cr-badge-banner">
                         <span><?= htmlspecialchars($item['badge']) ?></span>
+                    </div>
+                    <?php endif; ?>
+
+                    <!-- Savings Badge -->
+                    <?php if (!empty($item['savings'])): ?>
+                    <div class="cr-savings-badge">
+                        <span>Save <?= htmlspecialchars($item['savings']) ?></span>
                     </div>
                     <?php endif; ?>
 
@@ -99,14 +112,34 @@ ob_start();
                             <?php endif; ?>
                         </div>
 
-                        <!-- Right: CTA Button -->
+                        <!-- Right: CTA Button + Trust Signal -->
                         <div class="cr-cta-col">
                             <?php if (!empty($item['affiliate_url'])): ?>
                             <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="cr-cta-button">
                                 <?= htmlspecialchars($item['cta_text'] ?? 'Check Price') ?>
                             </a>
                             <?php endif; ?>
+
+                            <!-- Trust Signal -->
+                            <?php if (!empty($item['trust_signal'])): ?>
+                            <div class="cr-trust-signal">
+                                <?= htmlspecialchars($item['trust_signal']) ?>
+                            </div>
+                            <?php endif; ?>
                         </div>
+
+                        <!-- Far Right: Product Image -->
+                        <?php if (!empty($item['product_image'])): ?>
+                        <div class="cr-product-image-col">
+                            <?php if (!empty($item['affiliate_url'])): ?>
+                            <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored">
+                            <?php endif; ?>
+                                <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?> Preview" class="cr-product-image">
+                            <?php if (!empty($item['affiliate_url'])): ?>
+                            </a>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -126,6 +159,36 @@ ob_start();
         <div class="col-lg-3 col-md-12">
             <div class="cr-sidebar">
                 <?php require __DIR__ . '/../partials/listicle-sidebar.php'; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advertiser Disclosure Modal -->
+<div class="modal fade" id="advertiserDisclosureModal" tabindex="-1" aria-labelledby="advertiserDisclosureModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="advertiserDisclosureModalTitle">Advertiser Disclosure</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><?= htmlspecialchars($site->name) ?> is an independent, advertising-supported comparison website. Products and services that appear on <?= htmlspecialchars($site->name) ?> are from companies from which <?= htmlspecialchars($site->name) ?> receives compensation. As an Amazon Associate, we earn from qualifying purchases. This compensation may impact the location and order in which these products appear. <?= htmlspecialchars($site->name) ?> takes into consideration a number of proprietary rules to determine how and where products appear on the site. <?= htmlspecialchars($site->name) ?> does not include the entire universe of available product choices.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Our Rankings Modal -->
+<div class="modal fade" id="aboutRankingsModal" tabindex="-1" aria-labelledby="aboutRankingsModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aboutRankingsModalTitle">About Our Rankings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Our editors review products objectively based on the features offered to consumers, the price and delivery options, how a product compares with other products in its category, and other factors. The ratings are based on the expert opinion of our editors and on underlying technology that analyzes decisions made by similar users to provide individual, targeted recommendations to each person who visits our site.</p>
             </div>
         </div>
     </div>
