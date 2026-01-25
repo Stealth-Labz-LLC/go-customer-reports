@@ -214,7 +214,7 @@ flush();
 $offset = 0;
 while ($offset < $totalListicles) {
     $listicles = $db->fetchAll(
-        "SELECT id, intro_content, conclusion_content FROM content_listicles WHERE site_id = ? LIMIT ? OFFSET ?",
+        "SELECT id, introduction, conclusion FROM content_listicles WHERE site_id = ? LIMIT ? OFFSET ?",
         [$SITE_ID, $batchSize, $offset]
     );
 
@@ -226,26 +226,26 @@ while ($offset < $totalListicles) {
         $totalLinks = 0;
 
         // Process intro
-        if ($listicle->intro_content) {
+        if ($listicle->introduction) {
             $linkCount = 0;
-            $newIntro = convertLinks($listicle->intro_content, $domains, $verbose, $linkCount);
-            if ($newIntro !== $listicle->intro_content) {
+            $newIntro = convertLinks($listicle->introduction, $domains, $verbose, $linkCount);
+            if ($newIntro !== $listicle->introduction) {
                 $totalLinks += $linkCount;
                 if (!$dryRun) {
-                    $db->query("UPDATE content_listicles SET intro_content = ? WHERE id = ?", [$newIntro, $listicle->id]);
+                    $db->query("UPDATE content_listicles SET introduction = ? WHERE id = ?", [$newIntro, $listicle->id]);
                 }
                 $updated = true;
             }
         }
 
         // Process conclusion
-        if ($listicle->conclusion_content) {
+        if ($listicle->conclusion) {
             $linkCount = 0;
-            $newConclusion = convertLinks($listicle->conclusion_content, $domains, $verbose, $linkCount);
-            if ($newConclusion !== $listicle->conclusion_content) {
+            $newConclusion = convertLinks($listicle->conclusion, $domains, $verbose, $linkCount);
+            if ($newConclusion !== $listicle->conclusion) {
                 $totalLinks += $linkCount;
                 if (!$dryRun) {
-                    $db->query("UPDATE content_listicles SET conclusion_content = ? WHERE id = ?", [$newConclusion, $listicle->id]);
+                    $db->query("UPDATE content_listicles SET conclusion = ? WHERE id = ?", [$newConclusion, $listicle->id]);
                 }
                 $updated = true;
             }
