@@ -184,11 +184,11 @@ ob_start();
                             </div>
 
                             <div class="cr-rating-items">
-                                <?php if ($review->rating_quality): ?>
+                                <?php if ($review->rating_ingredients): ?>
                                 <div class="cr-rating-item">
-                                    <label>Quality</label>
+                                    <label>Ingredients</label>
                                     <div class="cr-rating-item-stars">
-                                        <?php $r = floor(floatval($review->rating_quality)); ?>
+                                        <?php $r = floor(floatval($review->rating_ingredients)); ?>
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
                                         <i class="fas fa-star<?= $i <= $r ? ' filled' : '' ?>"></i>
                                         <?php endfor; ?>
@@ -220,11 +220,11 @@ ob_start();
                                 </div>
                                 <?php endif; ?>
 
-                                <?php if ($review->rating_experience): ?>
+                                <?php if ($review->rating_customer_experience): ?>
                                 <div class="cr-rating-item">
                                     <label>Customer Experience</label>
                                     <div class="cr-rating-item-stars">
-                                        <?php $r = floor(floatval($review->rating_experience)); ?>
+                                        <?php $r = floor(floatval($review->rating_customer_experience)); ?>
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
                                         <i class="fas fa-star<?= $i <= $r ? ' filled' : '' ?>"></i>
                                         <?php endfor; ?>
