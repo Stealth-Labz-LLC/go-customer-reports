@@ -4,10 +4,18 @@ $metaDescription = '';
 ob_start();
 ?>
 
-<div class="container text-center py-5">
-    <h1 class="display-1 fw-bold text-muted">404</h1>
-    <p class="fs-4 text-muted mb-4">Page not found</p>
-    <a href="/" class="btn btn-primary">Back to Home</a>
+<div class="cr-error-page">
+    <div class="container">
+        <div class="cr-error-content">
+            <div class="cr-error-code">404</div>
+            <h1 class="cr-error-title">Page Not Found</h1>
+            <p class="cr-error-message">The page you're looking for doesn't exist or has been moved.</p>
+            <div class="cr-error-actions">
+                <a href="/" class="cr-btn cr-btn-primary">Back to Home</a>
+                <a href="/categories" class="cr-btn cr-btn-outline">Browse Categories</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php

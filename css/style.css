@@ -5314,3 +5314,110 @@ a.cr-category-card:hover .cr-category-card-link i {
 .cr-trust-list-dark .cr-trust-check {
     color: var(--cr-green-light);
 }
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+.cr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cr-btn-primary {
+    background: var(--cr-green);
+    color: #fff;
+    border-color: var(--cr-green);
+}
+
+.cr-btn-primary:hover {
+    background: var(--cr-green-hover);
+    border-color: var(--cr-green-hover);
+    color: #fff;
+}
+
+.cr-btn-outline {
+    background: transparent;
+    color: var(--cr-green);
+    border-color: var(--cr-green);
+}
+
+.cr-btn-outline:hover {
+    background: var(--cr-green);
+    color: #fff;
+}
+
+/* ==========================================================================
+   ERROR PAGE (404, etc.)
+   ========================================================================== */
+
+.cr-error-page {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, var(--cr-bg-light) 0%, #fff 100%);
+}
+
+.cr-error-content {
+    text-align: center;
+    max-width: 500px;
+}
+
+.cr-error-code {
+    font-size: 8rem;
+    font-weight: 700;
+    color: var(--cr-navy);
+    line-height: 1;
+    margin-bottom: 1rem;
+    opacity: 0.15;
+}
+
+.cr-error-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cr-navy);
+    margin-bottom: 1rem;
+}
+
+.cr-error-message {
+    font-size: 1.125rem;
+    color: var(--cr-text-muted);
+    margin-bottom: 2rem;
+}
+
+.cr-error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 575px) {
+    .cr-error-code {
+        font-size: 5rem;
+    }
+
+    .cr-error-title {
+        font-size: 1.5rem;
+    }
+
+    .cr-error-actions {
+        flex-direction: column;
+    }
+
+    .cr-btn {
+        width: 100%;
+    }
+}

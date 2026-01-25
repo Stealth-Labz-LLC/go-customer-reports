@@ -10,12 +10,14 @@ $topItems = array_slice($listicle->items ?? [], 0, 3);
 
 <!-- Navigation Widget -->
 <div class="cr-sidebar-widget">
-    <div class="widget-title"><strong>Filter Types</strong></div>
+    <div class="widget-title"><strong>Browse</strong></div>
     <hr class="widget-break">
     <div class="widget-content">
-        <a href="/" class="widget-link">Best Overall</a>
-        <a href="/reviews" class="widget-link">All Reviews</a>
-        <a href="/articles" class="widget-link">Articles</a>
+        <a href="/" class="widget-link">Home</a>
+        <a href="/categories" class="widget-link">All Categories</a>
+        <?php if (!empty($primaryCategory)): ?>
+        <a href="/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="widget-link"><?= htmlspecialchars($primaryCategory->name) ?></a>
+        <?php endif; ?>
     </div>
 </div>
 
