@@ -15,6 +15,13 @@ if (php_sapi_name() !== 'cli') {
     die("This script must be run from the command line.\n");
 }
 
+// Enable error reporting for CLI
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
+// Disable output buffering for real-time output
+if (ob_get_level()) ob_end_clean();
+
 require_once __DIR__ . '/../app/bootstrap.php';
 
 use App\Core\Database;
@@ -81,8 +88,12 @@ echo " Link Migration Script\n";
 echo "=========================================\n";
 echo " Mode: " . ($dryRun ? "DRY RUN" : "LIVE UPDATE") . "\n";
 echo "=========================================\n\n";
+flush();
 
+echo "Connecting to database...\n";
 $db = Database::getInstance();
+echo "Connected.\n\n";
+flush();
 
 // Build regex pattern for old domains
 $domainPattern = implode('|', array_map(function($d) {
@@ -105,32 +116,46 @@ $stats = [
 
 echo "=== Processing Articles ===\n\n";
 
-$articles = $db->fetchAll(
-    "SELECT id, content FROM content_articles WHERE site_id = ?",
-    [$SITE_ID]
-);
+// Get total count first
+$countResult = $db->fetchOne("SELECT COUNT(*) as total FROM content_articles WHERE site_id = ?", [$SITE_ID]);
+$totalArticles = (int) $countResult->total;
+echo "  Found {$totalArticles} articles to scan.\n";
+flush();
 
-foreach ($articles as $article) {
-    $stats['articles_scanned']++;
+// Process in batches to avoid memory issues
+$batchSize = 100;
+$offset = 0;
 
-    $newContent = convertLinks($article->content, $domainPattern, $verbose, $linkCount);
+while ($offset < $totalArticles) {
+    $articles = $db->fetchAll(
+        "SELECT id, content FROM content_articles WHERE site_id = ? LIMIT ? OFFSET ?",
+        [$SITE_ID, $batchSize, $offset]
+    );
 
-    if ($newContent !== $article->content) {
-        $stats['articles_updated']++;
-        $stats['links_converted'] += $linkCount;
+    if (empty($articles)) break;
 
-        if (!$dryRun) {
-            $db->query("UPDATE content_articles SET content = ? WHERE id = ?", [$newContent, $article->id]);
-        }
+    foreach ($articles as $article) {
+        $stats['articles_scanned']++;
 
-        if ($verbose) {
-            echo "  Article ID {$article->id}: {$linkCount} links converted\n";
+        $newContent = convertLinks($article->content, $domainPattern, $verbose, $linkCount);
+
+        if ($newContent !== $article->content) {
+            $stats['articles_updated']++;
+            $stats['links_converted'] += $linkCount;
+
+            if (!$dryRun) {
+                $db->query("UPDATE content_articles SET content = ? WHERE id = ?", [$newContent, $article->id]);
+            }
+
+            if ($verbose) {
+                echo "  Article ID {$article->id}: {$linkCount} links converted\n";
+            }
         }
     }
 
-    if ($stats['articles_scanned'] % 500 === 0) {
-        echo "  Processed {$stats['articles_scanned']} articles...\n";
-    }
+    $offset += $batchSize;
+    echo "  Processed {$stats['articles_scanned']} of {$totalArticles} articles...\n";
+    flush();
 }
 echo "  Done. {$stats['articles_updated']} articles updated.\n\n";
 
@@ -140,28 +165,40 @@ echo "  Done. {$stats['articles_updated']} articles updated.\n\n";
 
 echo "=== Processing Reviews ===\n\n";
 
-$reviews = $db->fetchAll(
-    "SELECT id, content FROM content_reviews WHERE site_id = ? AND content IS NOT NULL",
-    [$SITE_ID]
-);
+$countResult = $db->fetchOne("SELECT COUNT(*) as total FROM content_reviews WHERE site_id = ? AND content IS NOT NULL", [$SITE_ID]);
+$totalReviews = (int) $countResult->total;
+echo "  Found {$totalReviews} reviews to scan.\n";
+flush();
 
-foreach ($reviews as $review) {
-    $stats['reviews_scanned']++;
+$offset = 0;
+while ($offset < $totalReviews) {
+    $reviews = $db->fetchAll(
+        "SELECT id, content FROM content_reviews WHERE site_id = ? AND content IS NOT NULL LIMIT ? OFFSET ?",
+        [$SITE_ID, $batchSize, $offset]
+    );
 
-    $newContent = convertLinks($review->content, $domainPattern, $verbose, $linkCount);
+    if (empty($reviews)) break;
 
-    if ($newContent !== $review->content) {
-        $stats['reviews_updated']++;
-        $stats['links_converted'] += $linkCount;
+    foreach ($reviews as $review) {
+        $stats['reviews_scanned']++;
 
-        if (!$dryRun) {
-            $db->query("UPDATE content_reviews SET content = ? WHERE id = ?", [$newContent, $review->id]);
-        }
+        $newContent = convertLinks($review->content, $domainPattern, $verbose, $linkCount);
 
-        if ($verbose) {
-            echo "  Review ID {$review->id}: {$linkCount} links converted\n";
+        if ($newContent !== $review->content) {
+            $stats['reviews_updated']++;
+            $stats['links_converted'] += $linkCount;
+
+            if (!$dryRun) {
+                $db->query("UPDATE content_reviews SET content = ? WHERE id = ?", [$newContent, $review->id]);
+            }
+
+            if ($verbose) {
+                echo "  Review ID {$review->id}: {$linkCount} links converted\n";
+            }
         }
     }
+
+    $offset += $batchSize;
 }
 echo "  Done. {$stats['reviews_updated']} reviews updated.\n\n";
 
@@ -171,48 +208,60 @@ echo "  Done. {$stats['reviews_updated']} reviews updated.\n\n";
 
 echo "=== Processing Listicles ===\n\n";
 
-$listicles = $db->fetchAll(
-    "SELECT id, intro_content, conclusion_content FROM content_listicles WHERE site_id = ?",
-    [$SITE_ID]
-);
+$countResult = $db->fetchOne("SELECT COUNT(*) as total FROM content_listicles WHERE site_id = ?", [$SITE_ID]);
+$totalListicles = (int) $countResult->total;
+echo "  Found {$totalListicles} listicles to scan.\n";
+flush();
 
-foreach ($listicles as $listicle) {
-    $stats['listicles_scanned']++;
-    $updated = false;
-    $totalLinks = 0;
+$offset = 0;
+while ($offset < $totalListicles) {
+    $listicles = $db->fetchAll(
+        "SELECT id, intro_content, conclusion_content FROM content_listicles WHERE site_id = ? LIMIT ? OFFSET ?",
+        [$SITE_ID, $batchSize, $offset]
+    );
 
-    // Process intro
-    if ($listicle->intro_content) {
-        $newIntro = convertLinks($listicle->intro_content, $domainPattern, $verbose, $linkCount);
-        if ($newIntro !== $listicle->intro_content) {
-            $totalLinks += $linkCount;
-            if (!$dryRun) {
-                $db->query("UPDATE content_listicles SET intro_content = ? WHERE id = ?", [$newIntro, $listicle->id]);
+    if (empty($listicles)) break;
+
+    foreach ($listicles as $listicle) {
+        $stats['listicles_scanned']++;
+        $updated = false;
+        $totalLinks = 0;
+
+        // Process intro
+        if ($listicle->intro_content) {
+            $newIntro = convertLinks($listicle->intro_content, $domainPattern, $verbose, $linkCount);
+            if ($newIntro !== $listicle->intro_content) {
+                $totalLinks += $linkCount;
+                if (!$dryRun) {
+                    $db->query("UPDATE content_listicles SET intro_content = ? WHERE id = ?", [$newIntro, $listicle->id]);
+                }
+                $updated = true;
             }
-            $updated = true;
         }
-    }
 
-    // Process conclusion
-    if ($listicle->conclusion_content) {
-        $newConclusion = convertLinks($listicle->conclusion_content, $domainPattern, $verbose, $linkCount);
-        if ($newConclusion !== $listicle->conclusion_content) {
-            $totalLinks += $linkCount;
-            if (!$dryRun) {
-                $db->query("UPDATE content_listicles SET conclusion_content = ? WHERE id = ?", [$newConclusion, $listicle->id]);
+        // Process conclusion
+        if ($listicle->conclusion_content) {
+            $newConclusion = convertLinks($listicle->conclusion_content, $domainPattern, $verbose, $linkCount);
+            if ($newConclusion !== $listicle->conclusion_content) {
+                $totalLinks += $linkCount;
+                if (!$dryRun) {
+                    $db->query("UPDATE content_listicles SET conclusion_content = ? WHERE id = ?", [$newConclusion, $listicle->id]);
+                }
+                $updated = true;
             }
-            $updated = true;
+        }
+
+        if ($updated) {
+            $stats['listicles_updated']++;
+            $stats['links_converted'] += $totalLinks;
+
+            if ($verbose) {
+                echo "  Listicle ID {$listicle->id}: {$totalLinks} links converted\n";
+            }
         }
     }
 
-    if ($updated) {
-        $stats['listicles_updated']++;
-        $stats['links_converted'] += $totalLinks;
-
-        if ($verbose) {
-            echo "  Listicle ID {$listicle->id}: {$totalLinks} links converted\n";
-        }
-    }
+    $offset += $batchSize;
 }
 echo "  Done. {$stats['listicles_updated']} listicles updated.\n\n";
 
@@ -222,26 +271,47 @@ echo "  Done. {$stats['listicles_updated']} listicles updated.\n\n";
 
 echo "=== Processing Listicle Items ===\n\n";
 
-$items = $db->fetchAll(
-    "SELECT li.id, li.description
-     FROM content_listicle_items li
+$countResult = $db->fetchOne(
+    "SELECT COUNT(*) as total FROM content_listicle_items li
      JOIN content_listicles l ON li.listicle_id = l.id
      WHERE l.site_id = ? AND li.description IS NOT NULL",
     [$SITE_ID]
 );
+$totalItems = (int) $countResult->total;
+echo "  Found {$totalItems} listicle items to scan.\n";
+flush();
 
 $itemsUpdated = 0;
-foreach ($items as $item) {
-    $newDesc = convertLinks($item->description, $domainPattern, $verbose, $linkCount);
+$itemsScanned = 0;
+$offset = 0;
 
-    if ($newDesc !== $item->description) {
-        $itemsUpdated++;
-        $stats['links_converted'] += $linkCount;
+while ($offset < $totalItems) {
+    $items = $db->fetchAll(
+        "SELECT li.id, li.description
+         FROM content_listicle_items li
+         JOIN content_listicles l ON li.listicle_id = l.id
+         WHERE l.site_id = ? AND li.description IS NOT NULL
+         LIMIT ? OFFSET ?",
+        [$SITE_ID, $batchSize, $offset]
+    );
 
-        if (!$dryRun) {
-            $db->query("UPDATE content_listicle_items SET description = ? WHERE id = ?", [$newDesc, $item->id]);
+    if (empty($items)) break;
+
+    foreach ($items as $item) {
+        $itemsScanned++;
+        $newDesc = convertLinks($item->description, $domainPattern, $verbose, $linkCount);
+
+        if ($newDesc !== $item->description) {
+            $itemsUpdated++;
+            $stats['links_converted'] += $linkCount;
+
+            if (!$dryRun) {
+                $db->query("UPDATE content_listicle_items SET description = ? WHERE id = ?", [$newDesc, $item->id]);
+            }
         }
     }
+
+    $offset += $batchSize;
 }
 echo "  Done. {$itemsUpdated} listicle items updated.\n\n";
 
