@@ -4,6 +4,31 @@ $metaDescription = $listicle->meta_description ?? ($listicle->excerpt ?? '');
 ob_start();
 ?>
 
+<!-- Top Navigation Bar -->
+<div class="cr-navb">
+    <div class="container">
+        <div class="cr-navb-wrapper">
+            <span class="cr-navb-header">
+                <span>Categories</span>
+                <i class="fas fa-angle-down"></i>
+            </span>
+            <div class="cr-navb-list">
+                <a href="/" class="cr-navb-item">Best Overall</a>
+                <?php
+                $categories = \App\Models\Category::topLevel($site->id);
+                foreach (array_slice($categories, 0, 4) as $cat):
+                ?>
+                <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-navb-item"><?= htmlspecialchars($cat->name) ?></a>
+                <?php endforeach; ?>
+            </div>
+            <div class="cr-navb-menu">
+                <a href="/articles">Articles</a>
+                <a href="/reviews">Reviews</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Listicle Header -->
 <section class="cr-listicle-header">
     <div class="container">
@@ -144,6 +169,72 @@ ob_start();
                 </div>
                 <?php endforeach; ?>
             </div>
+
+            <!-- Comparison Grid -->
+            <?php if (count($listicle->items) >= 2): ?>
+            <div class="cr-comparison-grid">
+                <h2>Compare Features</h2>
+                <div class="cr-grid-wrapper">
+                    <div class="cr-grid-scroll">
+                        <table class="cr-grid-table">
+                            <thead>
+                                <tr>
+                                    <th class="cr-grid-label"></th>
+                                    <?php foreach (array_slice($listicle->items, 0, 5) as $idx => $item): ?>
+                                    <th class="cr-grid-product">
+                                        <span class="cr-grid-rank"><?= $idx + 1 ?>.</span>
+                                        <?= htmlspecialchars($item['name'] ?? '') ?>
+                                        <?php if (!empty($item['product_image']) || !empty($item['brand_logo'])): ?>
+                                        <img src="<?= htmlspecialchars($item['product_image'] ?? $item['brand_logo'] ?? '') ?>" alt="" class="cr-grid-thumb">
+                                        <?php endif; ?>
+                                    </th>
+                                    <?php endforeach; ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="cr-grid-label">Rating</td>
+                                    <?php foreach (array_slice($listicle->items, 0, 5) as $item): ?>
+                                    <td><?= !empty($item['rating']) ? number_format($item['rating'], 1) : '-' ?></td>
+                                    <?php endforeach; ?>
+                                </tr>
+                                <?php
+                                // Get spec keys from first item that has specs
+                                $specKeys = [];
+                                foreach ($listicle->items as $item) {
+                                    if (!empty($item['specs']) && is_array($item['specs'])) {
+                                        $specKeys = array_keys($item['specs']);
+                                        break;
+                                    }
+                                }
+                                foreach (array_slice($specKeys, 0, 4) as $specKey):
+                                ?>
+                                <tr>
+                                    <td class="cr-grid-label"><?= htmlspecialchars($specKey) ?></td>
+                                    <?php foreach (array_slice($listicle->items, 0, 5) as $item): ?>
+                                    <td><?= htmlspecialchars($item['specs'][$specKey] ?? '-') ?></td>
+                                    <?php endforeach; ?>
+                                </tr>
+                                <?php endforeach; ?>
+                                <tr class="cr-grid-cta-row">
+                                    <td class="cr-grid-label"></td>
+                                    <?php foreach (array_slice($listicle->items, 0, 5) as $item): ?>
+                                    <td>
+                                        <?php if (!empty($item['affiliate_url'])): ?>
+                                        <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="cr-grid-cta">
+                                            Check Price
+                                        </a>
+                                        <?php endif; ?>
+                                    </td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <?php endif; ?>
 
             <!-- Conclusion -->
