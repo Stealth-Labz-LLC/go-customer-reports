@@ -48,6 +48,28 @@ $metaDescription = $metaDescription ?? ($site->tagline ?? '');
 
     <?php require __DIR__ . '/../partials/footer.php'; ?>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookieBanner" class="cr-cookie-banner" style="display: none;">
+        <div class="container">
+            <div class="cr-cookie-content">
+                <p>We use cookies to enhance your browsing experience and analyze site traffic. By continuing to use this site, you consent to our use of cookies.</p>
+                <button type="button" class="cr-cookie-btn" onclick="acceptCookies()">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Cookie Banner Logic
+    (function() {
+        if (!localStorage.getItem('cookiesAccepted')) {
+            document.getElementById('cookieBanner').style.display = 'block';
+        }
+    })();
+    function acceptCookies() {
+        localStorage.setItem('cookiesAccepted', 'true');
+        document.getElementById('cookieBanner').style.display = 'none';
+    }
+    </script>
 </body>
 </html>

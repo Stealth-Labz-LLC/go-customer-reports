@@ -63,8 +63,11 @@ ob_start();
             <?php if (!empty($listicle->items)): ?>
             <div class="cr-listicle-items">
                 <?php foreach ($listicle->items as $index => $item): ?>
-                <?php $rank = $item['rank'] ?? ($index + 1); ?>
-                <div class="cr-item-card">
+                <?php
+                $rank = $item['rank'] ?? ($index + 1);
+                $itemSlug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $item['name'] ?? 'item-' . $index));
+                ?>
+                <div class="cr-item-card" data-rank="<?= $rank ?>" data-slug="<?= htmlspecialchars($itemSlug) ?>" data-index="<?= $index ?>">
                     <!-- Ordinal Badge -->
                     <div class="cr-ordinal"><?= $rank ?></div>
 
@@ -236,6 +239,62 @@ ob_start();
             <?php endif; ?>
 
             <?php endif; ?>
+
+            <!-- About Our Rankings Stats -->
+            <div class="cr-rankings-stats">
+                <div class="cr-stat-box">
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                    <span class="stat-number"><?= count($listicle->items ?? []) ?></span>
+                    <span class="stat-label">Models Evaluated</span>
+                </div>
+                <div class="cr-stat-box">
+                    <div class="stat-icon"><i class="fas fa-list-ul"></i></div>
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Topics Considered</span>
+                </div>
+                <div class="cr-stat-box">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Hours of Research</span>
+                </div>
+                <div class="cr-stat-box">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <span class="stat-number">1,000+</span>
+                    <span class="stat-label">Purchases Analyzed</span>
+                </div>
+            </div>
+
+            <!-- Buyer's Guide -->
+            <?php if (!empty($listicle->buyers_guide)): ?>
+            <div class="cr-buyers-guide">
+                <h2>Buyer's Guide</h2>
+                <div class="cr-buyers-guide-content">
+                    <?= $listicle->buyers_guide ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- FAQs -->
+            <?php if (!empty($listicle->faqs)): ?>
+            <?php $faqs = is_string($listicle->faqs) ? json_decode($listicle->faqs, true) : $listicle->faqs; ?>
+            <?php if (!empty($faqs) && is_array($faqs)): ?>
+            <div class="cr-faqs">
+                <h2>Frequently Asked Questions</h2>
+                <?php foreach ($faqs as $faq): ?>
+                <div class="cr-faq-item">
+                    <div class="cr-faq-question"><?= htmlspecialchars($faq['question'] ?? '') ?></div>
+                    <div class="cr-faq-answer"><?= htmlspecialchars($faq['answer'] ?? '') ?></div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            <?php endif; ?>
+
+            <!-- About Us Section -->
+            <div class="cr-about-section">
+                <h2>About <?= htmlspecialchars($site->name) ?></h2>
+                <p><?= htmlspecialchars($site->name) ?> helps consumers make informed purchasing decisions. We analyze thousands of products, compare features and specifications, and provide unbiased recommendations to help you find the best products for your needs. Our team of experts spends hours researching and testing products so you don't have to.</p>
+            </div>
 
             <!-- Conclusion -->
             <?php if (!empty($listicle->conclusion)): ?>
