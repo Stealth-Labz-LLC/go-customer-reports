@@ -1,12 +1,61 @@
 <?php
 $pageTitle = ($review->meta_title ?? $review->name . ' Review') . ' | ' . $site->name;
 $metaDescription = $review->meta_description ?? ($review->short_description ?? '');
+$rating = floatval($review->rating_overall ?? 0);
+$isTopPick = $rating >= 4.5;
+$fullStars = floor($rating);
+$hasHalf = ($rating - $fullStars) >= 0.5;
 ob_start();
 ?>
 
 <?php if (!empty($breadcrumbs)): ?>
     <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>
 <?php endif; ?>
+
+<!-- Review Hero Section -->
+<section class="cr-review-hero">
+    <div class="container">
+        <div class="cr-review-hero-inner">
+            <div class="cr-review-hero-content">
+                <?php if ($isTopPick): ?>
+                <div class="cr-review-hero-badge">
+                    <i class="fas fa-award"></i> Editor's Choice
+                </div>
+                <?php endif; ?>
+
+                <h1><?= htmlspecialchars($review->name) ?> Review</h1>
+
+                <?php if ($review->brand): ?>
+                <div class="cr-review-hero-brand">by <?= htmlspecialchars($review->brand) ?></div>
+                <?php endif; ?>
+
+                <?php if ($review->rating_overall): ?>
+                <div class="cr-review-hero-rating">
+                    <span class="cr-review-hero-score"><?= number_format($rating, 1) ?></span>
+                    <div class="cr-review-hero-stars">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <i class="fas fa-star<?= $i <= $fullStars ? ' filled' : ($i == $fullStars + 1 && $hasHalf ? '-half-alt filled' : '') ?>"></i>
+                        <?php endfor; ?>
+                    </div>
+                    <span class="cr-review-hero-label">Overall Rating</span>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($review->affiliate_url)): ?>
+                <a href="<?= htmlspecialchars($review->affiliate_url) ?>" target="_blank" rel="nofollow sponsored" class="cr-review-hero-cta">
+                    <?= htmlspecialchars($review->cta_text ?? 'Check Best Price') ?> <i class="fas fa-external-link-alt"></i>
+                </a>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($review->featured_image)): ?>
+            <div class="cr-review-hero-image">
+                <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
 
 <!-- Review Layout: Sticky Sidebar Left + Content Right -->
 <div class="cr-review-page">
@@ -15,11 +64,6 @@ ob_start();
             <!-- LEFT COLUMN - Product Card (Sticky) -->
             <div class="col-lg-3 col-md-12">
                 <div class="cr-review-product-card">
-                    <?php
-                    $rating = floatval($review->rating_overall ?? 0);
-                    $isTopPick = $rating >= 4.5;
-                    ?>
-
                     <!-- Editor's Choice Badge -->
                     <?php if ($isTopPick): ?>
                     <div class="cr-product-badge">
@@ -39,7 +83,7 @@ ob_start();
                     </div>
 
                     <!-- Product Title -->
-                    <h1 class="cr-review-product-title"><?= htmlspecialchars($review->name) ?></h1>
+                    <h2 class="cr-review-product-title"><?= htmlspecialchars($review->name) ?></h2>
 
                     <!-- Brand -->
                     <?php if ($review->brand): ?>
@@ -52,10 +96,6 @@ ob_start();
                         <div class="cr-overall-score"><?= number_format($rating, 1) ?></div>
                         <div class="cr-overall-meta">
                             <div class="cr-review-stars">
-                                <?php
-                                $fullStars = floor($rating);
-                                $hasHalf = ($rating - $fullStars) >= 0.5;
-                                ?>
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
                                 <i class="fas fa-star<?= $i <= $fullStars ? ' filled' : ($i == $fullStars + 1 && $hasHalf ? '-half-alt filled' : '') ?>"></i>
                                 <?php endfor; ?>
@@ -124,10 +164,6 @@ ob_start();
                         <a href="<?= htmlspecialchars($review->affiliate_url) ?>" target="_blank" rel="nofollow sponsored" class="cr-cta-primary">
                             <?= htmlspecialchars($review->cta_text ?? 'Check Price') ?> <i class="fas fa-external-link-alt"></i>
                         </a>
-                        <?php else: ?>
-                        <a href="#review-content" class="cr-cta-primary">
-                            Learn More <i class="fas fa-chevron-down"></i>
-                        </a>
                         <?php endif; ?>
                         <a href="#review-content" class="cr-cta-secondary">
                             Read Full Review <i class="fas fa-chevron-down"></i>
@@ -174,11 +210,11 @@ ob_start();
 
             <!-- RIGHT COLUMN - Review Content (Scrolls) -->
             <div class="col-lg-9 col-md-12">
-                <div class="cr-review-content-wrap">
+                <div class="cr-review-content-wrap" id="review-content">
                     <!-- Author Meta -->
                     <div class="cr-review-author-meta">
                         <div class="cr-review-author-avatar">
-                            <img src="/images/avatar-default.png" alt="Reviewer" onerror="this.style.display='none'">
+                            <i class="fas fa-user-circle" style="font-size: 2.5rem; color: var(--cr-green);"></i>
                         </div>
                         <div class="cr-review-author-info">
                             <span class="cr-review-author-name">by <?= htmlspecialchars($site->name) ?> Team</span>
@@ -193,7 +229,7 @@ ob_start();
                     <div class="cr-review-pros-cons">
                         <?php if (!empty($review->pros)): ?>
                         <div class="cr-review-pros">
-                            <div class="cr-pros-title">Pros</div>
+                            <div class="cr-pros-title"><i class="fas fa-thumbs-up"></i> Pros</div>
                             <div class="cr-pros-content">
                                 <ul>
                                     <?php foreach ($review->pros as $pro): ?>
@@ -206,7 +242,7 @@ ob_start();
 
                         <?php if (!empty($review->cons)): ?>
                         <div class="cr-review-cons">
-                            <div class="cr-cons-title">Cons</div>
+                            <div class="cr-cons-title"><i class="fas fa-thumbs-down"></i> Cons</div>
                             <div class="cr-cons-content">
                                 <ul>
                                     <?php foreach ($review->cons as $con): ?>
@@ -251,87 +287,126 @@ ob_start();
                     </div>
                     <?php endif; ?>
 
-                    <!-- Rating Breakdown -->
-                    <?php if ($review->rating_overall): ?>
-                    <div class="cr-review-rating-breakdown">
-                        <div class="cr-rating-breakdown-logo">
-                            <div class="cr-rating-breakdown-logo-img">
+                    <!-- ========================================
+                         FINAL VERDICT BOX - Critical for Conversion
+                         ======================================== -->
+                    <div class="cr-final-verdict">
+                        <div class="cr-verdict-header">
+                            <h3>Final Verdict</h3>
+                        </div>
+                        <div class="cr-verdict-content">
+                            <div class="cr-verdict-score-wrap">
                                 <?php if (!empty($review->featured_image)): ?>
-                                <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+                                <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="cr-verdict-product-img">
+                                <?php endif; ?>
+                                <div class="cr-verdict-score">
+                                    <div class="cr-verdict-score-number"><?= number_format($rating, 1) ?></div>
+                                    <div class="cr-verdict-score-stars">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <i class="fas fa-star<?= $i <= $fullStars ? ' filled' : '' ?>"></i>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <?php if ($isTopPick): ?>
+                                    <div class="cr-verdict-badge">Editor's Choice</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="cr-verdict-summary">
+                                <h4><?= htmlspecialchars($review->name) ?></h4>
+                                <?php if ($review->short_description): ?>
+                                <p><?= htmlspecialchars($review->short_description) ?></p>
+                                <?php else: ?>
+                                <p>Based on our comprehensive analysis, <?= htmlspecialchars($review->name) ?> <?= $rating >= 4.0 ? 'is a solid choice' : 'has room for improvement' ?> in its category.</p>
+                                <?php endif; ?>
+
+                                <?php if (!empty($review->pros)): ?>
+                                <ul class="cr-verdict-highlights">
+                                    <?php foreach (array_slice($review->pros, 0, 3) as $pro): ?>
+                                    <li><i class="fas fa-check-circle"></i> <?= htmlspecialchars($pro) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="cr-rating-breakdown-content">
-                            <div class="cr-rating-overall">
-                                <label>Overall Rating</label>
-                                <div class="cr-rating-overall-stars">
-                                    <?php
-                                    $rating = floatval($review->rating_overall);
-                                    $fullStars = floor($rating);
-                                    ?>
-                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <i class="fas fa-star<?= $i <= $fullStars ? ' filled' : '' ?>"></i>
-                                    <?php endfor; ?>
-                                </div>
-                            </div>
-
-                            <div class="cr-rating-items">
-                                <?php if ($review->rating_ingredients): ?>
-                                <div class="cr-rating-item">
-                                    <label>Ingredients</label>
-                                    <div class="cr-rating-item-stars">
-                                        <?php $r = floor(floatval($review->rating_ingredients)); ?>
-                                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <i class="fas fa-star<?= $i <= $r ? ' filled' : '' ?>"></i>
-                                        <?php endfor; ?>
-                                    </div>
-                                </div>
-                                <?php endif; ?>
-
-                                <?php if ($review->rating_value): ?>
-                                <div class="cr-rating-item">
-                                    <label>Value</label>
-                                    <div class="cr-rating-item-stars">
-                                        <?php $r = floor(floatval($review->rating_value)); ?>
-                                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <i class="fas fa-star<?= $i <= $r ? ' filled' : '' ?>"></i>
-                                        <?php endfor; ?>
-                                    </div>
-                                </div>
-                                <?php endif; ?>
-
-                                <?php if ($review->rating_effectiveness): ?>
-                                <div class="cr-rating-item">
-                                    <label>Effectiveness</label>
-                                    <div class="cr-rating-item-stars">
-                                        <?php $r = floor(floatval($review->rating_effectiveness)); ?>
-                                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <i class="fas fa-star<?= $i <= $r ? ' filled' : '' ?>"></i>
-                                        <?php endfor; ?>
-                                    </div>
-                                </div>
-                                <?php endif; ?>
-
-                                <?php if ($review->rating_customer_experience): ?>
-                                <div class="cr-rating-item">
-                                    <label>Customer Experience</label>
-                                    <div class="cr-rating-item-stars">
-                                        <?php $r = floor(floatval($review->rating_customer_experience)); ?>
-                                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <i class="fas fa-star<?= $i <= $r ? ' filled' : '' ?>"></i>
-                                        <?php endfor; ?>
-                                    </div>
-                                </div>
-                                <?php endif; ?>
+                        <div class="cr-verdict-cta">
+                            <?php if (!empty($review->affiliate_url)): ?>
+                            <a href="<?= htmlspecialchars($review->affiliate_url) ?>" target="_blank" rel="nofollow sponsored" class="cr-verdict-btn-primary">
+                                <?= htmlspecialchars($review->cta_text ?? 'Check Best Price') ?> <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <?php endif; ?>
+                            <div class="cr-verdict-trust">
+                                <span><i class="fas fa-shield-alt"></i> Verified Review</span>
+                                <span><i class="fas fa-lock"></i> Secure Purchase</span>
                             </div>
                         </div>
                     </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Related Reviews Section -->
+<?php if (!empty($relatedReviews)): ?>
+<section class="cr-related-reviews">
+    <div class="container">
+        <div class="cr-related-header">
+            <h2>Related Reviews</h2>
+            <?php if ($primaryCategory): ?>
+            <a href="/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="cr-related-link">View All <?= htmlspecialchars($primaryCategory->name) ?> Reviews &rarr;</a>
+            <?php endif; ?>
+        </div>
+        <div class="row g-4">
+            <?php foreach ($relatedReviews as $relReview):
+                $relUrl = $primaryCategory
+                    ? '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($relReview->slug)
+                    : '/reviews/' . htmlspecialchars($relReview->slug);
+            ?>
+            <div class="col-md-6 col-lg-3">
+                <div class="cr-review-card h-100">
+                    <?php if (!empty($relReview->featured_image)): ?>
+                    <a href="<?= $relUrl ?>" class="cr-review-card-img">
+                        <img src="<?= htmlspecialchars($relReview->featured_image) ?>" alt="<?= htmlspecialchars($relReview->name) ?>">
+                    </a>
+                    <?php endif; ?>
+                    <div class="cr-review-card-body">
+                        <h3 class="cr-review-card-title">
+                            <a href="<?= $relUrl ?>"><?= htmlspecialchars($relReview->name) ?></a>
+                        </h3>
+                        <?php if ($relReview->rating_overall): ?>
+                        <div class="cr-review-card-rating">
+                            <span class="cr-rating-score"><?= number_format(floatval($relReview->rating_overall), 1) ?></span>
+                            <span class="cr-rating-stars">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <i class="fas fa-star<?= $i <= floor(floatval($relReview->rating_overall)) ? ' filled' : '' ?>"></i>
+                                <?php endfor; ?>
+                            </span>
+                        </div>
+                        <?php endif; ?>
+                        <a href="<?= $relUrl ?>" class="cr-btn-sm">Read Review</a>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- Mobile Sticky CTA Bar -->
+<?php if (!empty($review->affiliate_url)): ?>
+<div class="cr-mobile-cta-bar">
+    <div class="cr-mobile-cta-info">
+        <span class="cr-mobile-cta-name"><?= htmlspecialchars($review->name) ?></span>
+        <?php if ($review->rating_overall): ?>
+        <span class="cr-mobile-cta-rating"><?= number_format($rating, 1) ?> <i class="fas fa-star filled"></i></span>
+        <?php endif; ?>
+    </div>
+    <a href="<?= htmlspecialchars($review->affiliate_url) ?>" target="_blank" rel="nofollow sponsored" class="cr-mobile-cta-btn">
+        <?= htmlspecialchars($review->cta_text ?? 'Check Price') ?>
+    </a>
+</div>
+<?php endif; ?>
 
 <?php
 $__content = ob_get_clean();

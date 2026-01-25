@@ -199,7 +199,15 @@ class Router
         $reviewCategories = \App\Models\Review::getCategories($review->id);
         $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, 'Reviews', "/category/{$primaryCategory->slug}/reviews", $review->name);
 
-        $this->render('reviews/show', compact('site', 'review', 'reviewCategories', 'primaryCategory', 'breadcrumbs'));
+        // Get related reviews from same category (exclude current)
+        $relatedReviews = [];
+        if ($primaryCategory) {
+            $categoryReviews = \App\Models\Review::byCategory($site->id, $primaryCategory->id, 5);
+            $relatedReviews = array_filter($categoryReviews, fn($r) => $r->id !== $review->id);
+            $relatedReviews = array_slice($relatedReviews, 0, 4);
+        }
+
+        $this->render('reviews/show', compact('site', 'review', 'reviewCategories', 'primaryCategory', 'breadcrumbs', 'relatedReviews'));
     }
 
     private function listicleIndex(): void
