@@ -136,7 +136,7 @@ while ($offset < $totalArticles) {
 
     foreach ($articles as $article) {
         $stats['articles_scanned']++;
-
+        $linkCount = 0;
         $newContent = convertLinks($article->content, $domainPattern, $verbose, $linkCount);
 
         if ($newContent !== $article->content) {
@@ -181,7 +181,7 @@ while ($offset < $totalReviews) {
 
     foreach ($reviews as $review) {
         $stats['reviews_scanned']++;
-
+        $linkCount = 0;
         $newContent = convertLinks($review->content, $domainPattern, $verbose, $linkCount);
 
         if ($newContent !== $review->content) {
@@ -229,6 +229,7 @@ while ($offset < $totalListicles) {
 
         // Process intro
         if ($listicle->intro_content) {
+            $linkCount = 0;
             $newIntro = convertLinks($listicle->intro_content, $domainPattern, $verbose, $linkCount);
             if ($newIntro !== $listicle->intro_content) {
                 $totalLinks += $linkCount;
@@ -241,6 +242,7 @@ while ($offset < $totalListicles) {
 
         // Process conclusion
         if ($listicle->conclusion_content) {
+            $linkCount = 0;
             $newConclusion = convertLinks($listicle->conclusion_content, $domainPattern, $verbose, $linkCount);
             if ($newConclusion !== $listicle->conclusion_content) {
                 $totalLinks += $linkCount;
@@ -299,6 +301,7 @@ while ($offset < $totalItems) {
 
     foreach ($items as $item) {
         $itemsScanned++;
+        $linkCount = 0;
         $newDesc = convertLinks($item->description, $domainPattern, $verbose, $linkCount);
 
         if ($newDesc !== $item->description) {
