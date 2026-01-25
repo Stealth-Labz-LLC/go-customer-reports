@@ -301,7 +301,14 @@ class Router
         echo "Disallow: /api/\n";
         echo "Disallow: /cli/\n";
         echo "Disallow: /config/\n";
-        echo "Disallow: /app/\n";
+        echo "Disallow: /app/\n\n";
+        echo "# Disallow campaign/funnel directories\n";
+        echo "Disallow: /cr/\n";
+        echo "Disallow: /eb/\n";
+        echo "Disallow: /ee25/\n";
+        echo "Disallow: /qr/\n";
+        echo "Disallow: /sc/\n";
+        echo "Disallow: /ss/\n";
         exit;
     }
 
