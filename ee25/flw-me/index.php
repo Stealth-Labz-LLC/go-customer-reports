@@ -10,6 +10,7 @@ $ctaLink = 'https://sundayscaries.com/products/delta-9-gummies?utm_source=stlnwk
 <html lang="en">
 
 <head>
+    <meta name="robots" content="noindex, nofollow">
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>The Calm Institute & Resource Center | Free Information</title>

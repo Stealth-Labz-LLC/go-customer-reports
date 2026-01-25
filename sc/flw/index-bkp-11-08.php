@@ -10,6 +10,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
 <html lang="en">
 
 <head>
+    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Solar Cancellation Resource Center | Learn More</title>

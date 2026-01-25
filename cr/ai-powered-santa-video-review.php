@@ -10,6 +10,7 @@ $ctaMain = 'https://stltrck.com/stlbz/24b334af-9b60-4d30-a26e-4e450bde9016/0002?
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>I Tried One of Those AI Santa Videos — Here's What Happened</title>

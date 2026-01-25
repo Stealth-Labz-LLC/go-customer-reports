@@ -10,6 +10,7 @@ $ctaLink = 'https://buy.evergreenessentials.co.za/es-vl-1/int/checkout.php?coupo
 <html lang="en">
 
 <head>
+    <meta name="robots" content="noindex, nofollow">
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>The Weight Institute & Resource Center | Free Information</title>

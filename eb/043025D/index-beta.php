@@ -10,6 +10,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
 <html lang="en">
 
 <head>
+    <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
