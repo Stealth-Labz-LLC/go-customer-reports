@@ -3551,3 +3551,536 @@ a.cr-category-card:hover .cr-category-card-link i {
         align-items: flex-start;
     }
 }
+
+/* ============================================
+   CATEGORY PAGE - ConsumerReports Style
+   ============================================ */
+
+/* Category Hero */
+.cr-cat-hero {
+    background: linear-gradient(135deg, var(--cr-navy) 0%, #0d0d1a 100%);
+    padding: 3rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.cr-cat-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.cr-cat-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.cr-cat-hero-content {
+    flex: 1;
+}
+
+.cr-cat-hero h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cr-cat-hero-desc {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+}
+
+.cr-cat-hero-stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.cr-cat-stat {
+    text-align: center;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.cr-cat-stat-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--cr-green-light);
+    line-height: 1;
+}
+
+.cr-cat-stat-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.25rem;
+}
+
+.cr-cat-hero-image {
+    flex: 0 0 300px;
+    max-width: 300px;
+}
+
+.cr-cat-hero-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Content Type Tabs */
+.cr-content-tabs {
+    background: #fff;
+    border-bottom: 1px solid var(--cr-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.cr-content-tabs-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cr-content-tabs-list {
+    display: flex;
+    gap: 0;
+}
+
+.cr-content-tab {
+    display: block;
+    padding: 1rem 1.5rem;
+    color: var(--cr-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.cr-content-tab:hover {
+    color: var(--cr-green);
+    background: var(--cr-bg-light);
+}
+
+.cr-content-tab.active {
+    color: var(--cr-green);
+    border-bottom-color: var(--cr-green);
+}
+
+.cr-content-tab-count {
+    display: inline-block;
+    background: var(--cr-bg-light);
+    color: var(--cr-text-muted);
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    margin-left: 0.5rem;
+}
+
+.cr-content-tab.active .cr-content-tab-count {
+    background: var(--cr-green);
+    color: #fff;
+}
+
+/* Category Page Layout */
+.cr-cat-page {
+    background: var(--cr-bg-light);
+    padding: 2rem 0 3rem;
+}
+
+.cr-cat-layout {
+    display: flex;
+    gap: 2rem;
+}
+
+.cr-cat-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.cr-cat-sidebar {
+    flex: 0 0 300px;
+    max-width: 300px;
+}
+
+/* Featured Article (Large) */
+.cr-cat-featured {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    display: flex;
+}
+
+.cr-cat-featured-img {
+    flex: 0 0 45%;
+    max-width: 45%;
+}
+
+.cr-cat-featured-img img {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    object-fit: cover;
+}
+
+.cr-cat-featured-img-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background: linear-gradient(135deg, var(--cr-bg-light) 0%, #e0e0e0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cr-cat-featured-img-placeholder i {
+    font-size: 4rem;
+    color: var(--cr-border);
+}
+
+.cr-cat-featured-body {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.cr-cat-featured-badge {
+    display: inline-block;
+    background: var(--cr-green);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}
+
+.cr-cat-featured-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+}
+
+.cr-cat-featured-title a {
+    color: var(--cr-text);
+    text-decoration: none;
+}
+
+.cr-cat-featured-title a:hover {
+    color: var(--cr-green);
+}
+
+.cr-cat-featured-excerpt {
+    color: var(--cr-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.cr-cat-featured-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cr-border);
+}
+
+.cr-cat-featured-date {
+    font-size: 0.85rem;
+    color: var(--cr-text-muted);
+}
+
+.cr-cat-featured-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cr-green);
+    text-decoration: none;
+}
+
+.cr-cat-featured-link:hover {
+    color: var(--cr-green-hover);
+}
+
+/* Content Section */
+.cr-cat-section {
+    margin-bottom: 2.5rem;
+}
+
+.cr-cat-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--cr-green);
+}
+
+.cr-cat-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--cr-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cr-cat-section-title i {
+    color: var(--cr-green);
+}
+
+.cr-cat-section-link {
+    font-size: 0.9rem;
+    color: var(--cr-green);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.cr-cat-section-link:hover {
+    color: var(--cr-green-hover);
+}
+
+/* Sidebar Widgets */
+.cr-cat-widget {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.cr-cat-widget-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cr-text);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--cr-green);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cr-cat-widget-title i {
+    color: var(--cr-gold);
+}
+
+/* Review Mini Cards (Sidebar) */
+.cr-review-mini {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--cr-border);
+}
+
+.cr-review-mini:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cr-review-mini:first-child {
+    padding-top: 0;
+}
+
+.cr-review-mini-img {
+    flex: 0 0 70px;
+    height: 70px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--cr-bg-light);
+}
+
+.cr-review-mini-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cr-review-mini-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.cr-review-mini-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+}
+
+.cr-review-mini-title a {
+    color: var(--cr-text);
+    text-decoration: none;
+}
+
+.cr-review-mini-title a:hover {
+    color: var(--cr-green);
+}
+
+.cr-review-mini-rating {
+    font-size: 0.8rem;
+}
+
+.cr-review-mini-rating span {
+    color: var(--cr-green);
+    font-weight: 600;
+}
+
+/* Category List (Sidebar) */
+.cr-cat-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cr-cat-nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.cr-cat-nav-item:last-child {
+    margin-bottom: 0;
+}
+
+.cr-cat-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.75rem;
+    color: var(--cr-text);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.cr-cat-nav-link:hover {
+    background: var(--cr-bg-light);
+    color: var(--cr-green);
+}
+
+.cr-cat-nav-link.active {
+    background: var(--cr-green);
+    color: #fff;
+}
+
+.cr-cat-nav-count {
+    font-size: 0.75rem;
+    color: var(--cr-text-muted);
+    background: var(--cr-bg-light);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+}
+
+.cr-cat-nav-link.active .cr-cat-nav-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .cr-cat-hero-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cr-cat-hero-content {
+        order: 2;
+    }
+
+    .cr-cat-hero-image {
+        order: 1;
+        flex: 0 0 auto;
+        max-width: 250px;
+    }
+
+    .cr-cat-hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cr-cat-hero-stats {
+        justify-content: center;
+    }
+
+    .cr-cat-layout {
+        flex-direction: column;
+    }
+
+    .cr-cat-sidebar {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .cr-cat-featured {
+        flex-direction: column;
+    }
+
+    .cr-cat-featured-img {
+        flex: 0 0 auto;
+        max-width: 100%;
+    }
+
+    .cr-cat-featured-img img {
+        min-height: 200px;
+        max-height: 250px;
+    }
+}
+
+@media (max-width: 575px) {
+    .cr-cat-hero {
+        padding: 2rem 0;
+    }
+
+    .cr-cat-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .cr-cat-hero-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .cr-cat-stat {
+        flex: 0 0 45%;
+        padding: 0.75rem 1rem;
+    }
+
+    .cr-content-tabs-list {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cr-content-tab {
+        padding: 0.875rem 1rem;
+        white-space: nowrap;
+    }
+
+    .cr-cat-featured-body {
+        padding: 1.25rem;
+    }
+
+    .cr-cat-featured-title {
+        font-size: 1.25rem;
+    }
+}

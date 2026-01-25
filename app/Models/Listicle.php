@@ -37,4 +37,18 @@ class Listicle
         );
         return (int) ($result->total ?? 0);
     }
+
+    public static function byCategory(int $siteId, int $categoryId, int $limit = 12): array
+    {
+        $db = Database::getInstance();
+        return $db->fetchAll(
+            "SELECT l.*, c.slug as category_slug, c.name as category_name
+             FROM content_listicles l
+             LEFT JOIN content_categories c ON l.primary_category_id = c.id
+             JOIN content_listicle_category lc ON l.id = lc.listicle_id
+             WHERE l.site_id = ? AND lc.category_id = ? AND l.status = 'published'
+             ORDER BY l.published_at DESC LIMIT ?",
+            [$siteId, $categoryId, $limit]
+        );
+    }
 }

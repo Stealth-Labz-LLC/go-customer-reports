@@ -258,10 +258,20 @@ class Router
             return;
         }
 
-        $articles = \App\Models\Article::byCategory($site->id, $category->id);
-        $reviews = \App\Models\Review::byCategory($site->id, $category->id, 6);
+        // Get content for this category
+        $articles = \App\Models\Article::byCategory($site->id, $category->id, 20);
+        $reviews = \App\Models\Review::byCategory($site->id, $category->id, 12);
+        $listicles = \App\Models\Listicle::byCategory($site->id, $category->id, 6);
 
-        $this->render('categories/show', compact('site', 'category', 'articles', 'reviews'));
+        // Get counts
+        $articleCount = \App\Models\Article::countByCategory($site->id, $category->id);
+        $reviewCount = count($reviews);
+        $listicleCount = count($listicles);
+
+        // Get all categories for sidebar
+        $allCategories = \App\Models\Category::all($site->id);
+
+        $this->render('categories/show', compact('site', 'category', 'articles', 'reviews', 'listicles', 'articleCount', 'reviewCount', 'listicleCount', 'allCategories'));
     }
 
     private function pageShow(string $slug): void
