@@ -1,16 +1,15 @@
 <?php
 /**
  * Add Internal Links CLI
- * Scans articles and adds links to other articles when titles are mentioned
+ * Links keywords to articles in matching categories
  *
- * Usage: php cli/add-internal-links.php [--dry-run] [--batch=100] [--offset=0]
+ * Usage: php cli/add-internal-links.php [--dry-run] [--batch=500] [--offset=0]
  */
 
 require_once __DIR__ . '/../app/bootstrap.php';
 
 use App\Core\Database;
 
-// Parse args
 $dryRun = in_array('--dry-run', $argv);
 $batch = 500;
 $offset = 0;
@@ -23,48 +22,89 @@ foreach ($argv as $arg) {
 $db = Database::getInstance();
 $siteId = 1;
 
-echo "Internal Link Builder\n";
+// Category keywords => category_id
+$categoryKeywords = [
+    // Weight Loss (17)
+    'weight loss' => 17, 'lose weight' => 17, 'fat loss' => 17, 'burning calories' => 17,
+    'diet plan' => 17, 'slimming' => 17,
+
+    // Nutrition (20)
+    'nutrition' => 20, 'vitamins' => 20, 'nutrients' => 20, 'protein intake' => 20,
+    'healthy eating' => 20, 'dietary' => 20, 'macros' => 20,
+
+    // Training (21)
+    'workout' => 21, 'exercise' => 21, 'training' => 21, 'strength training' => 21,
+    'cardio' => 21, 'HIIT' => 21, 'resistance band' => 21, 'dumbbell' => 21,
+
+    // Health & Wellness (23)
+    'wellness' => 23, 'mental health' => 23, 'self-care' => 23, 'stress relief' => 23,
+    'meditation' => 23, 'mindfulness' => 23, 'sleep quality' => 23,
+
+    // Beauty (15)
+    'skincare' => 15, 'beauty routine' => 15, 'anti-aging' => 15, 'moisturizer' => 15,
+    'cosmetics' => 15, 'makeup' => 15,
+
+    // Food (16)
+    'recipes' => 16, 'cooking' => 16, 'meal prep' => 16, 'ingredients' => 16,
+    'delicious' => 16, 'kitchen' => 16,
+
+    // Culinary (13)
+    'culinary' => 13, 'gourmet' => 13, 'chef' => 13, 'cuisine' => 13,
+
+    // Sustainable Living (11)
+    'sustainable' => 11, 'eco-friendly' => 11, 'green living' => 11, 'zero waste' => 11,
+    'organic' => 11, 'environmental' => 11,
+
+    // Travel (19)
+    'travel' => 19, 'vacation' => 19, 'destination' => 19, 'trip' => 19,
+    'tourism' => 19, 'getaway' => 19,
+
+    // Senior Health (39)
+    'senior health' => 39, 'elderly' => 39, 'aging' => 39, 'retirement' => 39,
+    'over 50' => 39, 'golden years' => 39,
+
+    // Behavior (22)
+    'habits' => 22, 'behavior' => 22, 'motivation' => 22, 'discipline' => 22,
+    'mindset' => 22, 'goal setting' => 22,
+];
+
+echo "Internal Link Builder (Keyword Mode)\n";
 echo $dryRun ? "DRY RUN\n" : "LIVE RUN\n";
 echo "Batch: {$batch} | Offset: {$offset}\n";
 echo str_repeat('-', 50) . "\n";
 
-// Get total count
-$total = $db->fetchOne("SELECT COUNT(*) as cnt FROM content_articles WHERE site_id = ? AND status = 'published'", [$siteId])->cnt;
-echo "Total articles: {$total}\n\n";
+// Pre-fetch one random article per category
+echo "Loading target articles per category...\n";
+$categoryArticles = [];
+foreach (array_unique(array_values($categoryKeywords)) as $catId) {
+    $articles = $db->fetchAll("
+        SELECT a.slug, c.slug as cat_slug, a.title
+        FROM content_articles a
+        JOIN content_categories c ON a.primary_category_id = c.id
+        WHERE a.site_id = ? AND a.primary_category_id = ? AND a.status = 'published'
+        ORDER BY RAND() LIMIT 20
+    ", [$siteId, $catId]);
 
-// Build link map from ALL articles (we need this for matching)
-echo "Building link index... ";
-$allArticles = $db->fetchAll("
-    SELECT a.id, a.slug, a.title, c.slug as category_slug
-    FROM content_articles a
-    LEFT JOIN content_categories c ON a.primary_category_id = c.id
-    WHERE a.site_id = ? AND a.status = 'published' AND c.slug IS NOT NULL
-", [$siteId]);
-
-$linkMap = [];
-foreach ($allArticles as $article) {
-    $title = trim($article->title);
-    if (str_word_count($title) >= 3 && strlen($title) >= 15) {
-        $linkMap[$article->id] = [
-            'url' => "/category/{$article->category_slug}/{$article->slug}",
-            'title' => $title,
-            'pattern' => '/\b(' . preg_quote($title, '/') . ')\b(?![^<]*<\/a>)/i'
-        ];
+    if (!empty($articles)) {
+        $categoryArticles[$catId] = $articles;
+        echo "  Category {$catId}: " . count($articles) . " articles\n";
     }
 }
-echo count($linkMap) . " indexed\n\n";
+
+// Get total
+$total = $db->fetchOne("SELECT COUNT(*) as cnt FROM content_articles WHERE site_id = ? AND status = 'published'", [$siteId])->cnt;
+echo "\nTotal articles: {$total}\n";
 
 // Process batch
 $articles = $db->fetchAll("
-    SELECT a.id, a.title, a.content
+    SELECT a.id, a.title, a.content, a.primary_category_id
     FROM content_articles a
-    LEFT JOIN content_categories c ON a.primary_category_id = c.id
-    WHERE a.site_id = ? AND a.status = 'published' AND c.slug IS NOT NULL
+    WHERE a.site_id = ? AND a.status = 'published'
     ORDER BY a.id
     LIMIT ? OFFSET ?
 ", [$siteId, $batch, $offset]);
 
-echo "Processing articles {$offset} to " . ($offset + count($articles)) . "...\n\n";
+echo "Processing " . count($articles) . " articles...\n\n";
 
 $updated = 0;
 $linksAdded = 0;
@@ -73,18 +113,29 @@ foreach ($articles as $i => $article) {
     $content = $article->content;
     $originalContent = $content;
     $articleLinks = 0;
+    $usedCategories = [$article->primary_category_id]; // Don't link to own category
 
-    foreach ($linkMap as $targetId => $linkData) {
-        if ($targetId === $article->id) continue;
-        if (strpos($content, $linkData['url']) !== false) continue;
+    foreach ($categoryKeywords as $keyword => $catId) {
+        // Skip own category and already-used categories
+        if (in_array($catId, $usedCategories)) continue;
+        if (!isset($categoryArticles[$catId])) continue;
 
-        $newContent = preg_replace($linkData['pattern'], '<a href="' . $linkData['url'] . '">$1</a>', $content, 1, $count);
+        // Case-insensitive search, not inside existing links or tags
+        $pattern = '/(?<!["\'>\/])\\b(' . preg_quote($keyword, '/') . ')\\b(?![^<]*<\/a>)/i';
 
-        if ($count > 0) {
-            $content = $newContent;
+        if (preg_match($pattern, $content)) {
+            // Pick random article from this category
+            $target = $categoryArticles[$catId][array_rand($categoryArticles[$catId])];
+            $url = "/category/{$target->cat_slug}/{$target->slug}";
+
+            // Replace first occurrence only
+            $content = preg_replace($pattern, '<a href="' . $url . '">$1</a>', $content, 1);
             $articleLinks++;
             $linksAdded++;
-            if ($articleLinks >= 5) break;
+            $usedCategories[] = $catId;
+
+            // Max 3 cross-category links per article
+            if ($articleLinks >= 3) break;
         }
     }
 
@@ -96,18 +147,17 @@ foreach ($articles as $i => $article) {
         $updated++;
     }
 
-    // Progress every 100
     if (($i + 1) % 100 === 0) {
         echo "... processed " . ($offset + $i + 1) . "\n";
     }
 }
 
 echo "\n" . str_repeat('-', 50) . "\n";
-echo "Batch complete: {$updated} articles updated, {$linksAdded} links\n";
+echo "Updated: {$updated} articles | Links added: {$linksAdded}\n";
 
 $nextOffset = $offset + $batch;
 if ($nextOffset < $total) {
-    echo "\nNext batch: php cli/add-internal-links.php" . ($dryRun ? " --dry-run" : "") . " --offset={$nextOffset}\n";
+    echo "\nNext: php cli/add-internal-links.php" . ($dryRun ? " --dry-run" : "") . " --offset={$nextOffset}\n";
 } else {
-    echo "\nAll batches complete!\n";
+    echo "\nAll done!\n";
 }
