@@ -30,21 +30,25 @@ ob_start();
                     <span>Showing <?= count($listicles) ?> of <?= $total ?> guides</span>
                 </div>
                 <div class="row g-4">
-                    <?php foreach ($listicles as $listicle): ?>
+                    <?php foreach ($listicles as $listicle):
+                        $listicleUrl = !empty($listicle->category_slug)
+                            ? '/category/' . htmlspecialchars($listicle->category_slug) . '/top/' . htmlspecialchars($listicle->slug)
+                            : '/top/' . htmlspecialchars($listicle->slug);
+                    ?>
                     <div class="col-md-6">
                         <div class="cr-listicle-card h-100">
                             <?php if (!empty($listicle->featured_image)): ?>
-                            <a href="/top/<?= htmlspecialchars($listicle->slug) ?>" class="cr-listicle-card-img">
+                            <a href="<?= $listicleUrl ?>" class="cr-listicle-card-img">
                                 <img src="<?= htmlspecialchars($listicle->featured_image) ?>" alt="<?= htmlspecialchars($listicle->title) ?>">
                             </a>
                             <?php else: ?>
-                            <a href="/top/<?= htmlspecialchars($listicle->slug) ?>" class="cr-listicle-card-img cr-listicle-card-placeholder">
+                            <a href="<?= $listicleUrl ?>" class="cr-listicle-card-img cr-listicle-card-placeholder">
                                 <i class="fas fa-list-ol"></i>
                             </a>
                             <?php endif; ?>
                             <div class="cr-listicle-card-body">
                                 <h3 class="cr-listicle-card-title">
-                                    <a href="/top/<?= htmlspecialchars($listicle->slug) ?>"><?= htmlspecialchars($listicle->title) ?></a>
+                                    <a href="<?= $listicleUrl ?>"><?= htmlspecialchars($listicle->title) ?></a>
                                 </h3>
                                 <?php if (!empty($listicle->excerpt)): ?>
                                 <p class="cr-listicle-card-excerpt"><?= htmlspecialchars(mb_substr($listicle->excerpt, 0, 120)) ?>...</p>
@@ -53,7 +57,7 @@ ob_start();
                                     <?php if ($listicle->published_at): ?>
                                     <span class="cr-listicle-card-date"><i class="far fa-calendar-alt"></i> <?= date('M j, Y', strtotime($listicle->published_at)) ?></span>
                                     <?php endif; ?>
-                                    <a href="/top/<?= htmlspecialchars($listicle->slug) ?>" class="cr-listicle-card-link">View Guide &rarr;</a>
+                                    <a href="<?= $listicleUrl ?>" class="cr-listicle-card-link">View Guide &rarr;</a>
                                 </div>
                             </div>
                         </div>

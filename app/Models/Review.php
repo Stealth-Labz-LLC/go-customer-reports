@@ -19,7 +19,11 @@ class Review
     {
         $db = Database::getInstance();
         return $db->fetchAll(
-            "SELECT * FROM content_reviews WHERE site_id = ? AND status = 'published' ORDER BY published_at DESC LIMIT ? OFFSET ?",
+            "SELECT r.*, c.slug as category_slug, c.name as category_name
+             FROM content_reviews r
+             LEFT JOIN content_categories c ON r.primary_category_id = c.id
+             WHERE r.site_id = ? AND r.status = 'published'
+             ORDER BY r.published_at DESC LIMIT ? OFFSET ?",
             [$siteId, $limit, $offset]
         );
     }
@@ -28,7 +32,9 @@ class Review
     {
         $db = Database::getInstance();
         return $db->fetchAll(
-            "SELECT r.* FROM content_reviews r
+            "SELECT r.*, c.slug as category_slug, c.name as category_name
+             FROM content_reviews r
+             LEFT JOIN content_categories c ON r.primary_category_id = c.id
              JOIN content_review_category rc ON r.id = rc.review_id
              WHERE r.site_id = ? AND rc.category_id = ? AND r.status = 'published'
              ORDER BY r.published_at DESC LIMIT ?",

@@ -10,8 +10,6 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/reviews">Reviews</a></li>
                     <li class="nav-item"><a class="nav-link" href="/categories">Categories</a></li>
                     <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>

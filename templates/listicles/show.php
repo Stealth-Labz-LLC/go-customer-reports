@@ -4,6 +4,10 @@ $metaDescription = $listicle->meta_description ?? ($listicle->excerpt ?? '');
 ob_start();
 ?>
 
+<?php if (!empty($breadcrumbs)): ?>
+    <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>
+<?php endif; ?>
+
 <!-- Top Navigation Bar -->
 <div class="cr-navb">
     <div class="container">
@@ -22,8 +26,7 @@ ob_start();
                 <?php endforeach; ?>
             </div>
             <div class="cr-navb-menu">
-                <a href="/articles">Articles</a>
-                <a href="/reviews">Reviews</a>
+                <a href="/categories">Categories</a>
             </div>
         </div>
     </div>

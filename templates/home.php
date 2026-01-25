@@ -28,7 +28,7 @@ ob_start();
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="cr-section-title mb-0">Latest Reviews</h2>
-            <a href="/reviews" class="btn-cr btn btn-sm">View All</a>
+            <a href="/categories" class="btn-cr btn btn-sm">View All</a>
         </div>
         <div class="row g-4">
             <?php foreach (array_slice($latestReviews, 0, 4) as $review): ?>
@@ -92,7 +92,7 @@ ob_start();
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="cr-section-title mb-0">Latest Articles</h2>
-            <a href="/articles" class="btn-cr btn btn-sm">View All</a>
+            <a href="/categories" class="btn-cr btn btn-sm">View All</a>
         </div>
         <div class="row g-3">
             <?php foreach (array_slice($latestArticles, 0, 6) as $article): ?>

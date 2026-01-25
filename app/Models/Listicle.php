@@ -19,7 +19,11 @@ class Listicle
     {
         $db = Database::getInstance();
         return $db->fetchAll(
-            "SELECT * FROM content_listicles WHERE site_id = ? AND status = 'published' ORDER BY published_at DESC LIMIT ? OFFSET ?",
+            "SELECT l.*, c.slug as category_slug, c.name as category_name
+             FROM content_listicles l
+             LEFT JOIN content_categories c ON l.primary_category_id = c.id
+             WHERE l.site_id = ? AND l.status = 'published'
+             ORDER BY l.published_at DESC LIMIT ? OFFSET ?",
             [$siteId, $limit, $offset]
         );
     }

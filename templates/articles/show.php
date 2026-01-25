@@ -4,7 +4,11 @@ $metaDescription = $article->meta_description ?? ($article->excerpt ?? '');
 ob_start();
 ?>
 
-<article class="container">
+<?php if (!empty($breadcrumbs)): ?>
+    <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>
+<?php endif; ?>
+
+<article class="container" style="padding-top: 2rem;">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <?php if (!empty($article->featured_image)): ?>

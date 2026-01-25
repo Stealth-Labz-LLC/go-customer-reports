@@ -19,7 +19,11 @@ class Article
     {
         $db = Database::getInstance();
         return $db->fetchAll(
-            "SELECT * FROM content_articles WHERE site_id = ? AND status = 'published' ORDER BY published_at DESC LIMIT ? OFFSET ?",
+            "SELECT a.*, c.slug as category_slug, c.name as category_name
+             FROM content_articles a
+             LEFT JOIN content_categories c ON a.primary_category_id = c.id
+             WHERE a.site_id = ? AND a.status = 'published'
+             ORDER BY a.published_at DESC LIMIT ? OFFSET ?",
             [$siteId, $limit, $offset]
         );
     }
@@ -28,7 +32,9 @@ class Article
     {
         $db = Database::getInstance();
         return $db->fetchAll(
-            "SELECT a.* FROM content_articles a
+            "SELECT a.*, c.slug as category_slug, c.name as category_name
+             FROM content_articles a
+             LEFT JOIN content_categories c ON a.primary_category_id = c.id
              JOIN content_article_category ac ON a.id = ac.article_id
              WHERE a.site_id = ? AND ac.category_id = ? AND a.status = 'published'
              ORDER BY a.published_at DESC LIMIT ?",

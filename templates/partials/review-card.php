@@ -1,11 +1,16 @@
-<?php /** Expects: $review */ ?>
+<?php
+/** Expects: $review (with category_slug from joined query) */
+$reviewUrl = !empty($review->category_slug)
+    ? '/category/' . htmlspecialchars($review->category_slug) . '/reviews/' . htmlspecialchars($review->slug)
+    : '/reviews/' . htmlspecialchars($review->slug);
+?>
 <div class="cr-review-card h-100">
     <?php if (!empty($review->featured_image)): ?>
-    <a href="/reviews/<?= htmlspecialchars($review->slug) ?>" class="cr-review-card-img">
+    <a href="<?= $reviewUrl ?>" class="cr-review-card-img">
         <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
     </a>
     <?php else: ?>
-    <a href="/reviews/<?= htmlspecialchars($review->slug) ?>" class="cr-review-card-img cr-review-card-placeholder">
+    <a href="<?= $reviewUrl ?>" class="cr-review-card-img cr-review-card-placeholder">
         <i class="fas fa-box"></i>
     </a>
     <?php endif; ?>
@@ -14,7 +19,7 @@
         <div class="cr-review-card-brand"><?= htmlspecialchars($review->brand) ?></div>
         <?php endif; ?>
         <h3 class="cr-review-card-title">
-            <a href="/reviews/<?= htmlspecialchars($review->slug) ?>"><?= htmlspecialchars($review->name) ?></a>
+            <a href="<?= $reviewUrl ?>"><?= htmlspecialchars($review->name) ?></a>
         </h3>
         <?php if ($review->rating_overall): ?>
         <div class="cr-review-card-rating">
@@ -37,7 +42,7 @@
             <?php if (!empty($review->price)): ?>
             <span class="cr-review-card-price"><?= htmlspecialchars($review->price) ?></span>
             <?php endif; ?>
-            <a href="/reviews/<?= htmlspecialchars($review->slug) ?>" class="cr-btn-sm">Read Review</a>
+            <a href="<?= $reviewUrl ?>" class="cr-btn-sm">Read Review</a>
         </div>
     </div>
 </div>

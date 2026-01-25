@@ -6,6 +6,15 @@ use App\Core\Database;
 
 class Category
 {
+    public static function find(int $id): ?object
+    {
+        $db = Database::getInstance();
+        return $db->fetchOne(
+            "SELECT * FROM content_categories WHERE id = ?",
+            [$id]
+        );
+    }
+
     public static function findBySlug(int $siteId, string $slug): ?object
     {
         $db = Database::getInstance();

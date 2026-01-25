@@ -4,12 +4,9 @@ $metaDescription = $review->meta_description ?? ($review->short_description ?? '
 ob_start();
 ?>
 
-<!-- Breadcrumbs -->
-<div class="cr-breadcrumbs">
-    <div class="container">
-        <span><a href="/">Home</a> &raquo; <a href="/reviews">Reviews</a> &raquo; <span class="current"><?= htmlspecialchars($review->name) ?></span></span>
-    </div>
-</div>
+<?php if (!empty($breadcrumbs)): ?>
+    <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>
+<?php endif; ?>
 
 <!-- Review Layout: Sticky Sidebar Left + Content Right -->
 <div class="cr-review-page">

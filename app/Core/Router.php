@@ -24,43 +24,66 @@ class Router
         $path = rtrim($path, '/');
         if (empty($path)) $path = '/';
 
-        // Route matching
+        // Route matching - ORDER MATTERS (most specific first)
         switch (true) {
             case $path === '/':
                 $this->home();
                 break;
 
-            case $path === '/articles':
-                $this->articleIndex();
+            // === NEW CATEGORY-BASED URLS ===
+
+            // Category > Reviews > Slug: /category/{cat}/reviews/{slug}
+            case preg_match('#^/category/([a-zA-Z0-9\-_]+)/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->reviewShow(strtolower($m[2]), strtolower($m[1]));
                 break;
 
-            case preg_match('#^/articles/([a-zA-Z0-9\-_]+)$#i', $path, $m):
-                $this->articleShow(strtolower($m[1]));
+            // Category > Top (Listicles) > Slug: /category/{cat}/top/{slug}
+            case preg_match('#^/category/([a-zA-Z0-9\-_]+)/top/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->listicleShow(strtolower($m[2]), strtolower($m[1]));
                 break;
 
-            case $path === '/reviews':
-                $this->reviewIndex();
+            // Category > Article Slug: /category/{cat}/{slug}
+            case preg_match('#^/category/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->articleShow(strtolower($m[2]), strtolower($m[1]));
                 break;
 
-            case preg_match('#^/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
-                $this->reviewShow(strtolower($m[1]));
-                break;
-
-            case $path === '/top':
-                $this->listicleIndex();
-                break;
-
-            case preg_match('#^/top/([a-zA-Z0-9\-_]+)$#i', $path, $m):
-                $this->listicleShow(strtolower($m[1]));
-                break;
-
+            // Category Index: /categories
             case $path === '/categories':
                 $this->categoryIndex();
                 break;
 
+            // Category Page: /category/{slug}
             case preg_match('#^/category/([a-zA-Z0-9\-_]+)$#i', $path, $m):
                 $this->categoryShow(strtolower($m[1]));
                 break;
+
+            // === OLD URLS - 301 REDIRECT TO NEW STRUCTURE ===
+
+            case $path === '/articles':
+                $this->redirectToCategories();
+                break;
+
+            case preg_match('#^/articles/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->redirectArticle(strtolower($m[1]));
+                break;
+
+            case $path === '/reviews':
+                $this->redirectToCategories();
+                break;
+
+            case preg_match('#^/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->redirectReview(strtolower($m[1]));
+                break;
+
+            case $path === '/top':
+                $this->redirectToCategories();
+                break;
+
+            case preg_match('#^/top/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+                $this->redirectListicle(strtolower($m[1]));
+                break;
+
+            // === UTILITY ROUTES ===
 
             case $path === '/sitemap.xml':
                 $this->sitemap();
@@ -112,7 +135,7 @@ class Router
         $this->render('articles/index', compact('site', 'articles', 'categories', 'page', 'perPage', 'total'));
     }
 
-    private function articleShow(string $slug): void
+    private function articleShow(string $slug, ?string $categorySlug = null): void
     {
         $site = $this->site;
         $article = \App\Models\Article::findBySlug($site->id, $slug);
@@ -122,8 +145,19 @@ class Router
             return;
         }
 
+        // Get primary category
+        $primaryCategory = \App\Models\Category::find($article->primary_category_id);
+
+        // Verify URL matches primary category (redirect if wrong category)
+        if ($primaryCategory && $categorySlug !== $primaryCategory->slug) {
+            $this->redirect301("/category/{$primaryCategory->slug}/{$article->slug}");
+            return;
+        }
+
         $articleCategories = \App\Models\Article::getCategories($article->id);
-        $this->render('articles/show', compact('site', 'article', 'articleCategories'));
+        $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, $article->title);
+
+        $this->render('articles/show', compact('site', 'article', 'articleCategories', 'primaryCategory', 'breadcrumbs'));
     }
 
     private function reviewIndex(): void
@@ -140,7 +174,7 @@ class Router
         $this->render('reviews/index', compact('site', 'reviews', 'categories', 'page', 'perPage', 'total'));
     }
 
-    private function reviewShow(string $slug): void
+    private function reviewShow(string $slug, ?string $categorySlug = null): void
     {
         $site = $this->site;
         $review = \App\Models\Review::findBySlug($site->id, $slug);
@@ -150,11 +184,22 @@ class Router
             return;
         }
 
+        // Get primary category
+        $primaryCategory = \App\Models\Category::find($review->primary_category_id);
+
+        // Verify URL matches primary category (redirect if wrong category)
+        if ($primaryCategory && $categorySlug !== $primaryCategory->slug) {
+            $this->redirect301("/category/{$primaryCategory->slug}/reviews/{$review->slug}");
+            return;
+        }
+
         $review->pros = !empty($review->pros) ? json_decode($review->pros, true) : [];
         $review->cons = !empty($review->cons) ? json_decode($review->cons, true) : [];
 
         $reviewCategories = \App\Models\Review::getCategories($review->id);
-        $this->render('reviews/show', compact('site', 'review', 'reviewCategories'));
+        $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, 'Reviews', "/category/{$primaryCategory->slug}/reviews", $review->name);
+
+        $this->render('reviews/show', compact('site', 'review', 'reviewCategories', 'primaryCategory', 'breadcrumbs'));
     }
 
     private function listicleIndex(): void
@@ -170,7 +215,7 @@ class Router
         $this->render('listicles/index', compact('site', 'listicles', 'page', 'perPage', 'total'));
     }
 
-    private function listicleShow(string $slug): void
+    private function listicleShow(string $slug, ?string $categorySlug = null): void
     {
         $site = $this->site;
         $listicle = \App\Models\Listicle::findBySlug($site->id, $slug);
@@ -180,8 +225,19 @@ class Router
             return;
         }
 
+        // Get primary category
+        $primaryCategory = \App\Models\Category::find($listicle->primary_category_id);
+
+        // Verify URL matches primary category (redirect if wrong category)
+        if ($primaryCategory && $categorySlug !== $primaryCategory->slug) {
+            $this->redirect301("/category/{$primaryCategory->slug}/top/{$listicle->slug}");
+            return;
+        }
+
         $listicle->items = !empty($listicle->items) ? json_decode($listicle->items, true) : [];
-        $this->render('listicles/show', compact('site', 'listicle'));
+        $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, 'Top Lists', "/category/{$primaryCategory->slug}/top", $listicle->title);
+
+        $this->render('listicles/show', compact('site', 'listicle', 'primaryCategory', 'breadcrumbs'));
     }
 
     private function categoryIndex(): void
@@ -251,6 +307,89 @@ class Router
 
         echo $content;
     }
+
+    // =========================================================================
+    // REDIRECTS (301 for old URL structure)
+    // =========================================================================
+
+    private function redirect301(string $url): void
+    {
+        header("HTTP/1.1 301 Moved Permanently");
+        header("Location: {$url}");
+        exit;
+    }
+
+    private function redirectToCategories(): void
+    {
+        $this->redirect301('/categories');
+    }
+
+    private function redirectArticle(string $slug): void
+    {
+        $article = \App\Models\Article::findBySlug($this->site->id, $slug);
+        if ($article && $article->primary_category_id) {
+            $category = \App\Models\Category::find($article->primary_category_id);
+            if ($category) {
+                $this->redirect301("/category/{$category->slug}/{$article->slug}");
+                return;
+            }
+        }
+        $this->notFound();
+    }
+
+    private function redirectReview(string $slug): void
+    {
+        $review = \App\Models\Review::findBySlug($this->site->id, $slug);
+        if ($review && $review->primary_category_id) {
+            $category = \App\Models\Category::find($review->primary_category_id);
+            if ($category) {
+                $this->redirect301("/category/{$category->slug}/reviews/{$review->slug}");
+                return;
+            }
+        }
+        $this->notFound();
+    }
+
+    private function redirectListicle(string $slug): void
+    {
+        $listicle = \App\Models\Listicle::findBySlug($this->site->id, $slug);
+        if ($listicle && $listicle->primary_category_id) {
+            $category = \App\Models\Category::find($listicle->primary_category_id);
+            if ($category) {
+                $this->redirect301("/category/{$category->slug}/top/{$listicle->slug}");
+                return;
+            }
+        }
+        $this->notFound();
+    }
+
+    // =========================================================================
+    // BREADCRUMBS
+    // =========================================================================
+
+    private function buildBreadcrumbs(?object $category, string ...$items): array
+    {
+        $breadcrumbs = [
+            ['label' => 'Home', 'url' => '/'],
+        ];
+
+        if ($category) {
+            $breadcrumbs[] = ['label' => $category->name, 'url' => "/category/{$category->slug}"];
+        }
+
+        // Process remaining items (pairs of label, url or just final label)
+        for ($i = 0; $i < count($items); $i++) {
+            $label = $items[$i];
+            $url = isset($items[$i + 1]) && strpos($items[$i + 1], '/') === 0 ? $items[++$i] : null;
+            $breadcrumbs[] = ['label' => $label, 'url' => $url];
+        }
+
+        return $breadcrumbs;
+    }
+
+    // =========================================================================
+    // ERROR HANDLING
+    // =========================================================================
 
     private function notFound(): void
     {
