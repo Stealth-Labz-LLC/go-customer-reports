@@ -33,18 +33,7 @@ ob_start();
         <div class="row g-4">
             <?php foreach (array_slice($latestReviews, 0, 4) as $review): ?>
             <div class="col-md-6 col-lg-3">
-                <div class="cr-review-card">
-                    <h3><a href="/reviews/<?= htmlspecialchars($review->slug) ?>"><?= htmlspecialchars($review->name) ?></a></h3>
-                    <p><?= htmlspecialchars($review->short_description ?? '') ?></p>
-                    <?php if ($review->rating_overall): ?>
-                    <div class="cr-stars mb-2">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <i class="fas fa-star<?= $i <= round($review->rating_overall) ? '' : ' opacity-25' ?>"></i>
-                        <?php endfor; ?>
-                    </div>
-                    <?php endif; ?>
-                    <a href="/reviews/<?= htmlspecialchars($review->slug) ?>" class="btn-cr btn btn-sm">Read Review</a>
-                </div>
+                <?php require __DIR__ . '/partials/review-card.php'; ?>
             </div>
             <?php endforeach; ?>
         </div>
@@ -61,13 +50,14 @@ ob_start();
         <div class="row g-3 justify-content-center">
             <?php foreach ($categories as $cat): ?>
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="cr-listicle-card">
-                    <div style="width:100%;height:80px;background:var(--cr-bg-light);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
-                        <i class="fas fa-folder-open" style="font-size:1.5rem;color:var(--cr-green);"></i>
+                <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="text-decoration-none">
+                    <div class="cr-category-card">
+                        <div class="cr-category-card-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h4><?= htmlspecialchars($cat->name) ?></h4>
                     </div>
-                    <h4><?= htmlspecialchars($cat->name) ?></h4>
-                    <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-category-btn"><?= htmlspecialchars($cat->name) ?></a>
-                </div>
+                </a>
             </div>
             <?php endforeach; ?>
         </div>
@@ -87,16 +77,7 @@ ob_start();
         <div class="row g-3">
             <?php foreach (array_slice($group['articles'], 0, 6) as $article): ?>
             <div class="col-6 col-md-4 col-lg-2">
-                <a href="/articles/<?= htmlspecialchars($article->slug) ?>" class="text-decoration-none">
-                    <div class="cr-article-card">
-                        <div class="cr-article-card-img d-flex align-items-center justify-content-center">
-                            <i class="fas fa-file-alt" style="font-size:2rem;color:var(--cr-border);"></i>
-                        </div>
-                        <div class="cr-article-card-body">
-                            <h3><?= htmlspecialchars($article->title) ?></h3>
-                        </div>
-                    </div>
-                </a>
+                <?php require __DIR__ . '/partials/article-card.php'; ?>
             </div>
             <?php endforeach; ?>
         </div>
@@ -116,16 +97,7 @@ ob_start();
         <div class="row g-3">
             <?php foreach (array_slice($latestArticles, 0, 6) as $article): ?>
             <div class="col-6 col-md-4">
-                <a href="/articles/<?= htmlspecialchars($article->slug) ?>" class="text-decoration-none">
-                    <div class="cr-article-card">
-                        <div class="cr-article-card-img d-flex align-items-center justify-content-center">
-                            <i class="fas fa-file-alt" style="font-size:2rem;color:var(--cr-border);"></i>
-                        </div>
-                        <div class="cr-article-card-body">
-                            <h3><?= htmlspecialchars($article->title) ?></h3>
-                        </div>
-                    </div>
-                </a>
+                <?php require __DIR__ . '/partials/article-card.php'; ?>
             </div>
             <?php endforeach; ?>
         </div>

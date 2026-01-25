@@ -68,29 +68,77 @@ a:hover {
 
 /* Hero */
 .cr-hero {
-    padding: 3rem 0 2.5rem;
+    padding: 4rem 0 3rem;
     text-align: center;
-    background: var(--cr-bg);
+    background: linear-gradient(180deg, var(--cr-bg-light) 0%, var(--cr-bg) 100%);
+    border-bottom: 1px solid var(--cr-border);
 }
+
 .cr-hero-icon {
-    font-size: 3rem;
-    color: var(--cr-green);
-    margin-bottom: 1rem;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--cr-green) 0%, #2a9d5a 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 15px rgba(52, 178, 105, 0.3);
 }
+
+.cr-hero-icon i {
+    font-size: 2rem;
+    color: #fff;
+}
+
 .cr-hero h1 {
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--cr-text);
 }
+
 .cr-hero .lead {
     color: var(--cr-text-muted);
-    font-size: 1rem;
+    font-size: 1.1rem;
     max-width: 600px;
-    margin: 0 auto 1rem;
+    margin: 0 auto 1.25rem;
+    line-height: 1.6;
 }
+
 .cr-hero-stars {
-    color: var(--cr-green);
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.cr-hero-stars i {
+    color: var(--cr-gold);
     font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .cr-hero {
+        padding: 2.5rem 0 2rem;
+    }
+
+    .cr-hero-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+
+    .cr-hero-icon i {
+        font-size: 1.5rem;
+    }
+
+    .cr-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .cr-hero .lead {
+        font-size: 1rem;
+    }
 }
 
 /* Section headers */
@@ -108,59 +156,45 @@ a:hover {
     background: var(--cr-bg-light);
 }
 
-/* Review cards */
-.cr-review-card {
+/* Card styles are defined in INDEX PAGES section below */
+
+/* Category Cards (Homepage) */
+.cr-category-card {
     background: #fff;
     border: 1px solid var(--cr-border);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1.25rem 1rem;
+    text-align: center;
     height: 100%;
-    transition: box-shadow 0.2s;
-}
-.cr-review-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.cr-review-card h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-.cr-review-card p {
-    font-size: 0.875rem;
-    color: var(--cr-text-muted);
-    margin-bottom: 1rem;
+    transition: all 0.2s;
 }
 
-/* Article cards */
-.cr-article-card {
-    background: #fff;
-    border: 1px solid var(--cr-border);
-    border-radius: 8px;
-    overflow: hidden;
-    height: 100%;
-    transition: box-shadow 0.2s;
+.cr-category-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--cr-green);
 }
-.cr-article-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.cr-article-card-img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
+
+.cr-category-card-icon {
+    width: 60px;
+    height: 60px;
     background: var(--cr-bg-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
 }
-.cr-article-card-body {
-    padding: 1rem;
+
+.cr-category-card-icon i {
+    font-size: 1.5rem;
+    color: var(--cr-green);
 }
-.cr-article-card-body h3 {
+
+.cr-category-card h4 {
     font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 0.25rem;
-    line-height: 1.3;
-}
-.cr-article-card-body p {
-    font-size: 0.8rem;
-    color: var(--cr-text-muted);
+    color: var(--cr-text);
     margin: 0;
 }
 
