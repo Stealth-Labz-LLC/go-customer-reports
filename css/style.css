@@ -2766,3 +2766,110 @@ a:hover {
         font-size: 3rem;
     }
 }
+
+/* Listicle Cards */
+.cr-listicle-card {
+    background: #fff;
+    border: 1px solid var(--cr-border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.cr-listicle-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.cr-listicle-card-img {
+    display: block;
+    height: 180px;
+    overflow: hidden;
+    background: var(--cr-bg-light);
+}
+
+.cr-listicle-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.cr-listicle-card:hover .cr-listicle-card-img img {
+    transform: scale(1.05);
+}
+
+.cr-listicle-card-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--cr-bg-light) 0%, #e9ecef 100%);
+}
+
+.cr-listicle-card-placeholder i {
+    font-size: 3rem;
+    color: var(--cr-green);
+    opacity: 0.5;
+}
+
+.cr-listicle-card-body {
+    padding: 1.25rem;
+}
+
+.cr-listicle-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.cr-listicle-card-title a {
+    color: var(--cr-text);
+}
+
+.cr-listicle-card-title a:hover {
+    color: var(--cr-green);
+}
+
+.cr-listicle-card-excerpt {
+    font-size: 0.9rem;
+    color: var(--cr-text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.cr-listicle-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.cr-listicle-card-date {
+    color: var(--cr-text-muted);
+}
+
+.cr-listicle-card-date i {
+    margin-right: 5px;
+}
+
+.cr-listicle-card-link {
+    color: var(--cr-green);
+    font-weight: 500;
+}
+
+.cr-listicle-card-link:hover {
+    color: var(--cr-green-hover);
+}
+
+@media (max-width: 575px) {
+    .cr-listicle-card-img {
+        height: 140px;
+    }
+
+    .cr-listicle-card-meta {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+}

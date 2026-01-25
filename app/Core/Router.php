@@ -46,8 +46,11 @@ class Router
                 $this->reviewShow(strtolower($m[1]));
                 break;
 
-            case preg_match('#^/best-([a-zA-Z0-9\-_]+)$#i', $path, $m):
-            case preg_match('#^/top-([a-zA-Z0-9\-_]+)$#i', $path, $m):
+            case $path === '/top':
+                $this->listicleIndex();
+                break;
+
+            case preg_match('#^/top/([a-zA-Z0-9\-_]+)$#i', $path, $m):
                 $this->listicleShow(strtolower($m[1]));
                 break;
 
@@ -148,6 +151,19 @@ class Router
 
         $reviewCategories = \App\Models\Review::getCategories($review->id);
         $this->render('reviews/show', compact('site', 'review', 'reviewCategories'));
+    }
+
+    private function listicleIndex(): void
+    {
+        $site = $this->site;
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $perPage = 12;
+        $offset = ($page - 1) * $perPage;
+
+        $listicles = \App\Models\Listicle::latest($site->id, $perPage, $offset);
+        $total = \App\Models\Listicle::count($site->id);
+
+        $this->render('listicles/index', compact('site', 'listicles', 'page', 'perPage', 'total'));
     }
 
     private function listicleShow(string $slug): void
