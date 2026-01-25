@@ -95,10 +95,8 @@ $db = Database::getInstance();
 echo "Connected.\n\n";
 flush();
 
-// Build regex pattern for old domains
-$domainPattern = implode('|', array_map(function($d) {
-    return preg_quote($d, '/');
-}, $OLD_DOMAINS));
+// Domains array for link conversion
+$domains = $OLD_DOMAINS;
 
 $stats = [
     'articles_scanned' => 0,
@@ -137,7 +135,7 @@ while ($offset < $totalArticles) {
     foreach ($articles as $article) {
         $stats['articles_scanned']++;
         $linkCount = 0;
-        $newContent = convertLinks($article->content, $domainPattern, $verbose, $linkCount);
+        $newContent = convertLinks($article->content, $domains, $verbose, $linkCount);
 
         if ($newContent !== $article->content) {
             $stats['articles_updated']++;
@@ -182,7 +180,7 @@ while ($offset < $totalReviews) {
     foreach ($reviews as $review) {
         $stats['reviews_scanned']++;
         $linkCount = 0;
-        $newContent = convertLinks($review->content, $domainPattern, $verbose, $linkCount);
+        $newContent = convertLinks($review->content, $domains, $verbose, $linkCount);
 
         if ($newContent !== $review->content) {
             $stats['reviews_updated']++;
@@ -230,7 +228,7 @@ while ($offset < $totalListicles) {
         // Process intro
         if ($listicle->intro_content) {
             $linkCount = 0;
-            $newIntro = convertLinks($listicle->intro_content, $domainPattern, $verbose, $linkCount);
+            $newIntro = convertLinks($listicle->intro_content, $domains, $verbose, $linkCount);
             if ($newIntro !== $listicle->intro_content) {
                 $totalLinks += $linkCount;
                 if (!$dryRun) {
@@ -243,7 +241,7 @@ while ($offset < $totalListicles) {
         // Process conclusion
         if ($listicle->conclusion_content) {
             $linkCount = 0;
-            $newConclusion = convertLinks($listicle->conclusion_content, $domainPattern, $verbose, $linkCount);
+            $newConclusion = convertLinks($listicle->conclusion_content, $domains, $verbose, $linkCount);
             if ($newConclusion !== $listicle->conclusion_content) {
                 $totalLinks += $linkCount;
                 if (!$dryRun) {
@@ -302,7 +300,7 @@ while ($offset < $totalItems) {
     foreach ($items as $item) {
         $itemsScanned++;
         $linkCount = 0;
-        $newDesc = convertLinks($item->description, $domainPattern, $verbose, $linkCount);
+        $newDesc = convertLinks($item->description, $domains, $verbose, $linkCount);
 
         if ($newDesc !== $item->description) {
             $itemsUpdated++;
@@ -346,37 +344,39 @@ echo "\nDone!\n";
 /**
  * Convert external links to internal relative links
  */
-function convertLinks(string $content, string $domainPattern, bool $verbose, int &$linkCount): string
+function convertLinks(string $content, array $domains, bool $verbose, int &$linkCount): string
 {
     $linkCount = 0;
 
-    // Pattern to match href attributes with old domain URLs
-    // Captures: href="https://olddomain.com/some/path/"
-    $pattern = '/href=["\']https?:\/\/(' . $domainPattern . ')([^"\']*)["\'/i';
+    foreach ($domains as $domain) {
+        // Build pattern for this specific domain
+        $escapedDomain = preg_quote($domain, '/');
+        $pattern = '/href=["\']https?:\/\/' . $escapedDomain . '([^"\']*)["\'/i';
 
-    return preg_replace_callback($pattern, function($matches) use ($verbose, &$linkCount) {
-        $domain = $matches[1];
-        $path = $matches[2];
+        $content = preg_replace_callback($pattern, function($matches) use ($verbose, &$linkCount, $domain) {
+            $path = $matches[1] ?? '';
 
-        // Clean up the path
-        $path = rtrim($path, '/');
-        if (empty($path)) {
-            $path = '/';
-        } elseif ($path[0] !== '/') {
-            $path = '/' . $path;
-        }
+            // Clean up the path
+            $path = rtrim($path, '/');
+            if (empty($path)) {
+                $path = '/';
+            } elseif ($path[0] !== '/') {
+                $path = '/' . $path;
+            }
 
-        // Remove any query strings or fragments for cleaner URLs
-        // Keep them if they look intentional (like ?page=2)
-        $pathParts = parse_url($path);
-        $cleanPath = $pathParts['path'] ?? '/';
+            // Remove any query strings or fragments for cleaner URLs
+            $pathParts = parse_url($path);
+            $cleanPath = $pathParts['path'] ?? '/';
 
-        $linkCount++;
+            $linkCount++;
 
-        if ($verbose) {
-            echo "    Converting: {$matches[0]} -> href=\"{$cleanPath}\"\n";
-        }
+            if ($verbose) {
+                echo "    Converting: {$domain}{$matches[1]} -> {$cleanPath}\n";
+            }
 
-        return 'href="' . $cleanPath . '"';
-    }, $content);
+            return 'href="' . $cleanPath . '"';
+        }, $content) ?? $content;
+    }
+
+    return $content;
 }
