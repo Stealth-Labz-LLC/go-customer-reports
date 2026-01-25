@@ -122,16 +122,20 @@ ob_start();
                     <?php endif; ?>
 
                     <!-- Primary CTA -->
-                    <?php if ($review->affiliate_url): ?>
                     <div class="cr-product-cta-section">
+                        <?php if (!empty($review->affiliate_url)): ?>
                         <a href="<?= htmlspecialchars($review->affiliate_url) ?>" target="_blank" rel="nofollow sponsored" class="cr-cta-primary">
                             <?= htmlspecialchars($review->cta_text ?? 'Check Price') ?> <i class="fas fa-external-link-alt"></i>
                         </a>
+                        <?php else: ?>
+                        <a href="#review-content" class="cr-cta-primary">
+                            Learn More <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <?php endif; ?>
                         <a href="#review-content" class="cr-cta-secondary">
                             Read Full Review <i class="fas fa-chevron-down"></i>
                         </a>
                     </div>
-                    <?php endif; ?>
 
                     <!-- Trust Signals -->
                     <div class="cr-product-trust-signals">
