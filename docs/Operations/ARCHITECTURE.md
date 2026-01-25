@@ -28,34 +28,39 @@ The Router is a single class that handles all URL routing and acts as the contro
 
 ### Route Patterns
 
+Category-based URL structure with automatic redirects from legacy URLs:
+
 ```php
 switch (true) {
     case $path === '/':
         $this->home();
         break;
 
-    case $path === '/articles':
-        $this->articleIndex();
+    // === CATEGORY-BASED URLS ===
+
+    // /category/{cat}/reviews/{slug}
+    case preg_match('#^/category/([a-zA-Z0-9\-_]+)/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+        $this->reviewShow(strtolower($m[2]), strtolower($m[1]));
         break;
 
+    // /category/{cat}/top/{slug}
+    case preg_match('#^/category/([a-zA-Z0-9\-_]+)/top/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+        $this->listicleShow(strtolower($m[2]), strtolower($m[1]));
+        break;
+
+    // /category/{cat}/{slug} (articles)
+    case preg_match('#^/category/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+        $this->articleShow(strtolower($m[2]), strtolower($m[1]));
+        break;
+
+    // /category/{slug}
+    case preg_match('#^/category/([a-zA-Z0-9\-_]+)$#i', $path, $m):
+        $this->categoryShow(strtolower($m[1]));
+        break;
+
+    // === LEGACY REDIRECTS (301) ===
     case preg_match('#^/articles/([a-zA-Z0-9\-_]+)$#i', $path, $m):
-        $this->articleShow(strtolower($m[1]));
-        break;
-
-    case $path === '/reviews':
-        $this->reviewIndex();
-        break;
-
-    case preg_match('#^/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
-        $this->reviewShow(strtolower($m[1]));
-        break;
-
-    case $path === '/top':
-        $this->listicleIndex();
-        break;
-
-    case preg_match('#^/top/([a-zA-Z0-9\-_]+)$#i', $path, $m):
-        $this->listicleShow(strtolower($m[1]));
+        $this->redirectArticle(strtolower($m[1]));
         break;
 
     // ... etc

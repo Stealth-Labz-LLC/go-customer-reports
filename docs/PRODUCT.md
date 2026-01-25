@@ -8,7 +8,7 @@
 
 ### Content Types
 
-#### 1. Product Reviews (`/reviews/{slug}`)
+#### 1. Product Reviews (`/category/{cat}/reviews/{slug}`)
 
 Individual product review pages with:
 - Hero section with product name and rating
@@ -21,7 +21,7 @@ Individual product review pages with:
 
 **Monetization:** Affiliate links with customizable CTA buttons
 
-#### 2. Comparison Listicles (`/top/{slug}`)
+#### 2. Comparison Listicles (`/category/{cat}/top/{slug}`)
 
 "Top 10 Best X" comparison guides with:
 - Ranked product cards with ordinal badges (#1, #2, etc.)
@@ -34,7 +34,7 @@ Individual product review pages with:
 
 **Monetization:** Multiple affiliate links per listicle
 
-#### 3. Articles (`/articles/{slug}`)
+#### 3. Articles (`/category/{cat}/{slug}`)
 
 Informational blog content with:
 - Featured images
@@ -127,8 +127,8 @@ Every template designed with conversions in mind:
 ### Roadmap
 
 - [ ] Search functionality
-- [ ] Related content recommendations
-- [ ] Schema.org markup
+- [x] Related content recommendations (sidebar + internal links)
+- [x] Schema.org markup (Product, Review, ItemList, Article)
 - [ ] Admin dashboard
 - [ ] Content editor
 - [ ] Image optimization
@@ -141,10 +141,11 @@ Every template designed with conversions in mind:
 ### WordPress Migration Complete
 
 Successfully migrated from WordPress:
-- 355+ articles with featured images
-- 148 product reviews with ratings
-- Categories and relationships
-- SEO meta data (Yoast)
+- 12,995 articles with featured images
+- 148+ product reviews with ratings
+- 100+ comparison listicles
+- 14 categories
+- SEO meta data preserved
 
 ### Image Migration
 
@@ -158,6 +159,7 @@ Successfully migrated from WordPress:
 
 1. **Production platform** — Live at customer-reports.org
 2. **Complete codebase** — Clean, documented, zero dependencies
-3. **Content migrated** — 500+ pieces of content ready
-4. **SEO preserved** — Same URLs, meta data intact
-5. **Affiliate ready** — CTAs, ratings, conversion elements built in
+3. **Content migrated** — 13,000+ pieces of content ready
+4. **SEO complete** — Schema.org, Open Graph, Twitter Cards, sitemap
+5. **Internal linking** — 25,000+ cross-category links
+6. **Affiliate ready** — CTAs, ratings, conversion elements built in

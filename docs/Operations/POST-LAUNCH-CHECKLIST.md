@@ -10,14 +10,14 @@
 
 ### 1.1 Test Core Pages
 - [ ] Homepage loads - all sections render
-- [ ] `/reviews` - listing page works with pagination
-- [ ] `/reviews/{slug}` - single review page loads
-- [ ] `/top` - listicle listing page works
-- [ ] `/top/{slug}` - single listicle page loads
-- [ ] `/articles` - article listing page works
-- [ ] `/articles/{slug}` - single article page loads
-- [ ] `/category/{slug}` - category page shows content
+- [ ] `/categories` - category listing page works
+- [ ] `/category/{slug}` - category page shows articles, reviews, listicles
+- [ ] `/category/{cat}/{slug}` - single article page loads
+- [ ] `/category/{cat}/reviews/{slug}` - single review page loads
+- [ ] `/category/{cat}/top/{slug}` - single listicle page loads
+- [ ] `/privacy`, `/terms`, `/contact` - static pages load
 - [ ] `/sitemap.xml` - generates valid XML
+- [ ] `/robots.txt` - generates valid robots file
 
 ### 1.2 Test Content Display
 - [ ] Featured images display correctly
@@ -99,18 +99,30 @@
 - [ ] Each page has unique title
 - [ ] Each page has meta description
 - [ ] Titles follow pattern: "Page | Site Name"
+- [ ] Open Graph tags present (og:title, og:description, og:image)
+- [ ] Twitter Card tags present
 
 ### 4.2 URL Structure
-- [ ] URLs are lowercase
-- [ ] URLs use hyphens (not underscores)
-- [ ] No duplicate content issues
+- [ ] URLs are category-based (`/category/{cat}/...`)
+- [ ] URLs are lowercase with hyphens
+- [ ] Legacy URLs (`/articles/`, `/reviews/`, `/top/`) 301 redirect
 - [ ] Canonical URLs consistent
 
-### 4.3 Sitemap
-- [ ] `/sitemap.xml` accessible
-- [ ] All content types included
-- [ ] URLs are valid
-- [ ] No 404s in sitemap
+### 4.3 Sitemap & Robots
+- [ ] `/sitemap.xml` accessible and valid
+- [ ] All content types included with category URLs
+- [ ] `/robots.txt` accessible
+- [ ] Campaign directories blocked in robots.txt
+
+### 4.4 Schema.org Markup
+- [ ] Reviews have Product + Review schema
+- [ ] Listicles have ItemList schema
+- [ ] Articles have Article schema
+- [ ] Test with Google Rich Results Test
+
+### 4.5 Favicon
+- [ ] `/favicon.svg` loads
+- [ ] Favicon displays in browser tab
 
 ---
 

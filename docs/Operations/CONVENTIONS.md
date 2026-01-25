@@ -237,10 +237,15 @@ $reviews = Review::byCategory($siteId, $categoryId);
 
 ### Route Patterns
 
+All content uses category-based URLs:
+
 | Pattern | Example | Handler |
 |---------|---------|---------|
-| Index | `/reviews` | `reviewIndex()` |
-| Show | `/reviews/{slug}` | `reviewShow($slug)` |
+| Article | `/category/{cat}/{slug}` | `articleShow($slug, $cat)` |
+| Review | `/category/{cat}/reviews/{slug}` | `reviewShow($slug, $cat)` |
+| Listicle | `/category/{cat}/top/{slug}` | `listicleShow($slug, $cat)` |
+| Category | `/category/{slug}` | `categoryShow($slug)` |
+| Static Page | `/{slug}` | `pageShow($slug)` |
 
 ### Slug Rules
 
@@ -248,6 +253,10 @@ $reviews = Review::byCategory($siteId, $categoryId);
 - Hyphens for word separation
 - No underscores (converted on input)
 - No special characters
+
+### Legacy URL Handling
+
+Old URLs (`/articles/`, `/reviews/`, `/top/`) automatically 301 redirect to the new category-based structure.
 
 ---
 

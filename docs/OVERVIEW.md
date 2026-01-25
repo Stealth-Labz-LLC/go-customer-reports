@@ -18,38 +18,45 @@ Customer Reports is a production-ready affiliate review platform that publishes 
 
 | Metric | Value |
 |--------|-------|
-| Total Lines of Code | ~5,900 |
-| PHP | 3,034 lines |
-| CSS | 2,875 lines |
-| Code Files | 36 |
-| Total Commits | 24 |
+| Articles | 12,995 |
+| Reviews | 148+ |
+| Listicles | 100+ |
+| Categories | 14 |
 | Production Status | Live |
 | Dependencies | Zero (no npm/composer) |
 
 ### Content Types
 
-1. **Reviews** (`/reviews/{slug}`) — Product reviews with ratings, pros/cons, affiliate CTAs
-2. **Listicles** (`/top/{slug}`) — "Top 10 Best X" comparison guides
-3. **Articles** (`/articles/{slug}`) — Informational blog content
+1. **Reviews** (`/category/{cat}/reviews/{slug}`) — Product reviews with ratings, pros/cons, affiliate CTAs
+2. **Listicles** (`/category/{cat}/top/{slug}`) — "Top 10 Best X" comparison guides
+3. **Articles** (`/category/{cat}/{slug}`) — Informational blog content
 4. **Categories** (`/category/{slug}`) — Content grouped by topic
-5. **Pages** (`/{slug}`) — Static pages (about, contact, privacy)
+5. **Pages** (`/{slug}`) — Static pages (contact, privacy, terms)
 
 ---
 
 ## URL Structure
 
+Category-based URL hierarchy for SEO:
+
 | Route | Template | Description |
 |-------|----------|-------------|
 | `/` | `home.php` | Homepage with latest content |
-| `/articles` | `articles/index.php` | Article listing (paginated) |
-| `/articles/{slug}` | `articles/show.php` | Single article |
-| `/reviews` | `reviews/index.php` | Review listing (paginated) |
-| `/reviews/{slug}` | `reviews/show.php` | Single product review |
-| `/top` | `listicles/index.php` | Listicle listing |
-| `/top/{slug}` | `listicles/show.php` | Single listicle |
-| `/category/{slug}` | `categories/show.php` | Category page |
+| `/categories` | `categories/index.php` | All categories |
+| `/category/{slug}` | `categories/show.php` | Category page with articles, reviews, listicles |
+| `/category/{cat}/{slug}` | `articles/show.php` | Single article |
+| `/category/{cat}/reviews/{slug}` | `reviews/show.php` | Single product review |
+| `/category/{cat}/top/{slug}` | `listicles/show.php` | Single listicle |
 | `/{slug}` | `pages/default.php` | Static pages |
-| `/sitemap.xml` | `sitemap.php` | XML sitemap |
+| `/sitemap.xml` | Dynamic | XML sitemap |
+| `/robots.txt` | Dynamic | Robots file |
+
+### Legacy URL Redirects
+
+Old URLs automatically 301 redirect to new structure:
+- `/articles/{slug}` → `/category/{cat}/{slug}`
+- `/reviews/{slug}` → `/category/{cat}/reviews/{slug}`
+- `/top/{slug}` → `/category/{cat}/top/{slug}`
 
 ---
 
@@ -86,5 +93,8 @@ Customer Reports is a production-ready affiliate review platform that publishes 
 | Document | Description |
 |----------|-------------|
 | [Architecture](Operations/ARCHITECTURE.md) | MVC structure, routing, database |
+| [SEO](Operations/SEO.md) | Schema.org, meta tags, sitemap, robots.txt |
 | [Deployment](Operations/DEPLOYMENT.md) | GitHub Actions CI/CD |
 | [Development](Operations/DEVELOPMENT.md) | Local setup |
+| [Conventions](Operations/CONVENTIONS.md) | Code style and patterns |
+| [Post-Launch Checklist](Operations/POST-LAUNCH-CHECKLIST.md) | QA checklist |

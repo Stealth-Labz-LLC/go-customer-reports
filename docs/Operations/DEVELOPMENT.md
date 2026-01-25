@@ -186,15 +186,23 @@ tail -f storage/logs/app.log
 | URL | Expected |
 |-----|----------|
 | `/` | Homepage |
-| `/reviews` | Review listing |
-| `/reviews/some-product` | Single review |
-| `/top` | Listicle listing |
-| `/top/some-list` | Single listicle |
-| `/articles` | Article listing |
-| `/articles/some-article` | Single article |
-| `/category/some-category` | Category page |
+| `/categories` | Category listing |
+| `/category/nutrition` | Category page |
+| `/category/nutrition/protein-guide` | Single article |
+| `/category/supplements/reviews/whey-protein` | Single review |
+| `/category/fitness/top/best-treadmills` | Single listicle |
+| `/privacy` | Privacy policy (static page) |
 | `/sitemap.xml` | XML sitemap |
+| `/robots.txt` | Robots file |
 | `/nonexistent` | 404 page |
+
+### Legacy URL Redirects (should 301)
+
+| URL | Redirects To |
+|-----|--------------|
+| `/articles/protein-guide` | `/category/nutrition/protein-guide` |
+| `/reviews/whey-protein` | `/category/supplements/reviews/whey-protein` |
+| `/top/best-treadmills` | `/category/fitness/top/best-treadmills` |
 
 ---
 

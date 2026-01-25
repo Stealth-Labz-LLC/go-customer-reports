@@ -58,8 +58,11 @@ No Composer, no npm, no build step. The entire codebase is self-contained and ru
                             ▼
 ┌─────────────────────────────────────────────────────────┐
 │                     Router.php                           │
-│   /  →  home()  |  /reviews  →  reviewIndex()           │
-│   /reviews/{slug}  →  reviewShow()  |  etc.             │
+│   /  →  home()                                          │
+│   /category/{cat}/{slug}  →  articleShow()              │
+│   /category/{cat}/reviews/{slug}  →  reviewShow()       │
+│   /category/{cat}/top/{slug}  →  listicleShow()         │
+│   /sitemap.xml  →  sitemap()  |  /robots.txt  →  robots │
 └─────────────────────────────────────────────────────────┘
                             │
                             ▼
@@ -72,6 +75,7 @@ No Composer, no npm, no build step. The entire codebase is self-contained and ru
                             ▼
 ┌─────────────────────────────────────────────────────────┐
 │              Template + Data → HTML                      │
+│     + Schema.org JSON-LD  |  + Open Graph tags          │
 │     reviews/show.php  |  partials/review-card.php       │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -122,22 +126,29 @@ go-customer-reports/
 │       ├── Category.php
 │       ├── Page.php
 │       └── Site.php
+├── cli/                    # Command-line scripts
+│   ├── add-internal-links.php  # SEO internal linking
+│   ├── add-noindex.php         # Add noindex to campaigns
+│   └── import-wordpress.php    # WP migration (legacy)
 ├── config/                 # Configuration
 │   ├── environment.php     # Environment detection
 │   └── secrets.php         # DB credentials (gitignored)
 ├── templates/              # Views
-│   ├── layouts/app.php     # Master layout
+│   ├── layouts/app.php     # Master layout (with SEO meta)
 │   ├── partials/           # Reusable components
 │   ├── articles/           # Article templates
 │   ├── reviews/            # Review templates
 │   ├── listicles/          # Listicle templates
 │   ├── categories/         # Category templates
 │   └── pages/              # Static page templates
-├── css/style.css           # All styles
+├── public/                 # Public assets
+│   └── favicon.svg         # Site favicon
+├── css/style.css           # All styles (no inline CSS)
 ├── images/                 # Static images (logo)
 ├── uploads/                # User-uploaded content
 ├── api/                    # Lead submission endpoint
 ├── storage/                # Logs (gitignored)
+├── cr/, eb/, ee25/, qr/, sc/, ss/  # Campaign funnels (noindex)
 └── .github/workflows/      # CI/CD pipeline
 ```
 
