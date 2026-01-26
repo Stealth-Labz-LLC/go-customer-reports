@@ -15,7 +15,6 @@ $ctaMain = 'https://stltrck.com/stlbz/24b334af-9b60-4d30-a26e-4e450bde9016/0002?
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>I Tried One of Those AI Santa Videos — Here's What Happened</title>
 <meta name="description" content="A mom's honest review of Videos From Santa. I was skeptical about AI-generated Santa videos until my 6-year-old's reaction left me in tears.">
-<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://customerreports.org/reviews/videos-from-santa-review.html">
 
 <!-- Open Graph / Facebook -->
