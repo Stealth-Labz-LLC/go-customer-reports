@@ -180,6 +180,7 @@
 										<button type="submit" class="cta-button">CLAIM MY FREE CONSULTATION NOW</button>
 									</div>
 								</div>
+								<p class="consent-text">By pressing "Claim My Free Consultation Now" you agree to our <a href="#" onclick="openFooterModal('privacy'); return false;">privacy policy</a> and consent to have an agent from one of our partners contact you by email, phone call, or text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.</p>
 							</form>
 						</div>
 						<span class="applied"><i class="bi bi-lock-fill"></i> Your information is secure and confidential.</span>

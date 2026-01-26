@@ -10,7 +10,7 @@
 
 return [
     // Stealth Labz Portal Webhook
-    'webhook_url' => 'https://portal.stealthlabz.com/source/leadgen/REPLACE_WITH_YOUR_UUID',
+    'webhook_url' => 'https://portal.stealthlabz.com/source/pixel/REPLACE_WITH_YOUR_UUID',
 
     // Content Database (cPanel MySQL) - where articles live
     'db_host' => 'localhost',

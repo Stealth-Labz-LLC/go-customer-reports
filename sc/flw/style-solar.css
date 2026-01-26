@@ -363,6 +363,18 @@ font-weight: 500;
 font-size: 12px;
 margin-top: 13px;
 }
+.consent-text {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.4;
+  margin-top: 12px;
+  margin-bottom: 0;
+  text-align: center;
+}
+.consent-text a {
+  color: #0d6efd;
+  text-decoration: underline;
+}
 #cta-slide img {
   max-width: 325px;
   margin: -10px auto;
