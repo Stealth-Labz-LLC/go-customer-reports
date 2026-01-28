@@ -21,9 +21,8 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css" />
-
-  <link rel="stylesheet" href="modal-style.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="/css/shared/funnel-base.css" />
+  <link rel="stylesheet" href="/css/shared/modal.css" />
   <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

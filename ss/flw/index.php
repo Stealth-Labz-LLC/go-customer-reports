@@ -16,8 +16,9 @@ $ctaLink = 'https://sundayscaries.com/products/delta-9-gummies?utm_source=stlnwk
 	<title>The Calm Institute & Resource Center | Free Information</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="/css/shared/funnel-base.css" />
+	<link rel="stylesheet" href="/css/shared/modal.css" />
 	<link rel="stylesheet" href="style-scaries.css" />
-	<link rel="stylesheet" href="modal-style.css?v=<?= time() ?>">
 	<link rel="shortcut icon" href="images/favicon-calm.png" type="image/x-icon" />
 	<!-- Google Tag Manager -->
 	<script>

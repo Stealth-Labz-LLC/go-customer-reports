@@ -21,7 +21,8 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/modal-style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/css/shared/modal.css">
+    <link rel="stylesheet" href="/css/shared/utilities.css">
     <style>
         .dtpcnt {
             opacity: 0;
@@ -41,7 +42,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5NRH7CBL"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-    <div style="margin:0 auto;display:table;font-size:14px">ADVERTORIAL</div>
+    <div class="advertorial-banner">ADVERTORIAL</div>
     <header id="top" class="fn">
         <div>
             <nav id="menu"></nav>
@@ -53,7 +54,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                 <div class="col-md-8">
                     <h1>Top Doctors Left Speechless - New Miracle Ancient Herb Offers Pain Relief That’s 100% Guaranteed</h1>
                     <div id="image-header">
-                        <img src="images/abc-7.png" class="fr-dii fr-draggable" style="width:100%">
+                        <img src="images/abc-7.png" class="fr-dii fr-draggable w-100">
                     </div>
                     <p>
                         <br>
@@ -67,7 +68,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                             </script>
                         </em>
                     </p>
-                    <p><strong><span style="font-size:18px">(Boulder, CO) - For millions battling daily discomfort, this news couldn't be more exciting.</span></strong></p>
+                    <p><strong><span class="text-lg">(Boulder, CO) - For millions battling daily discomfort, this news couldn't be more exciting.</span></strong></p>
                     <p class="m-t-25">An ancient herb is taking the U.S. by storm and it's finally available to be purchased without a prescription. And the
                         best part is…
                     </p>
@@ -77,8 +78,8 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                         most agonizing joint discomfort along with general muscle aches,
                         soreness, sleep disorders, anxiety and many other ailments. And since it's 100% natural and organic, your body is able to process the herb and feel the effects within minutes. </p>
                     <p class="m-t-25">It also calms, relaxes, and eases tension all over the body.</p><br>
-                    <a href="<?php echo $ctaLink; ?>"><img src="images/capsules.png" alt="" class="mt-5 mb-5" style="display:block;margin:0 auto;max-width:70%;height:auto" border="0"></a><br>
-                    <p style="text-align:center;border:1px solid #cccccc;padding:10px;background-color:#dedede;margin-bottom:10px;"><strong>A CAPSULE A DAY SOOTHES PAIN AWAY:</strong> <a href="<?php echo $ctaLink; ?>"><b><u>Red Dragon</u></b></a> contains a 1800 milligram dose of Kratom that works day and night to keep you comfortable and healthy.</p>
+                    <a href="<?php echo $ctaLink; ?>"><img src="images/capsules.png" alt="" class="mt-5 mb-5 img-centered-70" border="0"></a><br>
+                    <p class="info-box"><strong>A CAPSULE A DAY SOOTHES PAIN AWAY:</strong> <a href="<?php echo $ctaLink; ?>"><b><u>Red Dragon</u></b></a> contains a 1800 milligram dose of Kratom that works day and night to keep you comfortable and healthy.</p>
                     <p class="m-t-25">Exciting new scientific research shows that Kratom contains special relief compounds called alkaloids which interact with your bodies opioid receptors. When taken orally, Red Dragon binds to these receptors, and soothing comfort begins to take form almost immediately.
                     </p>
                     <!--<p class="whythis"><strong>Why This Herb Is Better Than CBD For Pain</strong></p>
@@ -188,7 +189,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                         <br>
                         <br>
                         <center>
-                            <img src="images/tenor.gif" alt="description" loading="lazy" style="width:100%;" />
+                            <img src="images/tenor.gif" alt="description" loading="lazy" class="w-100" />
 
                             <!-- <video autoplay loop muted playsinline width="100%">
                                 <source src="images/tenor.gif"  type="video/mp4" loading="lazy">
@@ -243,13 +244,13 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                         <p class="m-t-25">This offer won’t last for long so make sure you follow the link below to <a href="<?php echo $ctaLink; ?>"><b><u>Claim up to TWO FREE Bottles + FREE shipping!</u></b></a></p>
                         <center>
                             &nbsp; &nbsp; &nbsp; &nbsp;
-                            <div style="background:#ffffc2;padding:8px">
+                            <div class="highlight-box">
                                 <br>
                                 <p><strong>Important:</strong> Due to Red Dragon's growing popularity and
                                     recent media exposure this offer will likely sell out. Please leave your
                                     details to be first in line if you miss out today.
                                 </p>
-                                <p><a href="<?php echo $ctaLink; ?>"><img class="product-image fr-dii fr-draggable final-oil" src="images/capsules.png" style="max-width:300px"></a></p>
+                                <p><a href="<?php echo $ctaLink; ?>"><img class="product-image fr-dii fr-draggable final-oil img-centered-300" src="images/capsules.png"></a></p>
                                 <br>
                                 <center>
                                     <a href="<?php echo $ctaLink; ?>"><img src="images/button33-qual.png" class="img-responsive button pulse" width="70%" border="0"></a>
@@ -276,7 +277,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                     </div>
                     <p class="m-t-25">To your health,</p>
                     <img src="images/img1.png" class="img-responsive sign-img">
-                    <p class="m-t-25" style="margin-top:0!important">Laura Jasper<br>
+                    <p class="m-t-25 mt-0-important">Laura Jasper<br>
                         <em>Associated Health Press</em>
                     </p>
                     <p class="m-t-25"><b>P.S.</b> The natural pain relief miracle you’re
@@ -335,11 +336,11 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/' . $queryParams;
                     </p>
                     <p><strong><i>Jacky K.</i></strong></p>
                     <div class="image_txt">&nbsp;</div>
-                    <div class="sticky_sidebar fixedclass" style="margin-top:35px;display:none">
+                    <div class="sticky_sidebar fixedclass sticky-hidden">
                         <h5 class="m-b-0 pink-border-bottom"><b>Special Offer</b></h5>
                         <div class="row revival-box2">
                             <div>
-                                <img src="images/checkmark.png" style="vertical-align:bottom;float:left">
+                                <img src="images/checkmark.png" class="icon-left">
                                 <h4 style="padding-top:5px">New Customers Only:</h4>
                             </div>
                             <div>

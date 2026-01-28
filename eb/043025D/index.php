@@ -21,7 +21,7 @@ $ctaLink = 'https://buy.evergreen-botanicals.com/rd-hs-1/dtc/' . $queryParams;
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/modal-style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/css/shared/modal.css">
     <style>
         .dtpcnt {
             opacity: 0;

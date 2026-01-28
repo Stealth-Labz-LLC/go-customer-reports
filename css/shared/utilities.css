@@ -1,0 +1,85 @@
+/**
+ * Shared Utility Classes
+ * Common patterns extracted from inline styles
+ */
+
+/* Advertorial Banner */
+.advertorial-banner {
+  margin: 0 auto;
+  display: table;
+  font-size: 14px;
+}
+
+/* Full Width */
+.w-100 {
+  width: 100%;
+}
+
+/* Text Sizes */
+.text-lg {
+  font-size: 18px;
+}
+
+/* Centered Block Images */
+.img-centered {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+}
+
+.img-centered-70 {
+  display: block;
+  margin: 0 auto;
+  max-width: 70%;
+  height: auto;
+}
+
+.img-centered-300 {
+  display: block;
+  margin: 0 auto;
+  max-width: 300px;
+  height: auto;
+}
+
+/* Info/Callout Boxes */
+.info-box {
+  text-align: center;
+  border: 1px solid #cccccc;
+  padding: 10px;
+  background-color: #dedede;
+  margin-bottom: 10px;
+}
+
+.highlight-box {
+  background: #ffffc2;
+  padding: 8px;
+}
+
+/* Spacing Overrides */
+.mt-0-important {
+  margin-top: 0;
+}
+
+/* Sticky Sidebar */
+.sticky-hidden {
+  margin-top: 35px;
+  display: none;
+}
+
+/* Icon Alignment */
+.icon-left {
+  vertical-align: bottom;
+  float: left;
+}
+
+/* QR Page Utilities */
+.highlight-color {
+  color: #118cf0;
+}
+
+.img-testimonial {
+  width: 150px;
+}
+
+/* GTM noscript (kept as inline for functional reasons) */
+/* .gtm-noscript { display: none; visibility: hidden; } */
