@@ -181,7 +181,7 @@ ob_start();
                             <div class="d-flex align-items-center mb-1 small">
                                 <span class="text-muted me-2" style="min-width:80px;font-size:.75rem;"><?= $label ?></span>
                                 <div class="progress flex-grow-1" style="height:5px;">
-                                    <div class="progress-bar bg-success" style="width:<?= ($val / 5) * 100 ?>%"></div>
+                                    <div class="progress-bar bg-amber" style="width:<?= ($val / 5) * 100 ?>%"></div>
                                 </div>
                                 <span class="text-muted ms-2" style="font-size:.75rem;"><?= number_format($val, 1) ?></span>
                             </div>

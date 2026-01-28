@@ -5,12 +5,18 @@
 
 /* ---------- CSS Variables (Brand) ---------- */
 :root {
-    --cr-green: #025b30;
-    --cr-green-light: #00ae4d;
-    --cr-green-hover: #014a27;
-    --cr-navy: #1a1a2e;
-    --cr-gold: #edb125;
+    --cr-green: #0a7c42;
+    --cr-green-light: #10b55c;
+    --cr-green-hover: #06632f;
+    --cr-navy: #1e2a3a;
+    --cr-amber: #e67e22;
+    --cr-amber-light: #f39c12;
     --cr-text: #2e3246;
+    --cr-gray-50: #f8f9fb;
+    --cr-gray-100: #eef0f4;
+    --cr-gray-200: #dee2e8;
+    --cr-shadow: rgba(30, 42, 58, .08);
+    --cr-shadow-hover: rgba(30, 42, 58, .16);
 }
 
 /* ---------- Base ---------- */
@@ -24,10 +30,26 @@ body {
     filter: brightness(0) invert(1);
 }
 
-/* ---------- Cards ---------- */
+.navbar {
+    box-shadow: 0 1px 3px var(--cr-shadow);
+}
+
+/* ---------- Cards (global) ---------- */
+.card {
+    border: 1px solid var(--cr-gray-100);
+    border-radius: .5rem;
+    box-shadow: 0 2px 8px var(--cr-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 20px var(--cr-shadow-hover);
+}
+
 .card-img-top {
     height: 200px;
     object-fit: cover;
+    border-radius: .5rem .5rem 0 0;
 }
 
 .card-title a:hover {
@@ -37,12 +59,11 @@ body {
 /* ---------- Category Cards ---------- */
 .category-card {
     position: relative;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 0;
 }
 
 .category-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,.15) !important;
 }
 
 .category-card .card-img-top {
@@ -64,12 +85,25 @@ body {
 
 /* ---------- Review Cards ---------- */
 .review-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-top: 3px solid var(--cr-amber);
 }
 
 .review-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,.15) !important;
+}
+
+/* ---------- Amber utility ---------- */
+.bg-amber {
+    background-color: var(--cr-amber) !important;
+}
+
+.text-amber {
+    color: var(--cr-amber) !important;
+}
+
+.badge-amber {
+    background-color: var(--cr-amber);
+    color: #fff;
 }
 
 /* ---------- Buttons (green brand override) ---------- */
@@ -81,6 +115,7 @@ body {
 .btn-success:hover {
     background-color: var(--cr-green-hover);
     border-color: var(--cr-green-hover);
+    box-shadow: 0 4px 12px var(--cr-shadow-hover);
 }
 
 .btn-outline-success {
@@ -123,6 +158,11 @@ footer {
     background-color: var(--cr-navy);
 }
 
+/* ---------- Section Backgrounds ---------- */
+.bg-gray-50 {
+    background-color: var(--cr-gray-50) !important;
+}
+
 /* ---------- Category Hero ---------- */
 .category-hero-section {
     position: relative;
@@ -141,7 +181,7 @@ footer {
 .category-hero-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, .65);
+    background: linear-gradient(135deg, rgba(30, 42, 58, .75), rgba(10, 124, 66, .55));
     z-index: 1;
 }
 
@@ -152,7 +192,7 @@ footer {
 
 .listicle-item-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,.12) !important;
+    box-shadow: 0 8px 25px var(--cr-shadow-hover) !important;
 }
 
 .listicle-rank {
@@ -199,7 +239,7 @@ footer {
     border-left: 4px solid var(--cr-green);
     padding: .75rem 1rem;
     margin: 1rem 0;
-    background: #f8f9fa;
+    background: var(--cr-gray-50);
     border-radius: .25rem;
 }
 

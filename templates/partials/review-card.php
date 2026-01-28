@@ -70,7 +70,7 @@ $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             <div class="d-flex align-items-center mb-1">
                 <span class="text-muted me-2" style="min-width:85px"><?= $label ?></span>
                 <div class="progress flex-grow-1" style="height:6px">
-                    <div class="progress-bar bg-success" style="width:<?= ($val / 5) * 100 ?>%"></div>
+                    <div class="progress-bar bg-amber" style="width:<?= ($val / 5) * 100 ?>%"></div>
                 </div>
                 <span class="text-muted ms-2"><?= number_format($val, 1) ?></span>
             </div>
