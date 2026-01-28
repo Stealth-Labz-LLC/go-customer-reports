@@ -1,13 +1,13 @@
 <?php
 /** Expects: $article (with category_slug from joined query) */
-$articleUrl = !empty($article->category_slug)
+$articleUrl = BASE_URL . (!empty($article->category_slug)
     ? '/category/' . htmlspecialchars($article->category_slug) . '/' . htmlspecialchars($article->slug)
-    : '/articles/' . htmlspecialchars($article->slug);
+    : '/articles/' . htmlspecialchars($article->slug));
 ?>
 <div class="cr-article-card h-100">
     <?php if (!empty($article->featured_image)): ?>
     <a href="<?= $articleUrl ?>" class="cr-article-card-img">
-        <img src="<?= htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>">
+        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>">
     </a>
     <?php else: ?>
     <a href="<?= $articleUrl ?>" class="cr-article-card-img cr-article-card-placeholder">

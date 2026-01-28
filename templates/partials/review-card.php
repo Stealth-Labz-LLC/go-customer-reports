@@ -1,13 +1,13 @@
 <?php
 /** Expects: $review (with category_slug from joined query) */
-$reviewUrl = !empty($review->category_slug)
+$reviewUrl = BASE_URL . (!empty($review->category_slug)
     ? '/category/' . htmlspecialchars($review->category_slug) . '/reviews/' . htmlspecialchars($review->slug)
-    : '/reviews/' . htmlspecialchars($review->slug);
+    : '/reviews/' . htmlspecialchars($review->slug));
 ?>
 <div class="cr-review-card h-100">
     <?php if (!empty($review->featured_image)): ?>
     <a href="<?= $reviewUrl ?>" class="cr-review-card-img">
-        <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
     </a>
     <?php else: ?>
     <a href="<?= $reviewUrl ?>" class="cr-review-card-img cr-review-card-placeholder">

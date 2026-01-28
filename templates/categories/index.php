@@ -7,7 +7,7 @@ ob_start();
 <!-- Breadcrumbs -->
 <div class="cr-breadcrumbs">
     <div class="container">
-        <span><a href="/">Home</a> &raquo; <span class="current">Categories</span></span>
+        <span><a href="<?= BASE_URL ?>/">Home</a> &raquo; <span class="current">Categories</span></span>
     </div>
 </div>
 
@@ -29,7 +29,7 @@ ob_start();
         <div class="row g-4">
             <?php foreach ($categories as $category): ?>
             <div class="col-md-6 col-lg-4">
-                <a href="/category/<?= htmlspecialchars($category->slug) ?>" class="cr-category-card">
+                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($category->slug) ?>" class="cr-category-card">
                     <div class="cr-category-card-inner">
                         <h3 class="cr-category-card-title"><?= htmlspecialchars($category->name) ?></h3>
                         <?php if (!empty($category->description)): ?>
@@ -60,7 +60,7 @@ ob_start();
             <i class="fas fa-folder-open"></i>
             <h3>No categories yet</h3>
             <p>Check back soon for organized content.</p>
-            <a href="/" class="cr-btn">Back to Home</a>
+            <a href="<?= BASE_URL ?>/" class="cr-btn">Back to Home</a>
         </div>
         <?php endif; ?>
     </div>

@@ -391,18 +391,19 @@ class Router
 
     private function buildBreadcrumbs(?object $category, string ...$items): array
     {
+        $baseUrl = defined('BASE_URL') ? BASE_URL : '';
         $breadcrumbs = [
-            ['label' => 'Home', 'url' => '/'],
+            ['label' => 'Home', 'url' => $baseUrl . '/'],
         ];
 
         if ($category) {
-            $breadcrumbs[] = ['label' => $category->name, 'url' => "/category/{$category->slug}"];
+            $breadcrumbs[] = ['label' => $category->name, 'url' => $baseUrl . "/category/{$category->slug}"];
         }
 
         // Process remaining items (pairs of label, url or just final label)
         for ($i = 0; $i < count($items); $i++) {
             $label = $items[$i];
-            $url = isset($items[$i + 1]) && strpos($items[$i + 1], '/') === 0 ? $items[++$i] : null;
+            $url = isset($items[$i + 1]) && strpos($items[$i + 1], '/') === 0 ? $baseUrl . $items[++$i] : null;
             $breadcrumbs[] = ['label' => $label, 'url' => $url];
         }
 

@@ -11,8 +11,8 @@ ob_start();
             <h1 class="cr-error-title">Page Not Found</h1>
             <p class="cr-error-message">The page you're looking for doesn't exist or has been moved.</p>
             <div class="cr-error-actions">
-                <a href="/" class="cr-btn cr-btn-primary">Back to Home</a>
-                <a href="/categories" class="cr-btn cr-btn-outline">Browse Categories</a>
+                <a href="<?= BASE_URL ?>/" class="cr-btn cr-btn-primary">Back to Home</a>
+                <a href="<?= BASE_URL ?>/categories" class="cr-btn cr-btn-outline">Browse Categories</a>
             </div>
         </div>
     </div>

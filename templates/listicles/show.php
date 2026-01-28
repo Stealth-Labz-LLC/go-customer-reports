@@ -69,16 +69,16 @@ ob_start();
                 <i class="fas fa-angle-down"></i>
             </span>
             <div class="cr-navb-list">
-                <a href="/" class="cr-navb-item">Best Overall</a>
+                <a href="<?= BASE_URL ?>/" class="cr-navb-item">Best Overall</a>
                 <?php
                 $categories = \App\Models\Category::topLevel($site->id);
                 foreach (array_slice($categories, 0, 4) as $cat):
                 ?>
-                <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-navb-item"><?= htmlspecialchars($cat->name) ?></a>
+                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-navb-item"><?= htmlspecialchars($cat->name) ?></a>
                 <?php endforeach; ?>
             </div>
             <div class="cr-navb-menu">
-                <a href="/categories">Categories</a>
+                <a href="<?= BASE_URL ?>/categories">Categories</a>
             </div>
         </div>
     </div>

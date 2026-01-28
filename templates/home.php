@@ -97,7 +97,7 @@ ob_start();
                     $catImage = getCategoryImage($cat->slug, $categoryImages);
                     $articleCount = \App\Models\Article::countByCategory($site->id, $cat->id);
                 ?>
-                <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-showcase-card">
+                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-showcase-card">
                     <img src="<?= $catImage ?>" alt="<?= htmlspecialchars($cat->name) ?>">
                     <div class="cr-showcase-overlay">
                         <span class="cr-showcase-badge">Explore</span>
@@ -118,12 +118,12 @@ ob_start();
     <div class="container">
         <div class="cr-tabs-wrapper">
             <div class="cr-tabs-list">
-                <a href="/" class="cr-tab-item active">Home</a>
+                <a href="<?= BASE_URL ?>/" class="cr-tab-item active">Home</a>
                 <?php foreach (array_slice($categories, 0, 8) as $cat): ?>
-                <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-tab-item"><?= htmlspecialchars($cat->name) ?></a>
+                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-tab-item"><?= htmlspecialchars($cat->name) ?></a>
                 <?php endforeach; ?>
             </div>
-            <a href="/categories" class="cr-tabs-see-all">See all <i class="fas fa-arrow-right"></i></a>
+            <a href="<?= BASE_URL ?>/categories" class="cr-tabs-see-all">See all <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 </nav>
@@ -139,14 +139,14 @@ ob_start();
                 <!-- Featured Article -->
                 <?php if (!empty($latestArticles) && count($latestArticles) > 0):
                     $featured = $latestArticles[0];
-                    $featuredUrl = !empty($featured->category_slug)
+                    $featuredUrl = BASE_URL . (!empty($featured->category_slug)
                         ? '/category/' . htmlspecialchars($featured->category_slug) . '/' . htmlspecialchars($featured->slug)
-                        : '/articles/' . htmlspecialchars($featured->slug);
+                        : '/articles/' . htmlspecialchars($featured->slug));
                 ?>
                 <div class="cr-featured-card">
                     <?php if (!empty($featured->featured_image)): ?>
                     <a href="<?= $featuredUrl ?>" class="cr-featured-card-img">
-                        <img src="<?= htmlspecialchars($featured->featured_image) ?>" alt="<?= htmlspecialchars($featured->title) ?>">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($featured->featured_image) ?>" alt="<?= htmlspecialchars($featured->title) ?>">
                     </a>
                     <?php endif; ?>
                     <div class="cr-featured-card-body">
@@ -176,7 +176,7 @@ ob_start();
                 <section class="cr-section cr-section-no-top-padding">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="cr-section-title mb-0"><?= htmlspecialchars($group['category']->name) ?></h2>
-                        <a href="/category/<?= htmlspecialchars($group['category']->slug) ?>" class="cr-view-all-link">View All &rarr;</a>
+                        <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($group['category']->slug) ?>" class="cr-view-all-link">View All &rarr;</a>
                     </div>
                     <div class="row g-3">
                         <?php foreach (array_slice($group['articles'], 0, 4) as $article): ?>
@@ -199,14 +199,14 @@ ob_start();
                 <div class="cr-sidebar-featured">
                     <h3 class="cr-sidebar-featured-title"><i class="fas fa-star cr-sidebar-icon-gold"></i>Latest Reviews</h3>
                     <?php foreach (array_slice($latestReviews, 0, 4) as $review):
-                        $reviewUrl = !empty($review->category_slug)
+                        $reviewUrl = BASE_URL . (!empty($review->category_slug)
                             ? '/category/' . htmlspecialchars($review->category_slug) . '/reviews/' . htmlspecialchars($review->slug)
-                            : '/reviews/' . htmlspecialchars($review->slug);
+                            : '/reviews/' . htmlspecialchars($review->slug));
                     ?>
                     <div class="cr-mini-card">
                         <?php if (!empty($review->featured_image)): ?>
                         <a href="<?= $reviewUrl ?>" class="cr-mini-card-img">
-                            <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
                         </a>
                         <?php endif; ?>
                         <div class="cr-mini-card-body">
@@ -221,7 +221,7 @@ ob_start();
                         </div>
                     </div>
                     <?php endforeach; ?>
-                    <a href="/categories" class="btn-cr btn btn-sm w-100 mt-3">View All Reviews</a>
+                    <a href="<?= BASE_URL ?>/categories" class="btn-cr btn btn-sm w-100 mt-3">View All Reviews</a>
                 </div>
                 <?php endif; ?>
 
@@ -230,14 +230,14 @@ ob_start();
                 <div class="cr-sidebar-featured">
                     <h3 class="cr-sidebar-featured-title"><i class="fas fa-trophy cr-sidebar-icon-gold"></i>Buying Guides</h3>
                     <?php foreach (array_slice($latestListicles, 0, 3) as $listicle):
-                        $listicleUrl = !empty($listicle->category_slug)
+                        $listicleUrl = BASE_URL . (!empty($listicle->category_slug)
                             ? '/category/' . htmlspecialchars($listicle->category_slug) . '/top/' . htmlspecialchars($listicle->slug)
-                            : '/top/' . htmlspecialchars($listicle->slug);
+                            : '/top/' . htmlspecialchars($listicle->slug));
                     ?>
                     <div class="cr-mini-card">
                         <?php if (!empty($listicle->featured_image)): ?>
                         <a href="<?= $listicleUrl ?>" class="cr-mini-card-img">
-                            <img src="<?= htmlspecialchars($listicle->featured_image) ?>" alt="<?= htmlspecialchars($listicle->title) ?>">
+                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($listicle->featured_image) ?>" alt="<?= htmlspecialchars($listicle->title) ?>">
                         </a>
                         <?php endif; ?>
                         <div class="cr-mini-card-body">

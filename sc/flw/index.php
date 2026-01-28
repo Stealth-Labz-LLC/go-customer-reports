@@ -160,6 +160,8 @@
 					<div class="row justify-content-center">
 						<div class="col-lg-10 col-xl-10">
 							<form id="leadForm">
+								<input type="hidden" name="campaign" value="sc">
+								<input type="hidden" name="consent" value="1">
 								<div class="row">
 									<div class="col-md-12 mb-2">
 										<input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" required>
@@ -178,10 +180,11 @@
 								</div>
 								<div class="row">
 									<div class="col-12 mb-1">
-										<button type="submit" class="cta-button">CLAIM MY FREE CONSULTATION NOW</button>
+										<button type="submit" class="cta-button" id="submitBtn">CLAIM MY FREE CONSULTATION NOW</button>
 									</div>
 								</div>
 								<p class="consent-text">By pressing "Claim My Free Consultation Now" you agree to our <a href="#" onclick="openFooterModal('privacy'); return false;">privacy policy</a> and consent to have an agent from one of our partners contact you by email, phone call, or text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.</p>
+								<div id="formMessage" class="mt-2" style="display:none;"></div>
 							</form>
 						</div>
 						<span class="applied"><i class="bi bi-lock-fill"></i> Your information is secure and confidential.</span>
@@ -272,6 +275,56 @@
 					behavior: 'smooth'
 				});
 			});
+		});
+
+		// Form submission to Stealth Labz webhook
+		document.getElementById('leadForm').addEventListener('submit', async function(e) {
+			e.preventDefault();
+
+			const form = this;
+			const submitBtn = document.getElementById('submitBtn');
+			const formMessage = document.getElementById('formMessage');
+			const originalText = submitBtn.textContent;
+
+			// Disable button and show loading
+			submitBtn.disabled = true;
+			submitBtn.textContent = 'Submitting...';
+			formMessage.style.display = 'none';
+
+			// Build form data
+			const formData = new FormData(form);
+			// Combine first/last name into 'name' field for the API
+			const firstName = formData.get('firstName') || '';
+			const lastName = formData.get('lastName') || '';
+			formData.set('name', (firstName + ' ' + lastName).trim());
+
+			try {
+				const response = await fetch('/api/submit.php', {
+					method: 'POST',
+					body: formData
+				});
+
+				const result = await response.json();
+
+				if (result.success) {
+					formMessage.className = 'mt-2 alert alert-success';
+					formMessage.textContent = 'Thank you! A specialist will contact you shortly.';
+					formMessage.style.display = 'block';
+					form.reset();
+				} else {
+					formMessage.className = 'mt-2 alert alert-danger';
+					formMessage.textContent = result.message || 'Something went wrong. Please try again.';
+					formMessage.style.display = 'block';
+					submitBtn.disabled = false;
+					submitBtn.textContent = originalText;
+				}
+			} catch (error) {
+				formMessage.className = 'mt-2 alert alert-danger';
+				formMessage.textContent = 'Network error. Please try again.';
+				formMessage.style.display = 'block';
+				submitBtn.disabled = false;
+				submitBtn.textContent = originalText;
+			}
 		});
 	</script>
 

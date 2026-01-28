@@ -114,7 +114,7 @@ ob_start();
 
             <?php if (!empty($review->featured_image)): ?>
             <div class="cr-review-hero-image">
-                <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
             </div>
             <?php endif; ?>
         </div>
@@ -138,7 +138,7 @@ ob_start();
                     <!-- Product Image -->
                     <div class="cr-review-product-image">
                         <?php if (!empty($review->featured_image)): ?>
-                        <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
                         <?php else: ?>
                         <div class="cr-review-image-placeholder">
                             <i class="fas fa-box"></i>
@@ -343,7 +343,7 @@ ob_start();
                             <div class="cr-details-label">Category:</div>
                             <div class="cr-details-value">
                                 <?php foreach ($reviewCategories as $cat): ?>
-                                <a href="/category/<?= htmlspecialchars($cat->slug) ?>"><?= htmlspecialchars($cat->name) ?></a>
+                                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>"><?= htmlspecialchars($cat->name) ?></a>
                                 <?php endforeach; ?>
                             </div>
                         </div>
@@ -361,7 +361,7 @@ ob_start();
                         <div class="cr-verdict-content">
                             <div class="cr-verdict-score-wrap">
                                 <?php if (!empty($review->featured_image)): ?>
-                                <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="cr-verdict-product-img">
+                                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="cr-verdict-product-img">
                                 <?php endif; ?>
                                 <div class="cr-verdict-score">
                                     <div class="cr-verdict-score-number"><?= number_format($rating, 1) ?></div>
@@ -417,20 +417,20 @@ ob_start();
         <div class="cr-related-header">
             <h2>Related Reviews</h2>
             <?php if ($primaryCategory): ?>
-            <a href="/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="cr-related-link">View All <?= htmlspecialchars($primaryCategory->name) ?> Reviews &rarr;</a>
+            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="cr-related-link">View All <?= htmlspecialchars($primaryCategory->name) ?> Reviews &rarr;</a>
             <?php endif; ?>
         </div>
         <div class="row g-4">
             <?php foreach ($relatedReviews as $relReview):
-                $relUrl = $primaryCategory
+                $relUrl = BASE_URL . ($primaryCategory
                     ? '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($relReview->slug)
-                    : '/reviews/' . htmlspecialchars($relReview->slug);
+                    : '/reviews/' . htmlspecialchars($relReview->slug));
             ?>
             <div class="col-md-6 col-lg-3">
                 <div class="cr-review-card h-100">
                     <?php if (!empty($relReview->featured_image)): ?>
                     <a href="<?= $relUrl ?>" class="cr-review-card-img">
-                        <img src="<?= htmlspecialchars($relReview->featured_image) ?>" alt="<?= htmlspecialchars($relReview->name) ?>">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relReview->featured_image) ?>" alt="<?= htmlspecialchars($relReview->name) ?>">
                     </a>
                     <?php endif; ?>
                     <div class="cr-review-card-body">

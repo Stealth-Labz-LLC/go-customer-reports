@@ -13,10 +13,10 @@ $topItems = array_slice($listicle->items ?? [], 0, 3);
     <div class="widget-title"><strong>Browse</strong></div>
     <hr class="widget-break">
     <div class="widget-content">
-        <a href="/" class="widget-link">Home</a>
-        <a href="/categories" class="widget-link">All Categories</a>
+        <a href="<?= BASE_URL ?>/" class="widget-link">Home</a>
+        <a href="<?= BASE_URL ?>/categories" class="widget-link">All Categories</a>
         <?php if (!empty($primaryCategory)): ?>
-        <a href="/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="widget-link"><?= htmlspecialchars($primaryCategory->name) ?></a>
+        <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="widget-link"><?= htmlspecialchars($primaryCategory->name) ?></a>
         <?php endif; ?>
     </div>
 </div>
@@ -31,7 +31,7 @@ if (!empty($categories)):
     <hr class="widget-break">
     <div class="widget-content">
         <?php foreach (array_slice($categories, 0, 5) as $cat): ?>
-        <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="widget-link"><?= htmlspecialchars($cat->name) ?></a>
+        <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="widget-link"><?= htmlspecialchars($cat->name) ?></a>
         <?php endforeach; ?>
     </div>
 </div>
@@ -75,9 +75,9 @@ if (!empty($categories)):
         <?php if (!empty($item['affiliate_url'])): ?>
         <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" class="widget-review-link" target="_blank" rel="nofollow sponsored">
             <?php if (!empty($item['brand_logo'])): ?>
-            <img src="<?= htmlspecialchars($item['brand_logo']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="widget-logo">
+            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($item['brand_logo']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="widget-logo">
             <?php elseif (!empty($item['image'])): ?>
-            <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="widget-logo">
+            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="widget-logo">
             <?php endif; ?>
             <span><?= htmlspecialchars($item['name'] ?? '') ?> Review</span>
         </a>

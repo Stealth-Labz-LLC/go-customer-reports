@@ -21,5 +21,14 @@ if (!$site) {
 }
 
 // Dispatch the request
+// Strip subdirectory prefix for local development (e.g., /go-customer-reports/)
+$requestUri = $_SERVER['REQUEST_URI'];
+if (IS_LOCAL) {
+    $basePath = dirname($_SERVER['SCRIPT_NAME']);
+    if ($basePath !== '/' && strpos($requestUri, $basePath) === 0) {
+        $requestUri = substr($requestUri, strlen($basePath)) ?: '/';
+    }
+}
+
 $router = new Router($site);
-$router->dispatch($_SERVER['REQUEST_URI']);
+$router->dispatch($requestUri);

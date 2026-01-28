@@ -8,7 +8,13 @@ $pageTitle = $pageTitle ?? $site->name;
 $metaDescription = $metaDescription ?? ($site->tagline ?? '');
 $ogImage = $ogImage ?? ($featuredImage ?? null);
 $ogType = $ogType ?? 'website';
-$canonicalUrl = 'https://' . $site->domain . strtok($_SERVER['REQUEST_URI'], '?');
+
+// Build canonical URL - strip local subdirectory prefix
+$requestPath = strtok($_SERVER['REQUEST_URI'], '?');
+if (IS_LOCAL && defined('BASE_URL') && BASE_URL !== '') {
+    $requestPath = preg_replace('#^' . preg_quote(BASE_URL, '#') . '#', '', $requestPath);
+}
+$canonicalUrl = 'https://' . $site->domain . $requestPath;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,17 +44,17 @@ $canonicalUrl = 'https://' . $site->domain . strtok($_SERVER['REQUEST_URI'], '?'
     <?php endif; ?>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_URL ?>/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= BASE_URL ?>/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= BASE_URL ?>/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_URL ?>/apple-touch-icon.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css">
 
     <?php if ($site->gtm_container_id): ?>
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

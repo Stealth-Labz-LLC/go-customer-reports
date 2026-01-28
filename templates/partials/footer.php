@@ -13,11 +13,11 @@
             <p class="cr-footer-tagline"><?= htmlspecialchars($site->tagline ?? 'Honest Reviews You Can Trust') ?></p>
 
             <nav class="cr-footer-legal">
-                <a href="/contact">Contact</a>
+                <a href="<?= BASE_URL ?>/contact">Contact</a>
                 <span>|</span>
-                <a href="/privacy">Privacy Policy</a>
+                <a href="<?= BASE_URL ?>/privacy">Privacy Policy</a>
                 <span>|</span>
-                <a href="/terms">Terms and Conditions</a>
+                <a href="<?= BASE_URL ?>/terms">Terms and Conditions</a>
             </nav>
 
             <div class="cr-footer-copyright">

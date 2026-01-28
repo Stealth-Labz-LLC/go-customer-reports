@@ -62,7 +62,7 @@ ob_start();
             <?php if (!empty($articleCategories)): ?>
             <div class="cr-article-categories">
                 <?php foreach ($articleCategories as $cat): ?>
-                <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-article-cat-badge"><?= htmlspecialchars($cat->name) ?></a>
+                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-article-cat-badge"><?= htmlspecialchars($cat->name) ?></a>
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
@@ -100,7 +100,7 @@ ob_start();
         <div class="col-lg-8">
             <?php if (!empty($article->featured_image)): ?>
             <div class="cr-article-featured-image">
-                <img src="<?= htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>">
+                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>">
             </div>
             <?php endif; ?>
 
@@ -129,7 +129,7 @@ ob_start();
                 <div class="cr-article-tags">
                     <span>Categories:</span>
                     <?php foreach ($articleCategories as $cat): ?>
-                    <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-article-tag"><?= htmlspecialchars($cat->name) ?></a>
+                    <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-article-tag"><?= htmlspecialchars($cat->name) ?></a>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
@@ -141,11 +141,11 @@ ob_start();
                 <h3><i class="fas fa-star"></i> Related Product Reviews</h3>
                 <div class="cr-related-reviews-grid">
                     <?php foreach ($relatedReviews as $review):
-                        $reviewUrl = '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
+                        $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
                     ?>
                     <a href="<?= $reviewUrl ?>" class="cr-related-review-card">
                         <?php if (!empty($review->featured_image)): ?>
-                        <img src="<?= htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
                         <?php else: ?>
                         <div class="cr-related-review-placeholder"><i class="fas fa-box"></i></div>
                         <?php endif; ?>
@@ -167,13 +167,13 @@ ob_start();
                 <h2>Keep Reading</h2>
                 <div class="row g-4">
                     <?php foreach ($relatedArticles as $relArticle):
-                        $relArticleUrl = '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
+                        $relArticleUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
                     ?>
                     <div class="col-md-6">
                         <div class="cr-related-article-card">
                             <?php if (!empty($relArticle->featured_image)): ?>
                             <a href="<?= $relArticleUrl ?>" class="cr-related-article-img">
-                                <img src="<?= htmlspecialchars($relArticle->featured_image) ?>" alt="<?= htmlspecialchars($relArticle->title) ?>">
+                                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="<?= htmlspecialchars($relArticle->title) ?>">
                             </a>
                             <?php endif; ?>
                             <div class="cr-related-article-body">
@@ -205,11 +205,11 @@ ob_start();
                     </h3>
                     <div class="cr-article-widget-list">
                         <?php foreach (array_slice($relatedArticles, 0, 5) as $relArticle):
-                            $relArticleUrl = '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
+                            $relArticleUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
                         ?>
                         <a href="<?= $relArticleUrl ?>" class="cr-article-widget-item">
                             <?php if (!empty($relArticle->featured_image)): ?>
-                            <img src="<?= htmlspecialchars($relArticle->featured_image) ?>" alt="">
+                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="">
                             <?php endif; ?>
                             <span><?= htmlspecialchars($relArticle->title) ?></span>
                         </a>
@@ -229,7 +229,7 @@ ob_start();
                             $isActive = $primaryCategory && $cat->id === $primaryCategory->id;
                         ?>
                         <li>
-                            <a href="/category/<?= htmlspecialchars($cat->slug) ?>" class="<?= $isActive ? 'active' : '' ?>">
+                            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="<?= $isActive ? 'active' : '' ?>">
                                 <?= htmlspecialchars($cat->name) ?>
                             </a>
                         </li>
@@ -246,7 +246,7 @@ ob_start();
                     </h3>
                     <div class="cr-article-widget-reviews">
                         <?php foreach ($relatedReviews as $review):
-                            $reviewUrl = '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
+                            $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
                         ?>
                         <a href="<?= $reviewUrl ?>" class="cr-widget-review-item">
                             <div class="cr-widget-review-info">
