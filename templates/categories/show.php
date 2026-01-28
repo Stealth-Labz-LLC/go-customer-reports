@@ -1,309 +1,285 @@
 <?php
 $pageTitle = ($category->meta_title ?? $category->name) . ' | ' . $site->name;
 $metaDescription = $category->meta_description ?? ('Browse ' . $category->name . ' reviews, articles, and buying guides on ' . $site->name);
+$searchQuery = '';
+$searchCategory = $category->slug;
 
-// Category images mapping
+// Category images (same map used on homepage + index)
 $categoryImages = [
-    'home' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=250&fit=crop',
-    'health' => 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
-    'fitness' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=250&fit=crop',
-    'pets' => 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=250&fit=crop',
-    'beauty' => 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=250&fit=crop',
-    'senior' => 'https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?w=400&h=250&fit=crop',
-    'water' => 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=250&fit=crop',
-    'tech' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=250&fit=crop',
-    'garden' => 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=250&fit=crop',
-    'kitchen' => 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=250&fit=crop',
-    'outdoor' => 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=250&fit=crop',
-    'baby' => 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=250&fit=crop',
-    'automotive' => 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=250&fit=crop',
-    'electronics' => 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400&h=250&fit=crop',
-    'default' => 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=250&fit=crop',
+    'beauty'              => 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200&h=400&fit=crop',
+    'behavior'            => 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&h=400&fit=crop',
+    'city-guide'          => 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=400&fit=crop',
+    'culinary'            => 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop',
+    'food'                => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=400&fit=crop',
+    'health-wellness'     => 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=400&fit=crop',
+    'home'                => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=400&fit=crop',
+    'nutrition'           => 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&h=400&fit=crop',
+    'senior-health'       => 'https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?w=1200&h=400&fit=crop',
+    'state-guide'         => 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1200&h=400&fit=crop',
+    'sustainable-living'  => 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1200&h=400&fit=crop',
+    'training'            => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=400&fit=crop',
+    'travel'              => 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&h=400&fit=crop',
+    'weight-loss'         => 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=1200&h=400&fit=crop',
 ];
+$defaultCatImage = 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=400&fit=crop';
+$catHeroImg = $categoryImages[$category->slug] ?? $defaultCatImage;
 
-function getCatImage($slug, $images) {
-    $slug = strtolower($slug);
-    foreach ($images as $key => $url) {
-        if (strpos($slug, $key) !== false) {
-            return $url;
-        }
-    }
-    return $images['default'];
-}
-
-$catImage = getCatImage($category->slug, $categoryImages);
+// Pull first article as featured (only on page 1)
+$featuredArticle = ($page === 1 && !empty($articles)) ? $articles[0] : null;
+$gridArticles = ($page === 1 && !empty($articles)) ? array_slice($articles, 1) : $articles;
 
 ob_start();
 ?>
 
 <!-- Breadcrumbs -->
-<div class="cr-breadcrumbs">
-    <div class="container">
-        <span><a href="<?= BASE_URL ?>/">Home</a> &raquo; <a href="<?= BASE_URL ?>/categories">Categories</a> &raquo; <span class="current"><?= htmlspecialchars($category->name) ?></span></span>
+<nav aria-label="breadcrumb" class="bg-light border-bottom py-2">
+    <div class="container-xl">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>/" class="text-success">Home</a></li>
+            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>/categories" class="text-success">Categories</a></li>
+            <li class="breadcrumb-item active"><?= htmlspecialchars($category->name) ?></li>
+        </ol>
     </div>
-</div>
+</nav>
 
 <!-- Category Hero -->
-<section class="cr-cat-hero">
-    <div class="container">
-        <div class="cr-cat-hero-inner">
-            <div class="cr-cat-hero-content">
-                <h1><?= htmlspecialchars($category->name) ?></h1>
+<section class="position-relative text-white category-hero-section">
+    <img src="<?= $catHeroImg ?>" alt="<?= htmlspecialchars($category->name) ?>" class="category-hero-img">
+    <div class="category-hero-overlay"></div>
+    <div class="container-xl position-relative py-5" style="z-index:2;">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-5 fw-bold mb-2"><?= htmlspecialchars($category->name) ?></h1>
                 <?php if ($category->description): ?>
-                <p class="cr-cat-hero-desc"><?= htmlspecialchars($category->description) ?></p>
-                <?php else: ?>
-                <p class="cr-cat-hero-desc">Explore our expert reviews, in-depth articles, and comprehensive buying guides for <?= htmlspecialchars(strtolower($category->name)) ?>.</p>
+                <p class="lead mb-3 opacity-75"><?= htmlspecialchars($category->description) ?></p>
                 <?php endif; ?>
-
-                <div class="cr-cat-hero-stats">
-                    <div class="cr-cat-stat">
-                        <div class="cr-cat-stat-number"><?= number_format($articleCount) ?></div>
-                        <div class="cr-cat-stat-label">Articles</div>
-                    </div>
-                    <div class="cr-cat-stat">
-                        <div class="cr-cat-stat-number"><?= $reviewCount ?></div>
-                        <div class="cr-cat-stat-label">Reviews</div>
-                    </div>
-                    <div class="cr-cat-stat">
-                        <div class="cr-cat-stat-number"><?= $listicleCount ?></div>
-                        <div class="cr-cat-stat-label">Guides</div>
-                    </div>
+                <div class="d-flex flex-wrap gap-3 mb-3">
+                    <span class="badge bg-success fs-6 py-2 px-3"><i class="fas fa-file-alt me-1"></i> <?= number_format($articleCount) ?> Articles</span>
+                    <?php if ($reviewCount > 0): ?>
+                    <span class="badge bg-warning text-dark fs-6 py-2 px-3"><i class="fas fa-star me-1"></i> <?= $reviewCount ?> Reviews</span>
+                    <?php endif; ?>
+                    <?php if ($listicleCount > 0): ?>
+                    <span class="badge bg-info fs-6 py-2 px-3"><i class="fas fa-trophy me-1"></i> <?= $listicleCount ?> Guides</span>
+                    <?php endif; ?>
                 </div>
             </div>
-
-            <div class="cr-cat-hero-image">
-                <img src="<?= $catImage ?>" alt="<?= htmlspecialchars($category->name) ?>">
+            <div class="col-lg-5 mt-3 mt-lg-0">
+                <?php $size = ''; require __DIR__ . '/../partials/search-bar.php'; ?>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Content Type Tabs -->
-<nav class="cr-content-tabs">
-    <div class="container">
-        <div class="cr-content-tabs-inner">
-            <div class="cr-content-tabs-list">
-                <a href="#all" class="cr-content-tab active">All Content <span class="cr-content-tab-count"><?= $articleCount + $reviewCount + $listicleCount ?></span></a>
-                <?php if ($articleCount > 0): ?>
-                <a href="#articles" class="cr-content-tab">Articles <span class="cr-content-tab-count"><?= $articleCount ?></span></a>
-                <?php endif; ?>
-                <?php if ($reviewCount > 0): ?>
-                <a href="#reviews" class="cr-content-tab">Reviews <span class="cr-content-tab-count"><?= $reviewCount ?></span></a>
-                <?php endif; ?>
-                <?php if ($listicleCount > 0): ?>
-                <a href="#guides" class="cr-content-tab">Buying Guides <span class="cr-content-tab-count"><?= $listicleCount ?></span></a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- Main Content -->
-<div class="cr-cat-page">
-    <div class="container">
-        <div class="cr-cat-layout">
-            <!-- Main Column -->
-            <div class="cr-cat-main">
-
-                <!-- Featured Article -->
-                <?php if (!empty($articles) && count($articles) > 0):
-                    $featured = $articles[0];
-                    $featuredUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '/' . htmlspecialchars($featured->slug);
-                ?>
-                <div class="cr-cat-featured">
-                    <?php if (!empty($featured->featured_image)): ?>
-                    <a href="<?= $featuredUrl ?>" class="cr-cat-featured-img">
-                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($featured->featured_image) ?>" alt="<?= htmlspecialchars($featured->title) ?>">
+<!-- Featured Article (page 1 only) -->
+<?php if ($featuredArticle && $page === 1):
+    $featUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '/' . htmlspecialchars($featuredArticle->slug);
+?>
+<section class="py-5">
+    <div class="container-xl">
+        <h2 class="h5 fw-bold mb-3"><i class="fas fa-bolt text-warning me-2"></i>Featured Article</h2>
+        <div class="card border-0 shadow overflow-hidden">
+            <div class="row g-0">
+                <?php if (!empty($featuredArticle->featured_image)): ?>
+                <div class="col-lg-6">
+                    <a href="<?= $featUrl ?>">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($featuredArticle->featured_image) ?>" alt="<?= htmlspecialchars($featuredArticle->title) ?>" class="w-100 h-100" style="object-fit:cover;min-height:280px;">
                     </a>
-                    <?php else: ?>
-                    <div class="cr-cat-featured-img">
-                        <div class="cr-cat-featured-img-placeholder">
-                            <i class="fas fa-newspaper"></i>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                    <div class="cr-cat-featured-body">
-                        <span class="cr-cat-featured-badge">Featured</span>
-                        <h2 class="cr-cat-featured-title">
-                            <a href="<?= $featuredUrl ?>"><?= htmlspecialchars($featured->title) ?></a>
-                        </h2>
-                        <?php if (!empty($featured->excerpt)): ?>
-                        <p class="cr-cat-featured-excerpt"><?= htmlspecialchars(mb_substr($featured->excerpt, 0, 250)) ?>...</p>
-                        <?php endif; ?>
-                        <div class="cr-cat-featured-meta">
-                            <span class="cr-cat-featured-date">
-                                <i class="far fa-calendar-alt"></i>
-                                <?= $featured->published_at ? date('M j, Y', strtotime($featured->published_at)) : '' ?>
-                            </span>
-                            <a href="<?= $featuredUrl ?>" class="cr-cat-featured-link">Read Article &rarr;</a>
-                        </div>
-                    </div>
                 </div>
                 <?php endif; ?>
-
-                <!-- Reviews Section -->
-                <?php if (!empty($reviews)): ?>
-                <section class="cr-cat-section" id="reviews">
-                    <div class="cr-cat-section-header">
-                        <h2 class="cr-cat-section-title"><i class="fas fa-star"></i> Product Reviews</h2>
-                        <span class="text-muted"><?= count($reviews) ?> reviews</span>
-                    </div>
-                    <div class="row g-4">
-                        <?php foreach ($reviews as $review): ?>
-                        <div class="col-md-6 col-lg-4">
-                            <?php require __DIR__ . '/../partials/review-card.php'; ?>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </section>
-                <?php endif; ?>
-
-                <!-- Buying Guides Section -->
-                <?php if (!empty($listicles)): ?>
-                <section class="cr-cat-section" id="guides">
-                    <div class="cr-cat-section-header">
-                        <h2 class="cr-cat-section-title"><i class="fas fa-trophy"></i> Buying Guides</h2>
-                        <span class="text-muted"><?= count($listicles) ?> guides</span>
-                    </div>
-                    <div class="row g-4">
-                        <?php foreach ($listicles as $listicle):
-                            $listicleUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '/top/' . htmlspecialchars($listicle->slug);
-                        ?>
-                        <div class="col-md-6">
-                            <div class="cr-listicle-card h-100">
-                                <?php if (!empty($listicle->featured_image)): ?>
-                                <a href="<?= $listicleUrl ?>" class="cr-listicle-card-img">
-                                    <img src="<?= IMAGE_BASE_URL . htmlspecialchars($listicle->featured_image) ?>" alt="<?= htmlspecialchars($listicle->title) ?>">
-                                </a>
-                                <?php else: ?>
-                                <a href="<?= $listicleUrl ?>" class="cr-listicle-card-img cr-listicle-card-placeholder">
-                                    <i class="fas fa-list-ol"></i>
-                                </a>
-                                <?php endif; ?>
-                                <div class="cr-listicle-card-body">
-                                    <h3 class="cr-listicle-card-title">
-                                        <a href="<?= $listicleUrl ?>"><?= htmlspecialchars($listicle->title) ?></a>
-                                    </h3>
-                                    <?php if (!empty($listicle->excerpt)): ?>
-                                    <p class="cr-listicle-card-excerpt"><?= htmlspecialchars(mb_substr($listicle->excerpt, 0, 120)) ?>...</p>
-                                    <?php endif; ?>
-                                    <div class="cr-listicle-card-meta">
-                                        <?php if ($listicle->published_at): ?>
-                                        <span class="cr-listicle-card-date"><i class="far fa-calendar-alt"></i> <?= date('M j, Y', strtotime($listicle->published_at)) ?></span>
-                                        <?php endif; ?>
-                                        <a href="<?= $listicleUrl ?>" class="cr-listicle-card-link">View Guide &rarr;</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </section>
-                <?php endif; ?>
-
-                <!-- Articles Section -->
-                <?php if (!empty($articles) && count($articles) > 1): ?>
-                <section class="cr-cat-section" id="articles">
-                    <div class="cr-cat-section-header">
-                        <h2 class="cr-cat-section-title"><i class="fas fa-file-alt"></i> Articles & Guides</h2>
-                        <span class="text-muted"><?= count($articles) ?> articles</span>
-                    </div>
-                    <div class="row g-4">
-                        <?php foreach (array_slice($articles, 1) as $article): ?>
-                        <div class="col-md-6 col-lg-4">
-                            <?php require __DIR__ . '/../partials/article-card.php'; ?>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </section>
-                <?php endif; ?>
-
-                <!-- Empty State -->
-                <?php if (empty($reviews) && empty($articles) && empty($listicles)): ?>
-                <div class="cr-empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>No content yet</h3>
-                    <p>Check back soon for reviews and articles in this category.</p>
-                    <a href="<?= BASE_URL ?>/" class="cr-btn">Back to Home</a>
-                </div>
-                <?php endif; ?>
-
-            </div>
-
-            <!-- Sidebar -->
-            <div class="cr-cat-sidebar">
-
-                <!-- Top Reviews Widget -->
-                <?php if (!empty($reviews)): ?>
-                <div class="cr-cat-widget">
-                    <h3 class="cr-cat-widget-title"><i class="fas fa-star"></i> Top Rated</h3>
-                    <?php foreach (array_slice($reviews, 0, 3) as $review):
-                        $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '/reviews/' . htmlspecialchars($review->slug);
-                    ?>
-                    <div class="cr-review-mini">
-                        <?php if (!empty($review->featured_image)): ?>
-                        <a href="<?= $reviewUrl ?>" class="cr-review-mini-img">
-                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
-                        </a>
+                <div class="<?= !empty($featuredArticle->featured_image) ? 'col-lg-6' : 'col-12' ?>">
+                    <div class="card-body d-flex flex-column justify-content-center p-4 p-lg-5">
+                        <span class="badge bg-success mb-2 align-self-start"><?= htmlspecialchars($category->name) ?></span>
+                        <h3 class="fw-bold mb-3">
+                            <a href="<?= $featUrl ?>" class="text-dark text-decoration-none"><?= htmlspecialchars($featuredArticle->title) ?></a>
+                        </h3>
+                        <?php if (!empty($featuredArticle->excerpt)): ?>
+                        <p class="text-muted mb-3"><?= htmlspecialchars(mb_substr($featuredArticle->excerpt, 0, 200)) ?>...</p>
                         <?php endif; ?>
-                        <div class="cr-review-mini-body">
-                            <h4 class="cr-review-mini-title">
-                                <a href="<?= $reviewUrl ?>"><?= htmlspecialchars($review->name) ?></a>
-                            </h4>
-                            <?php if ($review->rating_overall): ?>
-                            <div class="cr-review-mini-rating">
-                                <span><?= number_format(floatval($review->rating_overall), 1) ?></span> / 5.0
-                            </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <a href="<?= $featUrl ?>" class="btn btn-success fw-bold">Read Article <i class="fas fa-arrow-right ms-1"></i></a>
+                            <?php if ($featuredArticle->published_at): ?>
+                            <span class="text-muted small"><i class="far fa-calendar-alt me-1"></i> <?= date('M j, Y', strtotime($featuredArticle->published_at)) ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
-                    <?php endforeach; ?>
                 </div>
-                <?php endif; ?>
-
-                <!-- Browse Categories Widget -->
-                <div class="cr-cat-widget">
-                    <h3 class="cr-cat-widget-title"><i class="fas fa-folder-open"></i> Browse Categories</h3>
-                    <ul class="cr-cat-nav-list">
-                        <?php foreach ($allCategories as $cat):
-                            $isActive = $cat->id === $category->id;
-                            $catCount = \App\Models\Article::countByCategory($site->id, $cat->id);
-                        ?>
-                        <li class="cr-cat-nav-item">
-                            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-cat-nav-link <?= $isActive ? 'active' : '' ?>">
-                                <?= htmlspecialchars($cat->name) ?>
-                                <span class="cr-cat-nav-count"><?= $catCount ?></span>
-                            </a>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-
-                <!-- Trust Widget -->
-                <div class="cr-cat-widget cr-trust-widget-dark">
-                    <h3 class="cr-cat-widget-title cr-trust-widget-title">
-                        <i class="fas fa-shield-alt cr-trust-widget-icon"></i> Why Trust Us?
-                    </h3>
-                    <ul class="cr-trust-list-dark">
-                        <li>
-                            <i class="fas fa-check-circle cr-trust-check"></i>
-                            <span>Expert Reviews</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle cr-trust-check"></i>
-                            <span>Unbiased Ratings</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle cr-trust-check"></i>
-                            <span>Real Research</span>
-                        </li>
-                    </ul>
-                </div>
-
             </div>
         </div>
     </div>
-</div>
+</section>
+<?php endif; ?>
+
+<!-- Product Reviews (page 1 only) -->
+<?php if (!empty($reviews) && $page === 1): ?>
+<section class="py-5 bg-light">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h5 fw-bold mb-1"><i class="fas fa-star text-warning me-2"></i>Product Reviews</h2>
+                <p class="text-muted small mb-0"><?= $reviewCount ?> expert reviews in <?= htmlspecialchars($category->name) ?></p>
+            </div>
+            <a href="<?= BASE_URL ?>/reviews?category=<?= urlencode($category->slug) ?>" class="btn btn-outline-success btn-sm">View All <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="row g-4">
+            <?php foreach (array_slice($reviews, 0, 6) as $review): ?>
+            <div class="col-md-6 col-lg-4">
+                <?php require __DIR__ . '/../partials/review-card.php'; ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- Buying Guides (page 1 only) -->
+<?php if (!empty($listicles) && $page === 1): ?>
+<section class="py-5">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h5 fw-bold mb-1"><i class="fas fa-trophy text-warning me-2"></i>Buying Guides</h2>
+                <p class="text-muted small mb-0">Top picks and comparison guides in <?= htmlspecialchars($category->name) ?></p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <?php foreach ($listicles as $listicle):
+                $listicleUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '/top/' . htmlspecialchars($listicle->slug);
+            ?>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                    <?php if (!empty($listicle->featured_image)): ?>
+                    <a href="<?= $listicleUrl ?>">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($listicle->featured_image) ?>" class="card-img-top" alt="<?= htmlspecialchars($listicle->title) ?>">
+                    </a>
+                    <?php else: ?>
+                    <a href="<?= $listicleUrl ?>" class="card-img-top bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-list-ol fa-2x text-muted"></i>
+                    </a>
+                    <?php endif; ?>
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-info mb-2 align-self-start">Buying Guide</span>
+                        <h5 class="card-title fw-bold">
+                            <a href="<?= $listicleUrl ?>" class="text-dark text-decoration-none"><?= htmlspecialchars($listicle->title) ?></a>
+                        </h5>
+                        <?php if (!empty($listicle->excerpt)): ?>
+                        <p class="card-text text-muted small flex-grow-1"><?= htmlspecialchars(mb_substr($listicle->excerpt, 0, 120)) ?>...</p>
+                        <?php endif; ?>
+                        <a href="<?= $listicleUrl ?>" class="btn btn-sm btn-outline-success mt-auto">View Top Picks <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- All Articles -->
+<section class="py-5 <?= (!empty($listicles) && $page === 1) ? '' : 'bg-light' ?>">
+    <div class="container-xl">
+        <div class="row">
+            <!-- Main Column -->
+            <div class="col-lg-9">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                    <h2 class="h5 fw-bold mb-0"><i class="fas fa-file-alt text-success me-2"></i>All Articles</h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small me-1">Sort:</span>
+                        <?php
+                        $sortOptions = ['newest' => 'Newest', 'oldest' => 'Oldest', 'title' => 'A-Z'];
+                        foreach ($sortOptions as $key => $label):
+                            $url = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '?sort=' . $key;
+                        ?>
+                        <a href="<?= $url ?>" class="btn btn-sm <?= $sort === $key ? 'btn-success' : 'btn-outline-secondary' ?>"><?= $label ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <?php if ($totalPages > 1): ?>
+                <p class="text-muted small mb-3">Page <?= $page ?> of <?= $totalPages ?> &middot; <?= number_format($articleCount) ?> articles</p>
+                <?php endif; ?>
+
+                <?php if (!empty($gridArticles)): ?>
+                <div class="row g-4">
+                    <?php foreach ($gridArticles as $article): ?>
+                    <div class="col-md-6 col-lg-4">
+                        <?php require __DIR__ . '/../partials/article-card.php'; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-4">
+                    <?php
+                    $currentPage = $page;
+                    $baseUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '?sort=' . urlencode($sort);
+                    require __DIR__ . '/../partials/pagination.php';
+                    ?>
+                </div>
+                <?php elseif (empty($articles)): ?>
+                <div class="text-center py-5">
+                    <i class="fas fa-folder-open fa-3x text-muted mb-3 d-block"></i>
+                    <h3>No articles yet</h3>
+                    <p class="text-muted">Check back soon for content in this category.</p>
+                    <a href="<?= BASE_URL ?>/" class="btn btn-success">Back to Home</a>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sticky-lg-top" style="top:80px;">
+                    <!-- Browse Categories -->
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-dark text-white fw-bold small">
+                            <i class="fas fa-folder-open me-1"></i> Browse Categories
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <?php foreach ($allCategories as $cat): ?>
+                            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center small <?= $cat->id === $category->id ? 'active' : '' ?>">
+                                <?= htmlspecialchars($cat->name) ?>
+                                <span class="badge <?= $cat->id === $category->id ? 'bg-white text-dark' : 'bg-secondary' ?> rounded-pill"><?= $cat->article_count ?? 0 ?></span>
+                            </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <!-- Top Reviews -->
+                    <?php if (!empty($reviews)): ?>
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-dark text-white fw-bold small">
+                            <i class="fas fa-star me-1"></i> Top Rated
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <?php foreach (array_slice($reviews, 0, 5) as $review):
+                                $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($category->slug) . '/reviews/' . htmlspecialchars($review->slug);
+                            ?>
+                            <a href="<?= $reviewUrl ?>" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small text-truncate"><?= htmlspecialchars($review->name) ?></span>
+                                    <?php if ($review->rating_overall): ?>
+                                    <span class="badge bg-success ms-2"><?= number_format(floatval($review->rating_overall), 1) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <!-- Trust Widget -->
+                    <div class="card border-0 bg-success text-white">
+                        <div class="card-body text-center small">
+                            <i class="fas fa-shield-alt fa-2x mb-2 d-block"></i>
+                            <strong>Trusted Reviews</strong>
+                            <p class="mb-0 mt-1 small opacity-75">Expert research and unbiased recommendations across <?= number_format($articleCount) ?> articles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <?php
 $__content = ob_get_clean();

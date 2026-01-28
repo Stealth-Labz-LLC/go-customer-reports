@@ -166,7 +166,8 @@ function validateRequiredFields($data) {
     if (empty($name)) {
         $errors[] = 'Name is required';
     }
-    if (empty($phone)) {
+    $campaign = $data['campaign'] ?? '';
+    if (empty($phone) && $campaign !== 'newsletter') {
         $errors[] = 'Phone number is required';
     }
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {

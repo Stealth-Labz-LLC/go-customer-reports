@@ -30,7 +30,6 @@ $schemaData = [
     ]
 ];
 
-// Add author if available
 if (!empty($article->author_name)) {
     $schemaData['author'] = [
         '@type' => 'Person',
@@ -38,7 +37,6 @@ if (!empty($article->author_name)) {
     ];
 }
 
-// Add image if available
 if (!empty($article->featured_image)) {
     $schemaData['image'] = $article->featured_image;
 }
@@ -56,106 +54,98 @@ ob_start();
 <?php endif; ?>
 
 <!-- Article Hero -->
-<section class="cr-article-hero">
-    <div class="container">
-        <div class="cr-article-hero-inner">
-            <?php if (!empty($articleCategories)): ?>
-            <div class="cr-article-categories">
-                <?php foreach ($articleCategories as $cat): ?>
-                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-article-cat-badge"><?= htmlspecialchars($cat->name) ?></a>
-                <?php endforeach; ?>
-            </div>
+<section class="bg-dark text-white py-5">
+    <div class="container-xl">
+        <?php if (!empty($articleCategories)): ?>
+        <div class="mb-2">
+            <?php foreach ($articleCategories as $cat): ?>
+            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="badge bg-success text-decoration-none me-1"><?= htmlspecialchars($cat->name) ?></a>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <h1 class="fw-bold mb-3"><?= htmlspecialchars($article->title) ?></h1>
+
+        <?php if (!empty($article->excerpt)): ?>
+        <p class="lead text-white-50 mb-3"><?= htmlspecialchars($article->excerpt) ?></p>
+        <?php endif; ?>
+
+        <div class="d-flex flex-wrap gap-3 text-white-50 small">
+            <?php if ($article->author_name): ?>
+            <span><i class="fas fa-user me-1"></i> <?= htmlspecialchars($article->author_name) ?></span>
             <?php endif; ?>
-
-            <h1 class="cr-article-title"><?= htmlspecialchars($article->title) ?></h1>
-
-            <?php if (!empty($article->excerpt)): ?>
-            <p class="cr-article-excerpt"><?= htmlspecialchars($article->excerpt) ?></p>
+            <?php if ($article->published_at): ?>
+            <span><i class="far fa-calendar-alt me-1"></i> <?= date('F j, Y', strtotime($article->published_at)) ?></span>
             <?php endif; ?>
-
-            <div class="cr-article-meta">
-                <?php if ($article->author_name): ?>
-                <span class="cr-article-author">
-                    <i class="fas fa-user"></i> <?= htmlspecialchars($article->author_name) ?>
-                </span>
-                <?php endif; ?>
-                <?php if ($article->published_at): ?>
-                <span class="cr-article-date">
-                    <i class="far fa-calendar-alt"></i> <?= date('F j, Y', strtotime($article->published_at)) ?>
-                </span>
-                <?php endif; ?>
-                <?php if ($article->reading_time): ?>
-                <span class="cr-article-reading-time">
-                    <i class="far fa-clock"></i> <?= htmlspecialchars($article->reading_time) ?> min read
-                </span>
-                <?php endif; ?>
-            </div>
+            <?php if ($article->reading_time): ?>
+            <span><i class="far fa-clock me-1"></i> <?= htmlspecialchars($article->reading_time) ?> min read</span>
+            <?php endif; ?>
         </div>
     </div>
 </section>
 
-<div class="container py-4">
+<div class="container-xl py-4">
     <div class="row">
-        <!-- Main Content Column -->
+        <!-- Main Content -->
         <div class="col-lg-8">
             <?php if (!empty($article->featured_image)): ?>
-            <div class="cr-article-featured-image">
-                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>">
-            </div>
+            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>" class="img-fluid rounded shadow-sm mb-4 w-100" style="max-height:450px;object-fit:cover;">
             <?php endif; ?>
 
-            <article class="cr-article-content">
+            <article class="article-content">
                 <?= $article->content ?>
             </article>
 
-            <!-- Article Footer -->
-            <div class="cr-article-footer">
-                <div class="cr-article-share">
-                    <span>Share this article:</span>
-                    <div class="cr-share-buttons">
-                        <a href="https://twitter.com/intent/tweet?url=<?= urlencode($site->url . '/category/' . $primaryCategory->slug . '/' . $article->slug) ?>&text=<?= urlencode($article->title) ?>" target="_blank" rel="noopener" class="cr-share-btn cr-share-twitter">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($site->url . '/category/' . $primaryCategory->slug . '/' . $article->slug) ?>" target="_blank" rel="noopener" class="cr-share-btn cr-share-facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= urlencode($site->url . '/category/' . $primaryCategory->slug . '/' . $article->slug) ?>&title=<?= urlencode($article->title) ?>" target="_blank" rel="noopener" class="cr-share-btn cr-share-linkedin">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
+            <!-- Share + Categories -->
+            <div class="border-top pt-4 mt-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="d-flex gap-2 mb-2">
+                        <span class="text-muted small me-1">Share:</span>
+                        <a href="https://twitter.com/intent/tweet?url=<?= urlencode($site->url . '/category/' . $primaryCategory->slug . '/' . $article->slug) ?>&text=<?= urlencode($article->title) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($site->url . '/category/' . $primaryCategory->slug . '/' . $article->slug) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= urlencode($site->url . '/category/' . $primaryCategory->slug . '/' . $article->slug) ?>&title=<?= urlencode($article->title) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="fab fa-linkedin-in"></i></a>
                     </div>
+                    <?php if (!empty($articleCategories)): ?>
+                    <div class="mb-2">
+                        <?php foreach ($articleCategories as $cat): ?>
+                        <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="badge bg-dark bg-opacity-10 text-dark text-decoration-none"><?= htmlspecialchars($cat->name) ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
                 </div>
-
-                <?php if (!empty($articleCategories)): ?>
-                <div class="cr-article-tags">
-                    <span>Categories:</span>
-                    <?php foreach ($articleCategories as $cat): ?>
-                    <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-article-tag"><?= htmlspecialchars($cat->name) ?></a>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
             </div>
 
             <!-- Related Reviews (Cross-link to money pages) -->
             <?php if (!empty($relatedReviews)): ?>
-            <div class="cr-article-related-reviews">
-                <h3><i class="fas fa-star"></i> Related Product Reviews</h3>
-                <div class="cr-related-reviews-grid">
+            <div class="mt-4">
+                <h3 class="h5 fw-bold mb-3"><i class="fas fa-star text-warning me-2"></i>Related Product Reviews</h3>
+                <div class="row g-3">
                     <?php foreach ($relatedReviews as $review):
                         $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
                     ?>
-                    <a href="<?= $reviewUrl ?>" class="cr-related-review-card">
-                        <?php if (!empty($review->featured_image)): ?>
-                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>">
-                        <?php else: ?>
-                        <div class="cr-related-review-placeholder"><i class="fas fa-box"></i></div>
-                        <?php endif; ?>
-                        <div class="cr-related-review-info">
-                            <span class="cr-related-review-name"><?= htmlspecialchars($review->name) ?></span>
-                            <?php if ($review->rating_overall): ?>
-                            <span class="cr-related-review-rating"><?= number_format(floatval($review->rating_overall), 1) ?> <i class="fas fa-star"></i></span>
-                            <?php endif; ?>
-                        </div>
-                    </a>
+                    <div class="col-md-6">
+                        <a href="<?= $reviewUrl ?>" class="card border-0 shadow-sm h-100 text-decoration-none overflow-hidden">
+                            <div class="row g-0">
+                                <?php if (!empty($review->featured_image)): ?>
+                                <div class="col-4">
+                                    <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="img-fluid h-100" style="object-fit:cover;">
+                                </div>
+                                <div class="col-8">
+                                <?php else: ?>
+                                <div class="col-12">
+                                <?php endif; ?>
+                                    <div class="card-body py-2">
+                                        <span class="fw-bold text-dark small"><?= htmlspecialchars($review->name) ?></span>
+                                        <?php if ($review->rating_overall): ?>
+                                        <div class="mt-1">
+                                            <span class="badge bg-success"><?= number_format(floatval($review->rating_overall), 1) ?> <i class="fas fa-star"></i></span>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -163,27 +153,27 @@ ob_start();
 
             <!-- Related Articles -->
             <?php if (!empty($relatedArticles)): ?>
-            <div class="cr-related-articles">
-                <h2>Keep Reading</h2>
-                <div class="row g-4">
+            <div class="mt-5">
+                <h2 class="h5 fw-bold mb-3">Keep Reading</h2>
+                <div class="row g-3">
                     <?php foreach ($relatedArticles as $relArticle):
                         $relArticleUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
                     ?>
                     <div class="col-md-6">
-                        <div class="cr-related-article-card">
+                        <div class="card border-0 shadow-sm h-100 overflow-hidden">
                             <?php if (!empty($relArticle->featured_image)): ?>
-                            <a href="<?= $relArticleUrl ?>" class="cr-related-article-img">
-                                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="<?= htmlspecialchars($relArticle->title) ?>">
+                            <a href="<?= $relArticleUrl ?>">
+                                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="<?= htmlspecialchars($relArticle->title) ?>" class="card-img-top" style="height:150px;object-fit:cover;">
                             </a>
                             <?php endif; ?>
-                            <div class="cr-related-article-body">
-                                <h3 class="cr-related-article-title">
-                                    <a href="<?= $relArticleUrl ?>"><?= htmlspecialchars($relArticle->title) ?></a>
+                            <div class="card-body">
+                                <h3 class="h6 fw-bold">
+                                    <a href="<?= $relArticleUrl ?>" class="text-dark text-decoration-none"><?= htmlspecialchars($relArticle->title) ?></a>
                                 </h3>
                                 <?php if (!empty($relArticle->excerpt)): ?>
-                                <p class="cr-related-article-excerpt"><?= htmlspecialchars(mb_substr($relArticle->excerpt, 0, 100)) ?>...</p>
+                                <p class="text-muted small mb-2"><?= htmlspecialchars(mb_substr($relArticle->excerpt, 0, 100)) ?>...</p>
                                 <?php endif; ?>
-                                <a href="<?= $relArticleUrl ?>" class="cr-related-article-link">Read More &rarr;</a>
+                                <a href="<?= $relArticleUrl ?>" class="text-success text-decoration-none small fw-bold">Read More <i class="fas fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -195,70 +185,63 @@ ob_start();
 
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <div class="cr-article-sidebar">
-
-                <!-- In This Category Widget -->
+            <div class="sticky-lg-top" style="top:80px;">
+                <!-- More in Category -->
                 <?php if (!empty($relatedArticles)): ?>
-                <div class="cr-article-widget">
-                    <h3 class="cr-article-widget-title">
-                        <i class="fas fa-folder-open"></i> More in <?= htmlspecialchars($primaryCategory->name ?? 'This Category') ?>
-                    </h3>
-                    <div class="cr-article-widget-list">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-header bg-dark text-white fw-bold small">
+                        <i class="fas fa-folder-open me-1"></i> More in <?= htmlspecialchars($primaryCategory->name ?? 'This Category') ?>
+                    </div>
+                    <div class="list-group list-group-flush">
                         <?php foreach (array_slice($relatedArticles, 0, 5) as $relArticle):
                             $relArticleUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
                         ?>
-                        <a href="<?= $relArticleUrl ?>" class="cr-article-widget-item">
+                        <a href="<?= $relArticleUrl ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2 small">
                             <?php if (!empty($relArticle->featured_image)): ?>
-                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="">
+                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="" class="rounded" style="width:40px;height:40px;object-fit:cover;">
                             <?php endif; ?>
-                            <span><?= htmlspecialchars($relArticle->title) ?></span>
+                            <span class="text-truncate"><?= htmlspecialchars($relArticle->title) ?></span>
                         </a>
                         <?php endforeach; ?>
                     </div>
                 </div>
                 <?php endif; ?>
 
-                <!-- Browse Categories Widget -->
+                <!-- Browse Categories -->
                 <?php if (!empty($allCategories)): ?>
-                <div class="cr-article-widget">
-                    <h3 class="cr-article-widget-title">
-                        <i class="fas fa-th-large"></i> Browse Categories
-                    </h3>
-                    <ul class="cr-article-cat-list">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-header bg-dark text-white fw-bold small">
+                        <i class="fas fa-th-large me-1"></i> Browse Categories
+                    </div>
+                    <div class="list-group list-group-flush">
                         <?php foreach ($allCategories as $cat):
                             $isActive = $primaryCategory && $cat->id === $primaryCategory->id;
                         ?>
-                        <li>
-                            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="<?= $isActive ? 'active' : '' ?>">
-                                <?= htmlspecialchars($cat->name) ?>
-                            </a>
-                        </li>
+                        <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="list-group-item list-group-item-action small <?= $isActive ? 'active' : '' ?>">
+                            <?= htmlspecialchars($cat->name) ?>
+                        </a>
                         <?php endforeach; ?>
-                    </ul>
+                    </div>
                 </div>
                 <?php endif; ?>
 
-                <!-- Top Reviews Widget -->
+                <!-- Top Reviews -->
                 <?php if (!empty($relatedReviews)): ?>
-                <div class="cr-article-widget cr-article-widget-dark">
-                    <h3 class="cr-article-widget-title">
-                        <i class="fas fa-star"></i> Top Rated Products
-                    </h3>
-                    <div class="cr-article-widget-reviews">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-header bg-dark text-white fw-bold small">
+                        <i class="fas fa-star me-1"></i> Top Rated Products
+                    </div>
+                    <div class="list-group list-group-flush">
                         <?php foreach ($relatedReviews as $review):
                             $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
                         ?>
-                        <a href="<?= $reviewUrl ?>" class="cr-widget-review-item">
-                            <div class="cr-widget-review-info">
-                                <span class="cr-widget-review-name"><?= htmlspecialchars($review->name) ?></span>
+                        <a href="<?= $reviewUrl ?>" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small fw-bold"><?= htmlspecialchars($review->name) ?></span>
                                 <?php if ($review->rating_overall): ?>
-                                <div class="cr-widget-review-rating">
-                                    <span><?= number_format(floatval($review->rating_overall), 1) ?></span>
-                                    <i class="fas fa-star"></i>
-                                </div>
+                                <span class="badge bg-success"><?= number_format(floatval($review->rating_overall), 1) ?> <i class="fas fa-star"></i></span>
                                 <?php endif; ?>
                             </div>
-                            <span class="cr-widget-review-link">View Review &rarr;</span>
                         </a>
                         <?php endforeach; ?>
                     </div>
@@ -266,17 +249,17 @@ ob_start();
                 <?php endif; ?>
 
                 <!-- Trust Widget -->
-                <div class="cr-article-widget cr-article-widget-trust">
-                    <h3 class="cr-article-widget-title">
-                        <i class="fas fa-shield-alt"></i> Why Trust <?= htmlspecialchars($site->name) ?>?
-                    </h3>
-                    <ul class="cr-trust-list">
-                        <li><i class="fas fa-check-circle"></i> Expert Research</li>
-                        <li><i class="fas fa-check-circle"></i> Unbiased Reviews</li>
-                        <li><i class="fas fa-check-circle"></i> Data-Driven Rankings</li>
-                    </ul>
+                <div class="card border-0 bg-success text-white">
+                    <div class="card-body text-center small">
+                        <i class="fas fa-shield-alt fa-2x mb-2 d-block"></i>
+                        <strong>Why Trust <?= htmlspecialchars($site->name) ?>?</strong>
+                        <ul class="list-unstyled mt-2 mb-0 small">
+                            <li><i class="fas fa-check-circle me-1"></i> Expert Research</li>
+                            <li><i class="fas fa-check-circle me-1"></i> Unbiased Reviews</li>
+                            <li><i class="fas fa-check-circle me-1"></i> Data-Driven Rankings</li>
+                        </ul>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>

@@ -4,17 +4,13 @@ $metaDescription = '';
 ob_start();
 ?>
 
-<div class="cr-error-page">
-    <div class="container">
-        <div class="cr-error-content">
-            <div class="cr-error-code">404</div>
-            <h1 class="cr-error-title">Page Not Found</h1>
-            <p class="cr-error-message">The page you're looking for doesn't exist or has been moved.</p>
-            <div class="cr-error-actions">
-                <a href="<?= BASE_URL ?>/" class="cr-btn cr-btn-primary">Back to Home</a>
-                <a href="<?= BASE_URL ?>/categories" class="cr-btn cr-btn-outline">Browse Categories</a>
-            </div>
-        </div>
+<div class="container-xl py-5 text-center">
+    <div class="display-1 fw-bold text-muted mb-3">404</div>
+    <h1 class="h3">Page Not Found</h1>
+    <p class="text-muted mb-4">The page you're looking for doesn't exist or has been moved.</p>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="<?= BASE_URL ?>/" class="btn btn-success">Back to Home</a>
+        <a href="<?= BASE_URL ?>/categories" class="btn btn-outline-success">Browse Categories</a>
     </div>
 </div>
 

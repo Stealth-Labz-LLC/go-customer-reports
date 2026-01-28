@@ -30,6 +30,19 @@ class Router
                 $this->home();
                 break;
 
+            // === SEARCH & BROWSE ===
+            case $path === '/search':
+                $this->searchPage();
+                break;
+
+            case $path === '/articles':
+                $this->articlesIndex();
+                break;
+
+            case $path === '/reviews':
+                $this->reviewsIndex();
+                break;
+
             // === NEW CATEGORY-BASED URLS ===
 
             // Category > Reviews > Slug: /category/{cat}/reviews/{slug}
@@ -59,17 +72,13 @@ class Router
 
             // === OLD URLS - 301 REDIRECT TO NEW STRUCTURE ===
 
-            case $path === '/articles':
-                $this->redirectToCategories();
-                break;
+            // /articles is now handled above as articlesIndex()
 
             case preg_match('#^/articles/([a-zA-Z0-9\-_]+)$#i', $path, $m):
                 $this->redirectArticle(strtolower($m[1]));
                 break;
 
-            case $path === '/reviews':
-                $this->redirectToCategories();
-                break;
+            // /reviews is now handled above as reviewsIndex()
 
             case preg_match('#^/reviews/([a-zA-Z0-9\-_]+)$#i', $path, $m):
                 $this->redirectReview(strtolower($m[1]));
@@ -90,7 +99,11 @@ class Router
                 break;
 
             case $path === '/sitemap.xml':
-                $this->sitemap();
+                $this->sitemapIndex();
+                break;
+
+            case preg_match('#^/sitemap-(articles|reviews|listicles|categories|pages)\.xml$#', $path, $m):
+                $this->sitemapSection($m[1]);
                 break;
 
             default:
@@ -108,21 +121,127 @@ class Router
         $latestArticles = \App\Models\Article::latest($siteId, 6);
         $latestReviews = \App\Models\Review::latest($siteId, 6);
         $latestListicles = \App\Models\Listicle::latest($siteId, 4);
-        $categories = \App\Models\Category::topLevel($siteId);
+        $categories = \App\Models\Category::allWithCounts($siteId);
 
-        // Articles grouped by category for homepage sections
-        $articlesByCategory = [];
-        foreach ($categories as $cat) {
-            $catArticles = \App\Models\Article::byCategory($siteId, $cat->id, 6);
-            if (!empty($catArticles)) {
-                $articlesByCategory[] = [
-                    'category' => $cat,
-                    'articles' => $catArticles,
-                ];
-            }
+        $totalArticles = \App\Models\Article::count($siteId);
+        $totalReviews = \App\Models\Review::count($siteId);
+
+        $this->render('home', compact('site', 'latestArticles', 'latestReviews', 'latestListicles', 'categories', 'totalArticles', 'totalReviews'));
+    }
+
+    private function searchPage(): void
+    {
+        $site = $this->site;
+        $siteId = $site->id;
+
+        $query = trim($_GET['q'] ?? '');
+        $categorySlug = trim($_GET['category'] ?? '');
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $perPage = 24;
+        $offset = ($page - 1) * $perPage;
+
+        $categoryId = null;
+        $activeCategory = null;
+        if ($categorySlug) {
+            $activeCategory = \App\Models\Category::findBySlug($siteId, $categorySlug);
+            $categoryId = $activeCategory ? $activeCategory->id : null;
         }
 
-        $this->render('home', compact('site', 'latestArticles', 'latestReviews', 'latestListicles', 'categories', 'articlesByCategory'));
+        $articles = [];
+        $reviews = [];
+        $listicles = [];
+        $totalArticles = 0;
+        $totalReviews = 0;
+        $totalListicles = 0;
+
+        if ($query !== '') {
+            $articles = \App\Models\Article::search($siteId, $query, $categoryId, $perPage, $offset);
+            $totalArticles = \App\Models\Article::searchCount($siteId, $query, $categoryId);
+            $reviews = \App\Models\Review::search($siteId, $query, $categoryId, 12, 0);
+            $totalReviews = \App\Models\Review::searchCount($siteId, $query, $categoryId);
+            $listicles = \App\Models\Listicle::search($siteId, $query, $categoryId, 12, 0);
+            $totalListicles = \App\Models\Listicle::searchCount($siteId, $query, $categoryId);
+        }
+
+        $totalPages = (int) ceil($totalArticles / $perPage);
+        $categories = \App\Models\Category::all($siteId);
+
+        $this->render('search', compact(
+            'site', 'query', 'categorySlug', 'activeCategory', 'page', 'perPage',
+            'articles', 'reviews', 'listicles',
+            'totalArticles', 'totalReviews', 'totalListicles',
+            'totalPages', 'categories'
+        ));
+    }
+
+    private function articlesIndex(): void
+    {
+        $site = $this->site;
+        $siteId = $site->id;
+
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $sort = $_GET['sort'] ?? 'newest';
+        $categorySlug = trim($_GET['category'] ?? '');
+        $perPage = 24;
+        $offset = ($page - 1) * $perPage;
+
+        $categoryId = null;
+        $activeCategory = null;
+        if ($categorySlug) {
+            $activeCategory = \App\Models\Category::findBySlug($siteId, $categorySlug);
+            $categoryId = $activeCategory ? $activeCategory->id : null;
+        }
+
+        if ($categoryId) {
+            $articles = \App\Models\Article::byCategoryPaginated($siteId, $categoryId, $perPage, $offset, $sort);
+            $totalArticles = \App\Models\Article::countByCategory($siteId, $categoryId);
+        } else {
+            $articles = \App\Models\Article::latest($siteId, $perPage, $offset);
+            $totalArticles = \App\Models\Article::count($siteId);
+        }
+
+        $totalPages = (int) ceil($totalArticles / $perPage);
+        $categories = \App\Models\Category::allWithCounts($siteId);
+
+        $this->render('articles/index', compact(
+            'site', 'articles', 'categories', 'page', 'totalPages', 'totalArticles',
+            'sort', 'categorySlug', 'activeCategory', 'perPage'
+        ));
+    }
+
+    private function reviewsIndex(): void
+    {
+        $site = $this->site;
+        $siteId = $site->id;
+
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $sort = $_GET['sort'] ?? 'newest';
+        $categorySlug = trim($_GET['category'] ?? '');
+        $perPage = 24;
+        $offset = ($page - 1) * $perPage;
+
+        $categoryId = null;
+        $activeCategory = null;
+        if ($categorySlug) {
+            $activeCategory = \App\Models\Category::findBySlug($siteId, $categorySlug);
+            $categoryId = $activeCategory ? $activeCategory->id : null;
+        }
+
+        if ($categoryId) {
+            $reviews = \App\Models\Review::byCategoryPaginated($siteId, $categoryId, $perPage, $offset, $sort);
+            $totalReviews = \App\Models\Review::countByCategory($siteId, $categoryId);
+        } else {
+            $reviews = \App\Models\Review::latestPaginated($siteId, $perPage, $offset, $sort);
+            $totalReviews = \App\Models\Review::count($siteId);
+        }
+
+        $totalPages = (int) ceil($totalReviews / $perPage);
+        $categories = \App\Models\Category::allWithCounts($siteId);
+
+        $this->render('reviews/index', compact(
+            'site', 'reviews', 'categories', 'page', 'totalPages', 'totalReviews',
+            'sort', 'categorySlug', 'activeCategory', 'perPage'
+        ));
     }
 
     private function articleShow(string $slug, ?string $categorySlug = null): void
@@ -135,10 +254,8 @@ class Router
             return;
         }
 
-        // Get primary category
         $primaryCategory = \App\Models\Category::find($article->primary_category_id);
 
-        // Verify URL matches primary category (redirect if wrong category)
         if ($primaryCategory && $categorySlug !== $primaryCategory->slug) {
             $this->redirect301("/category/{$primaryCategory->slug}/{$article->slug}");
             return;
@@ -147,7 +264,6 @@ class Router
         $articleCategories = \App\Models\Article::getCategories($article->id);
         $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, $article->title);
 
-        // Get related articles from same category (exclude current)
         $relatedArticles = [];
         if ($primaryCategory) {
             $categoryArticles = \App\Models\Article::byCategory($site->id, $primaryCategory->id, 7);
@@ -155,10 +271,8 @@ class Router
             $relatedArticles = array_slice($relatedArticles, 0, 6);
         }
 
-        // Get all categories for sidebar
         $allCategories = \App\Models\Category::all($site->id);
 
-        // Get related reviews from same category for cross-linking
         $relatedReviews = [];
         if ($primaryCategory) {
             $relatedReviews = \App\Models\Review::byCategory($site->id, $primaryCategory->id, 3);
@@ -177,10 +291,8 @@ class Router
             return;
         }
 
-        // Get primary category
         $primaryCategory = \App\Models\Category::find($review->primary_category_id);
 
-        // Verify URL matches primary category (redirect if wrong category)
         if ($primaryCategory && $categorySlug !== $primaryCategory->slug) {
             $this->redirect301("/category/{$primaryCategory->slug}/reviews/{$review->slug}");
             return;
@@ -192,7 +304,6 @@ class Router
         $reviewCategories = \App\Models\Review::getCategories($review->id);
         $breadcrumbs = $this->buildBreadcrumbs($primaryCategory, 'Reviews', "/category/{$primaryCategory->slug}/reviews", $review->name);
 
-        // Get related reviews from same category (exclude current)
         $relatedReviews = [];
         if ($primaryCategory) {
             $categoryReviews = \App\Models\Review::byCategory($site->id, $primaryCategory->id, 5);
@@ -213,10 +324,8 @@ class Router
             return;
         }
 
-        // Get primary category
         $primaryCategory = \App\Models\Category::find($listicle->primary_category_id);
 
-        // Verify URL matches primary category (redirect if wrong category)
         if ($primaryCategory && $categorySlug !== $primaryCategory->slug) {
             $this->redirect301("/category/{$primaryCategory->slug}/top/{$listicle->slug}");
             return;
@@ -246,20 +355,31 @@ class Router
             return;
         }
 
-        // Get content for this category
-        $articles = \App\Models\Article::byCategory($site->id, $category->id, 20);
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $sort = $_GET['sort'] ?? 'newest';
+        $type = $_GET['type'] ?? 'all';
+        $perPage = 24;
+        $offset = ($page - 1) * $perPage;
+
+        // Paginated articles
+        $articles = \App\Models\Article::byCategoryPaginated($site->id, $category->id, $perPage, $offset, $sort);
+        $articleCount = \App\Models\Article::countByCategory($site->id, $category->id);
+        $totalPages = (int) ceil($articleCount / $perPage);
+
+        // Reviews and listicles (smaller sets, no pagination needed)
         $reviews = \App\Models\Review::byCategory($site->id, $category->id, 12);
         $listicles = \App\Models\Listicle::byCategory($site->id, $category->id, 6);
-
-        // Get counts
-        $articleCount = \App\Models\Article::countByCategory($site->id, $category->id);
         $reviewCount = count($reviews);
         $listicleCount = count($listicles);
 
-        // Get all categories for sidebar
-        $allCategories = \App\Models\Category::all($site->id);
+        // All categories for sidebar (single query with counts)
+        $allCategories = \App\Models\Category::allWithCounts($site->id);
 
-        $this->render('categories/show', compact('site', 'category', 'articles', 'reviews', 'listicles', 'articleCount', 'reviewCount', 'listicleCount', 'allCategories'));
+        $this->render('categories/show', compact(
+            'site', 'category', 'articles', 'reviews', 'listicles',
+            'articleCount', 'reviewCount', 'listicleCount',
+            'allCategories', 'page', 'totalPages', 'sort', 'type', 'perPage'
+        ));
     }
 
     private function pageShow(string $slug): void
@@ -275,17 +395,95 @@ class Router
         $this->render('pages/default', compact('site', 'page'));
     }
 
-    private function sitemap(): void
+    private function sitemapIndex(): void
     {
-        $site = $this->site;
-        $articles = \App\Models\Article::latest($site->id, 1000);
-        $reviews = \App\Models\Review::latest($site->id, 1000);
-        $listicles = \App\Models\Listicle::latest($site->id, 1000);
-        $categories = \App\Models\Category::all($site->id);
+        $domain = $this->site->domain;
+        $sections = ['articles', 'reviews', 'listicles', 'categories', 'pages'];
 
         header('Content-Type: application/xml; charset=utf-8');
-        require $this->templateDir . '/sitemap.php';
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        echo '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        foreach ($sections as $section) {
+            echo '  <sitemap>' . PHP_EOL;
+            echo '    <loc>https://' . htmlspecialchars($domain) . '/sitemap-' . $section . '.xml</loc>' . PHP_EOL;
+            echo '  </sitemap>' . PHP_EOL;
+        }
+        echo '</sitemapindex>' . PHP_EOL;
         exit;
+    }
+
+    private function sitemapSection(string $section): void
+    {
+        $site = $this->site;
+        $domain = $site->domain;
+
+        header('Content-Type: application/xml; charset=utf-8');
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+
+        switch ($section) {
+            case 'articles':
+                // Homepage + browse page
+                $this->sitemapUrl($domain, '/', 'daily', '1.0');
+                $this->sitemapUrl($domain, '/articles', 'daily', '0.8');
+                // All articles
+                $articles = \App\Models\Article::latest($site->id, 100000);
+                foreach ($articles as $item) {
+                    if (!empty($item->category_slug)) {
+                        $this->sitemapUrl($domain, "/category/{$item->category_slug}/{$item->slug}", 'monthly', '0.6', $item->updated_at);
+                    }
+                }
+                break;
+
+            case 'reviews':
+                $this->sitemapUrl($domain, '/reviews', 'weekly', '0.8');
+                $reviews = \App\Models\Review::latest($site->id, 100000);
+                foreach ($reviews as $item) {
+                    if (!empty($item->category_slug)) {
+                        $this->sitemapUrl($domain, "/category/{$item->category_slug}/reviews/{$item->slug}", 'weekly', '0.9', $item->updated_at);
+                    }
+                }
+                break;
+
+            case 'listicles':
+                $listicles = \App\Models\Listicle::latest($site->id, 100000);
+                foreach ($listicles as $item) {
+                    if (!empty($item->category_slug)) {
+                        $this->sitemapUrl($domain, "/category/{$item->category_slug}/top/{$item->slug}", 'weekly', '0.9', $item->updated_at);
+                    }
+                }
+                break;
+
+            case 'categories':
+                $this->sitemapUrl($domain, '/categories', 'weekly', '0.9');
+                $categories = \App\Models\Category::all($site->id);
+                foreach ($categories as $item) {
+                    $this->sitemapUrl($domain, "/category/{$item->slug}", 'weekly', '0.8');
+                }
+                break;
+
+            case 'pages':
+                $pages = \App\Models\Page::all($site->id);
+                foreach ($pages as $item) {
+                    $this->sitemapUrl($domain, "/{$item->slug}", 'monthly', '0.4');
+                }
+                break;
+        }
+
+        echo '</urlset>' . PHP_EOL;
+        exit;
+    }
+
+    private function sitemapUrl(string $domain, string $path, string $changefreq, string $priority, ?string $lastmod = null): void
+    {
+        echo '  <url>' . PHP_EOL;
+        echo '    <loc>https://' . htmlspecialchars($domain) . htmlspecialchars($path) . '</loc>' . PHP_EOL;
+        if ($lastmod) {
+            echo '    <lastmod>' . date('c', strtotime($lastmod)) . '</lastmod>' . PHP_EOL;
+        }
+        echo '    <changefreq>' . $changefreq . '</changefreq>' . PHP_EOL;
+        echo '    <priority>' . $priority . '</priority>' . PHP_EOL;
+        echo '  </url>' . PHP_EOL;
     }
 
     private function robotsTxt(): void
@@ -322,7 +520,6 @@ class Router
             return;
         }
 
-        // Start output buffering for the content
         ob_start();
         require $templateFile;
         $content = ob_get_clean();
@@ -400,7 +597,6 @@ class Router
             $breadcrumbs[] = ['label' => $category->name, 'url' => $baseUrl . "/category/{$category->slug}"];
         }
 
-        // Process remaining items (pairs of label, url or just final label)
         for ($i = 0; $i < count($items); $i++) {
             $label = $items[$i];
             $url = isset($items[$i + 1]) && strpos($items[$i + 1], '/') === 0 ? $baseUrl . $items[++$i] : null;

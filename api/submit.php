@@ -74,7 +74,7 @@ if (!$validation['valid']) {
 }
 
 // Determine campaign from form data
-$allowedCampaigns = ['eb', 'ee25', 'qr', 'cr', 'sc', 'ss', 'general'];
+$allowedCampaigns = ['eb', 'ee25', 'qr', 'cr', 'sc', 'ss', 'general', 'newsletter'];
 $campaign = Security::validateWhitelist($data['campaign'] ?? 'general', $allowedCampaigns, 'general');
 
 // Build extra fields for notes

@@ -10,8 +10,12 @@ require_once __DIR__ . '/app/bootstrap.php';
 use App\Models\Site;
 use App\Core\Router;
 
-// Load site config (customer-reports.org)
-$site = Site::findByDomain('customer-reports.org');
+// Load site config — try current domain first, fall back to production domain
+$domain = $_SERVER['SERVER_NAME'] ?? 'customer-reports.org';
+$site = Site::findByDomain($domain);
+if (!$site) {
+    $site = Site::findByDomain('customer-reports.org');
+}
 
 if (!$site) {
     // Fallback: if DB isn't configured yet, show a simple message

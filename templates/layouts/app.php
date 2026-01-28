@@ -78,12 +78,10 @@ $canonicalUrl = 'https://' . $site->domain . $requestPath;
     <?php require __DIR__ . '/../partials/footer.php'; ?>
 
     <!-- Cookie Consent Banner -->
-    <div id="cookieBanner" class="cr-cookie-banner" style="display: none;">
-        <div class="container">
-            <div class="cr-cookie-content">
-                <p>We use cookies to enhance your browsing experience and analyze site traffic. By continuing to use this site, you consent to our use of cookies.</p>
-                <button type="button" class="cr-cookie-btn" onclick="acceptCookies()">OK</button>
-            </div>
+    <div id="cookieBanner" class="fixed-bottom bg-dark text-white border-top border-secondary" style="display: none; z-index: 1050;">
+        <div class="container-xl py-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <p class="mb-0 small">We use cookies to enhance your browsing experience and analyze site traffic. By continuing to use this site, you consent to our use of cookies.</p>
+            <button type="button" class="btn btn-success btn-sm" onclick="acceptCookies()">Accept</button>
         </div>
     </div>
 

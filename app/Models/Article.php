@@ -42,6 +42,26 @@ class Article
         );
     }
 
+    public static function byCategoryPaginated(int $siteId, int $categoryId, int $limit = 24, int $offset = 0, string $sort = 'newest'): array
+    {
+        $orderBy = match ($sort) {
+            'oldest' => 'a.published_at ASC',
+            'title' => 'a.title ASC',
+            default => 'a.published_at DESC',
+        };
+
+        $db = Database::getInstance();
+        return $db->fetchAll(
+            "SELECT a.*, c.slug as category_slug, c.name as category_name
+             FROM content_articles a
+             LEFT JOIN content_categories c ON a.primary_category_id = c.id
+             JOIN content_article_category ac ON a.id = ac.article_id
+             WHERE a.site_id = ? AND ac.category_id = ? AND a.status = 'published'
+             ORDER BY {$orderBy} LIMIT ? OFFSET ?",
+            [$siteId, $categoryId, $limit, $offset]
+        );
+    }
+
     public static function count(int $siteId): int
     {
         $db = Database::getInstance();
@@ -61,6 +81,62 @@ class Article
              WHERE a.site_id = ? AND ac.category_id = ? AND a.status = 'published'",
             [$siteId, $categoryId]
         );
+        return (int) ($result->total ?? 0);
+    }
+
+    public static function search(int $siteId, string $query, ?int $categoryId = null, int $limit = 24, int $offset = 0): array
+    {
+        $db = Database::getInstance();
+
+        if ($categoryId) {
+            return $db->fetchAll(
+                "SELECT a.*, c.slug as category_slug, c.name as category_name,
+                        MATCH(a.title, a.content) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+                 FROM content_articles a
+                 LEFT JOIN content_categories c ON a.primary_category_id = c.id
+                 JOIN content_article_category ac ON a.id = ac.article_id
+                 WHERE a.site_id = ? AND ac.category_id = ? AND a.status = 'published'
+                   AND MATCH(a.title, a.content) AGAINST(? IN NATURAL LANGUAGE MODE)
+                 ORDER BY relevance DESC LIMIT ? OFFSET ?",
+                [$query, $siteId, $categoryId, $query, $limit, $offset]
+            );
+        }
+
+        return $db->fetchAll(
+            "SELECT a.*, c.slug as category_slug, c.name as category_name,
+                    MATCH(a.title, a.content) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+             FROM content_articles a
+             LEFT JOIN content_categories c ON a.primary_category_id = c.id
+             WHERE a.site_id = ? AND a.status = 'published'
+               AND MATCH(a.title, a.content) AGAINST(? IN NATURAL LANGUAGE MODE)
+             ORDER BY relevance DESC LIMIT ? OFFSET ?",
+            [$query, $siteId, $query, $limit, $offset]
+        );
+    }
+
+    public static function searchCount(int $siteId, string $query, ?int $categoryId = null): int
+    {
+        $db = Database::getInstance();
+
+        if ($categoryId) {
+            $result = $db->fetchOne(
+                "SELECT COUNT(*) as total
+                 FROM content_articles a
+                 JOIN content_article_category ac ON a.id = ac.article_id
+                 WHERE a.site_id = ? AND ac.category_id = ? AND a.status = 'published'
+                   AND MATCH(a.title, a.content) AGAINST(? IN NATURAL LANGUAGE MODE)",
+                [$siteId, $categoryId, $query]
+            );
+        } else {
+            $result = $db->fetchOne(
+                "SELECT COUNT(*) as total
+                 FROM content_articles a
+                 WHERE a.site_id = ? AND a.status = 'published'
+                   AND MATCH(a.title, a.content) AGAINST(? IN NATURAL LANGUAGE MODE)",
+                [$siteId, $query]
+            );
+        }
+
         return (int) ($result->total ?? 0);
     }
 

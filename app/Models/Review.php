@@ -42,6 +42,59 @@ class Review
         );
     }
 
+    public static function byCategoryPaginated(int $siteId, int $categoryId, int $limit = 24, int $offset = 0, string $sort = 'newest'): array
+    {
+        $orderBy = match ($sort) {
+            'oldest' => 'r.published_at ASC',
+            'rating' => 'r.rating_overall DESC',
+            'name' => 'r.name ASC',
+            default => 'r.published_at DESC',
+        };
+
+        $db = Database::getInstance();
+        return $db->fetchAll(
+            "SELECT r.*, c.slug as category_slug, c.name as category_name
+             FROM content_reviews r
+             LEFT JOIN content_categories c ON r.primary_category_id = c.id
+             JOIN content_review_category rc ON r.id = rc.review_id
+             WHERE r.site_id = ? AND rc.category_id = ? AND r.status = 'published'
+             ORDER BY {$orderBy} LIMIT ? OFFSET ?",
+            [$siteId, $categoryId, $limit, $offset]
+        );
+    }
+
+    public static function countByCategory(int $siteId, int $categoryId): int
+    {
+        $db = Database::getInstance();
+        $result = $db->fetchOne(
+            "SELECT COUNT(*) as total FROM content_reviews r
+             JOIN content_review_category rc ON r.id = rc.review_id
+             WHERE r.site_id = ? AND rc.category_id = ? AND r.status = 'published'",
+            [$siteId, $categoryId]
+        );
+        return (int) ($result->total ?? 0);
+    }
+
+    public static function latestPaginated(int $siteId, int $limit = 24, int $offset = 0, string $sort = 'newest'): array
+    {
+        $orderBy = match ($sort) {
+            'oldest' => 'r.published_at ASC',
+            'rating' => 'r.rating_overall DESC',
+            'name' => 'r.name ASC',
+            default => 'r.published_at DESC',
+        };
+
+        $db = Database::getInstance();
+        return $db->fetchAll(
+            "SELECT r.*, c.slug as category_slug, c.name as category_name
+             FROM content_reviews r
+             LEFT JOIN content_categories c ON r.primary_category_id = c.id
+             WHERE r.site_id = ? AND r.status = 'published'
+             ORDER BY {$orderBy} LIMIT ? OFFSET ?",
+            [$siteId, $limit, $offset]
+        );
+    }
+
     public static function count(int $siteId): int
     {
         $db = Database::getInstance();
@@ -49,6 +102,62 @@ class Review
             "SELECT COUNT(*) as total FROM content_reviews WHERE site_id = ? AND status = 'published'",
             [$siteId]
         );
+        return (int) ($result->total ?? 0);
+    }
+
+    public static function search(int $siteId, string $query, ?int $categoryId = null, int $limit = 24, int $offset = 0): array
+    {
+        $db = Database::getInstance();
+
+        if ($categoryId) {
+            return $db->fetchAll(
+                "SELECT r.*, c.slug as category_slug, c.name as category_name,
+                        MATCH(r.name, r.short_description) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+                 FROM content_reviews r
+                 LEFT JOIN content_categories c ON r.primary_category_id = c.id
+                 JOIN content_review_category rc ON r.id = rc.review_id
+                 WHERE r.site_id = ? AND rc.category_id = ? AND r.status = 'published'
+                   AND MATCH(r.name, r.short_description) AGAINST(? IN NATURAL LANGUAGE MODE)
+                 ORDER BY relevance DESC LIMIT ? OFFSET ?",
+                [$query, $siteId, $categoryId, $query, $limit, $offset]
+            );
+        }
+
+        return $db->fetchAll(
+            "SELECT r.*, c.slug as category_slug, c.name as category_name,
+                    MATCH(r.name, r.short_description) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+             FROM content_reviews r
+             LEFT JOIN content_categories c ON r.primary_category_id = c.id
+             WHERE r.site_id = ? AND r.status = 'published'
+               AND MATCH(r.name, r.short_description) AGAINST(? IN NATURAL LANGUAGE MODE)
+             ORDER BY relevance DESC LIMIT ? OFFSET ?",
+            [$query, $siteId, $query, $limit, $offset]
+        );
+    }
+
+    public static function searchCount(int $siteId, string $query, ?int $categoryId = null): int
+    {
+        $db = Database::getInstance();
+
+        if ($categoryId) {
+            $result = $db->fetchOne(
+                "SELECT COUNT(*) as total
+                 FROM content_reviews r
+                 JOIN content_review_category rc ON r.id = rc.review_id
+                 WHERE r.site_id = ? AND rc.category_id = ? AND r.status = 'published'
+                   AND MATCH(r.name, r.short_description) AGAINST(? IN NATURAL LANGUAGE MODE)",
+                [$siteId, $categoryId, $query]
+            );
+        } else {
+            $result = $db->fetchOne(
+                "SELECT COUNT(*) as total
+                 FROM content_reviews r
+                 WHERE r.site_id = ? AND r.status = 'published'
+                   AND MATCH(r.name, r.short_description) AGAINST(? IN NATURAL LANGUAGE MODE)",
+                [$siteId, $query]
+            );
+        }
+
         return (int) ($result->total ?? 0);
     }
 

@@ -60,190 +60,143 @@ ob_start();
     <?php include __DIR__ . '/../partials/breadcrumbs.php'; ?>
 <?php endif; ?>
 
-<!-- Top Navigation Bar -->
-<div class="cr-navb">
-    <div class="container">
-        <div class="cr-navb-wrapper">
-            <span class="cr-navb-header">
-                <span>Categories</span>
-                <i class="fas fa-angle-down"></i>
-            </span>
-            <div class="cr-navb-list">
-                <a href="<?= BASE_URL ?>/" class="cr-navb-item">Best Overall</a>
-                <?php
-                $categories = \App\Models\Category::topLevel($site->id);
-                foreach (array_slice($categories, 0, 4) as $cat):
-                ?>
-                <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($cat->slug) ?>" class="cr-navb-item"><?= htmlspecialchars($cat->name) ?></a>
-                <?php endforeach; ?>
-            </div>
-            <div class="cr-navb-menu">
-                <a href="<?= BASE_URL ?>/categories">Categories</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Listicle Header -->
-<section class="cr-listicle-header">
-    <div class="container">
-        <h1><?= htmlspecialchars($listicle->title) ?></h1>
+<section class="bg-dark text-white py-5">
+    <div class="container-xl">
+        <h1 class="fw-bold mb-2"><?= htmlspecialchars($listicle->title) ?></h1>
         <?php if (!empty($listicle->excerpt)): ?>
-        <p class="lead"><?= htmlspecialchars($listicle->excerpt) ?></p>
+        <p class="lead text-white-50 mb-3"><?= htmlspecialchars($listicle->excerpt) ?></p>
         <?php endif; ?>
-        <div class="cr-header-meta">
+        <div class="d-flex flex-wrap align-items-center gap-3 small">
             <?php if ($listicle->published_at): ?>
-            <span class="updated-date">Updated <?= date('F Y', strtotime($listicle->published_at)) ?></span>
+            <span class="text-white-50"><i class="far fa-calendar-alt me-1"></i> Updated <?= date('F Y', strtotime($listicle->published_at)) ?></span>
             <?php endif; ?>
-            <div class="cr-disclosure-links">
-                <a href="#advertiserDisclosureModal" data-bs-toggle="modal">Advertiser disclosure</a>
-                <a href="#aboutRankingsModal" data-bs-toggle="modal">About our rankings</a>
-            </div>
+            <a href="#advertiserDisclosureModal" data-bs-toggle="modal" class="text-white-50 text-decoration-none"><i class="fas fa-info-circle me-1"></i> Advertiser disclosure</a>
+            <a href="#aboutRankingsModal" data-bs-toggle="modal" class="text-white-50 text-decoration-none"><i class="fas fa-chart-bar me-1"></i> About our rankings</a>
         </div>
     </div>
 </section>
 
-<div class="container py-4">
+<div class="container-xl py-4">
     <div class="row">
-        <!-- LEFT COLUMN - Product Cards (col-lg-9) -->
-        <div class="col-lg-9 col-md-12">
+        <!-- LEFT COLUMN - Product Cards -->
+        <div class="col-lg-9">
             <!-- Introduction -->
             <?php if (!empty($listicle->introduction)): ?>
-            <div class="cr-listicle-intro">
+            <div class="mb-4 article-content">
                 <?= $listicle->introduction ?>
             </div>
             <?php endif; ?>
 
             <!-- Product Cards -->
             <?php if (!empty($listicle->items)): ?>
-            <div class="cr-listicle-items">
-                <?php foreach ($listicle->items as $index => $item): ?>
-                <?php
-                $rank = $item['rank'] ?? ($index + 1);
-                $itemSlug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $item['name'] ?? 'item-' . $index));
-                ?>
-                <div class="cr-item-card" data-rank="<?= $rank ?>" data-slug="<?= htmlspecialchars($itemSlug) ?>" data-index="<?= $index ?>">
-                    <!-- Ordinal Badge -->
-                    <div class="cr-ordinal"><?= $rank ?></div>
-
-                    <!-- Banner Badge -->
+            <?php foreach ($listicle->items as $index => $item): ?>
+            <?php $rank = $item['rank'] ?? ($index + 1); ?>
+            <div class="card mb-4 border-0 shadow-sm overflow-hidden listicle-item-card">
+                <div class="card-body p-0">
+                    <!-- Badge Banner -->
                     <?php if (!empty($item['badge'])): ?>
-                    <div class="cr-badge-banner">
-                        <span><?= htmlspecialchars($item['badge']) ?></span>
+                    <div class="bg-success text-white py-1 px-3 small fw-bold">
+                        <i class="fas fa-award me-1"></i> <?= htmlspecialchars($item['badge']) ?>
                     </div>
                     <?php endif; ?>
 
-                    <!-- Savings Badge -->
-                    <?php if (!empty($item['savings'])): ?>
-                    <div class="cr-savings-badge">
-                        <span>Save <?= htmlspecialchars($item['savings']) ?></span>
-                    </div>
-                    <?php endif; ?>
-
-                    <!-- Card Content Row -->
-                    <div class="cr-item-row">
-                        <!-- Left: Brand Logo -->
-                        <div class="cr-logo-col">
-                            <?php if (!empty($item['brand_logo'])): ?>
-                            <img src="<?= htmlspecialchars($item['brand_logo']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="cr-brand-logo">
-                            <?php elseif (!empty($item['image'])): ?>
-                            <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="cr-brand-logo">
-                            <?php else: ?>
-                            <div class="cr-brand-logo cr-logo-placeholder">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Center: Rating + Name + Features -->
-                        <div class="cr-content-col">
-                            <!-- Rating Section -->
-                            <?php if (!empty($item['rating'])): ?>
-                            <div class="cr-rating-row">
-                                <span class="cr-rating-num"><?= number_format($item['rating'], 1) ?></span>
-                                <span class="cr-rating-stars">
-                                    <?php
-                                    $rating = floatval($item['rating']);
-                                    $fullStars = round($rating / 2);
-                                    for ($i = 1; $i <= 5; $i++):
-                                    ?>
-                                    <i class="fas fa-star<?= $i <= $fullStars ? ' filled' : '' ?>"></i>
-                                    <?php endfor; ?>
-                                </span>
-                            </div>
-                            <?php endif; ?>
-
-                            <!-- Product Name -->
-                            <div class="cr-product-details">
-                                <strong><?= htmlspecialchars($item['name'] ?? '') ?></strong>
-
-                                <!-- Feature Bullets -->
-                                <?php if (!empty($item['features']) && is_array($item['features'])): ?>
-                                <ul>
-                                    <?php foreach ($item['features'] as $feature): ?>
-                                    <li><?= htmlspecialchars($feature) ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
+                    <div class="p-3 p-md-4">
+                        <div class="row align-items-center">
+                            <!-- Rank + Logo -->
+                            <div class="col-auto text-center">
+                                <div class="listicle-rank"><?= $rank ?></div>
+                                <?php if (!empty($item['brand_logo'])): ?>
+                                <img src="<?= htmlspecialchars($item['brand_logo']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="mt-2 rounded" style="max-width:80px;max-height:60px;object-fit:contain;">
+                                <?php elseif (!empty($item['image'])): ?>
+                                <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="mt-2 rounded" style="max-width:80px;max-height:60px;object-fit:contain;">
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Read Full Review Link -->
-                            <?php if (!empty($item['affiliate_url'])): ?>
-                            <div class="cr-review-link">
-                                <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored">Read Full Review</a>
+                            <!-- Name + Rating + Features -->
+                            <div class="col">
+                                <!-- Rating -->
+                                <?php if (!empty($item['rating'])): ?>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-success fs-6"><?= number_format($item['rating'], 1) ?></span>
+                                    <span class="text-warning">
+                                        <?php
+                                        $r = floatval($item['rating']);
+                                        $full = round($r / 2);
+                                        for ($i = 1; $i <= 5; $i++):
+                                        ?><i class="fas fa-star<?= $i <= $full ? '' : ' text-muted opacity-25' ?>"></i><?php endfor; ?>
+                                    </span>
+                                </div>
+                                <?php endif; ?>
+
+                                <h3 class="h5 fw-bold mb-2"><?= htmlspecialchars($item['name'] ?? '') ?></h3>
+
+                                <?php if (!empty($item['savings'])): ?>
+                                <span class="badge bg-warning text-dark mb-2"><i class="fas fa-tag me-1"></i> Save <?= htmlspecialchars($item['savings']) ?></span>
+                                <?php endif; ?>
+
+                                <!-- Feature Bullets -->
+                                <?php if (!empty($item['features']) && is_array($item['features'])): ?>
+                                <ul class="list-unstyled small text-muted mb-0">
+                                    <?php foreach ($item['features'] as $feature): ?>
+                                    <li class="mb-1"><i class="fas fa-check text-success me-1"></i> <?= htmlspecialchars($feature) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <?php endif; ?>
+
+                                <?php if (!empty($item['trust_signal'])): ?>
+                                <div class="text-muted small mt-2"><i class="fas fa-shield-alt me-1"></i> <?= htmlspecialchars($item['trust_signal']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Product Image -->
+                            <?php if (!empty($item['product_image'])): ?>
+                            <div class="col-auto d-none d-md-block">
+                                <?php if (!empty($item['affiliate_url'])): ?>
+                                <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored">
+                                <?php endif; ?>
+                                    <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="rounded" style="max-width:120px;max-height:100px;object-fit:contain;">
+                                <?php if (!empty($item['affiliate_url'])): ?>
+                                </a>
+                                <?php endif; ?>
                             </div>
                             <?php endif; ?>
-                        </div>
 
-                        <!-- Right: CTA Button + Trust Signal -->
-                        <div class="cr-cta-col">
-                            <?php if (!empty($item['affiliate_url'])): ?>
-                            <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="cr-cta-button">
-                                <?= htmlspecialchars($item['cta_text'] ?? 'Check Price') ?>
-                            </a>
-                            <?php endif; ?>
-
-                            <!-- Trust Signal -->
-                            <?php if (!empty($item['trust_signal'])): ?>
-                            <div class="cr-trust-signal">
-                                <?= htmlspecialchars($item['trust_signal']) ?>
+                            <!-- CTA -->
+                            <div class="col-12 col-md-auto mt-3 mt-md-0 text-center">
+                                <?php if (!empty($item['affiliate_url'])): ?>
+                                <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="btn btn-success fw-bold px-4">
+                                    <?= htmlspecialchars($item['cta_text'] ?? 'Check Price') ?> <i class="fas fa-external-link-alt ms-1"></i>
+                                </a>
+                                <div class="mt-1">
+                                    <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="text-success text-decoration-none small">Read Full Review</a>
+                                </div>
+                                <?php endif; ?>
                             </div>
-                            <?php endif; ?>
                         </div>
-
-                        <!-- Far Right: Product Image -->
-                        <?php if (!empty($item['product_image'])): ?>
-                        <div class="cr-product-image-col">
-                            <?php if (!empty($item['affiliate_url'])): ?>
-                            <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored">
-                            <?php endif; ?>
-                                <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?> Preview" class="cr-product-image">
-                            <?php if (!empty($item['affiliate_url'])): ?>
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                        <?php endif; ?>
                     </div>
                 </div>
-                <?php endforeach; ?>
             </div>
+            <?php endforeach; ?>
 
             <!-- Comparison Grid -->
             <?php if (count($listicle->items) >= 2): ?>
-            <div class="cr-comparison-grid">
-                <h2>Compare Features</h2>
-                <div class="cr-grid-wrapper">
-                    <div class="cr-grid-scroll">
-                        <table class="cr-grid-table">
-                            <thead>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="fas fa-columns me-2"></i> Compare Features
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <th class="cr-grid-label"></th>
+                                    <th></th>
                                     <?php foreach (array_slice($listicle->items, 0, 5) as $idx => $item): ?>
-                                    <th class="cr-grid-product">
-                                        <span class="cr-grid-rank"><?= $idx + 1 ?>.</span>
+                                    <th class="text-center small">
+                                        <span class="badge bg-dark rounded-pill me-1"><?= $idx + 1 ?></span>
                                         <?= htmlspecialchars($item['name'] ?? '') ?>
                                         <?php if (!empty($item['product_image']) || !empty($item['brand_logo'])): ?>
-                                        <img src="<?= htmlspecialchars($item['product_image'] ?? $item['brand_logo'] ?? '') ?>" alt="" class="cr-grid-thumb">
+                                        <br><img src="<?= htmlspecialchars($item['product_image'] ?? $item['brand_logo'] ?? '') ?>" alt="" style="max-width:50px;max-height:35px;object-fit:contain;" class="mt-1">
                                         <?php endif; ?>
                                     </th>
                                     <?php endforeach; ?>
@@ -251,13 +204,12 @@ ob_start();
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="cr-grid-label">Rating</td>
+                                    <td class="fw-bold small">Rating</td>
                                     <?php foreach (array_slice($listicle->items, 0, 5) as $item): ?>
-                                    <td><?= !empty($item['rating']) ? number_format($item['rating'], 1) : '-' ?></td>
+                                    <td class="text-center"><?= !empty($item['rating']) ? '<span class="badge bg-success">' . number_format($item['rating'], 1) . '</span>' : '-' ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <?php
-                                // Get spec keys from first item that has specs
                                 $specKeys = [];
                                 foreach ($listicle->items as $item) {
                                     if (!empty($item['specs']) && is_array($item['specs'])) {
@@ -268,20 +220,18 @@ ob_start();
                                 foreach (array_slice($specKeys, 0, 4) as $specKey):
                                 ?>
                                 <tr>
-                                    <td class="cr-grid-label"><?= htmlspecialchars($specKey) ?></td>
+                                    <td class="fw-bold small"><?= htmlspecialchars($specKey) ?></td>
                                     <?php foreach (array_slice($listicle->items, 0, 5) as $item): ?>
-                                    <td><?= htmlspecialchars($item['specs'][$specKey] ?? '-') ?></td>
+                                    <td class="text-center small"><?= htmlspecialchars($item['specs'][$specKey] ?? '-') ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <?php endforeach; ?>
-                                <tr class="cr-grid-cta-row">
-                                    <td class="cr-grid-label"></td>
+                                <tr>
+                                    <td></td>
                                     <?php foreach (array_slice($listicle->items, 0, 5) as $item): ?>
-                                    <td>
+                                    <td class="text-center">
                                         <?php if (!empty($item['affiliate_url'])): ?>
-                                        <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="cr-grid-cta">
-                                            Check Price
-                                        </a>
+                                        <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="btn btn-success btn-sm">Check Price</a>
                                         <?php endif; ?>
                                     </td>
                                     <?php endforeach; ?>
@@ -295,35 +245,43 @@ ob_start();
 
             <?php endif; ?>
 
-            <!-- About Our Rankings Stats -->
-            <div class="cr-rankings-stats">
-                <div class="cr-stat-box">
-                    <div class="stat-icon"><i class="fas fa-box"></i></div>
-                    <span class="stat-number"><?= count($listicle->items ?? []) ?></span>
-                    <span class="stat-label">Models Evaluated</span>
+            <!-- Research Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 bg-light text-center p-3">
+                        <i class="fas fa-box fa-lg text-success mb-2"></i>
+                        <div class="h4 fw-bold mb-0"><?= count($listicle->items ?? []) ?></div>
+                        <div class="text-muted small">Models Evaluated</div>
+                    </div>
                 </div>
-                <div class="cr-stat-box">
-                    <div class="stat-icon"><i class="fas fa-list-ul"></i></div>
-                    <span class="stat-number">5</span>
-                    <span class="stat-label">Topics Considered</span>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 bg-light text-center p-3">
+                        <i class="fas fa-list-ul fa-lg text-success mb-2"></i>
+                        <div class="h4 fw-bold mb-0">5</div>
+                        <div class="text-muted small">Topics Considered</div>
+                    </div>
                 </div>
-                <div class="cr-stat-box">
-                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                    <span class="stat-number">15+</span>
-                    <span class="stat-label">Hours of Research</span>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 bg-light text-center p-3">
+                        <i class="fas fa-clock fa-lg text-success mb-2"></i>
+                        <div class="h4 fw-bold mb-0">15+</div>
+                        <div class="text-muted small">Hours of Research</div>
+                    </div>
                 </div>
-                <div class="cr-stat-box">
-                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                    <span class="stat-number">1,000+</span>
-                    <span class="stat-label">Purchases Analyzed</span>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 bg-light text-center p-3">
+                        <i class="fas fa-shopping-cart fa-lg text-success mb-2"></i>
+                        <div class="h4 fw-bold mb-0">1,000+</div>
+                        <div class="text-muted small">Purchases Analyzed</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Buyer's Guide -->
             <?php if (!empty($listicle->buyers_guide)): ?>
-            <div class="cr-buyers-guide">
-                <h2>Buyer's Guide</h2>
-                <div class="cr-buyers-guide-content">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-bold"><i class="fas fa-book me-2 text-success"></i> Buyer's Guide</div>
+                <div class="card-body article-content">
                     <?= $listicle->buyers_guide ?>
                 </div>
             </div>
@@ -333,38 +291,52 @@ ob_start();
             <?php if (!empty($listicle->faqs)): ?>
             <?php $faqs = is_string($listicle->faqs) ? json_decode($listicle->faqs, true) : $listicle->faqs; ?>
             <?php if (!empty($faqs) && is_array($faqs)): ?>
-            <div class="cr-faqs">
-                <h2>Frequently Asked Questions</h2>
-                <?php foreach ($faqs as $faq): ?>
-                <div class="cr-faq-item">
-                    <div class="cr-faq-question"><?= htmlspecialchars($faq['question'] ?? '') ?></div>
-                    <div class="cr-faq-answer"><?= htmlspecialchars($faq['answer'] ?? '') ?></div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-bold"><i class="fas fa-question-circle me-2 text-success"></i> Frequently Asked Questions</div>
+                <div class="card-body p-0">
+                    <div class="accordion accordion-flush" id="faqAccordion">
+                        <?php foreach ($faqs as $fi => $faq): ?>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq<?= $fi ?>">
+                                    <?= htmlspecialchars($faq['question'] ?? '') ?>
+                                </button>
+                            </h2>
+                            <div id="faq<?= $fi ?>" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    <?= htmlspecialchars($faq['answer'] ?? '') ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <?php endforeach; ?>
             </div>
             <?php endif; ?>
             <?php endif; ?>
 
-            <!-- About Us Section -->
-            <div class="cr-about-section">
-                <h2>About <?= htmlspecialchars($site->name) ?></h2>
-                <p><?= htmlspecialchars($site->name) ?> helps consumers make informed purchasing decisions. We analyze thousands of products, compare features and specifications, and provide unbiased recommendations to help you find the best products for your needs. Our team of experts spends hours researching and testing products so you don't have to.</p>
+            <!-- About Us -->
+            <div class="card border-0 bg-light mb-4">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold">About <?= htmlspecialchars($site->name) ?></h3>
+                    <p class="text-muted mb-0"><?= htmlspecialchars($site->name) ?> helps consumers make informed purchasing decisions. We analyze thousands of products, compare features and specifications, and provide unbiased recommendations to help you find the best products for your needs. Our team of experts spends hours researching and testing products so you don't have to.</p>
+                </div>
             </div>
 
             <!-- Conclusion -->
             <?php if (!empty($listicle->conclusion)): ?>
-            <div class="cr-listicle-conclusion">
-                <h2>Final Thoughts</h2>
-                <?= $listicle->conclusion ?>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-bold"><i class="fas fa-flag-checkered me-2 text-success"></i> Final Thoughts</div>
+                <div class="card-body article-content">
+                    <?= $listicle->conclusion ?>
+                </div>
             </div>
             <?php endif; ?>
         </div>
 
-        <!-- RIGHT COLUMN - Sidebar (col-lg-3) -->
-        <div class="col-lg-3 col-md-12">
-            <div class="cr-sidebar">
-                <?php require __DIR__ . '/../partials/listicle-sidebar.php'; ?>
-            </div>
+        <!-- RIGHT COLUMN - Sidebar -->
+        <div class="col-lg-3">
+            <?php require __DIR__ . '/../partials/listicle-sidebar.php'; ?>
         </div>
     </div>
 </div>

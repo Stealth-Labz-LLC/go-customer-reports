@@ -11,23 +11,25 @@
 if (empty($breadcrumbs)) return;
 ?>
 
-<div class="cr-breadcrumbs">
-    <div class="container">
+<div class="bg-light border-bottom py-2">
+    <div class="container-xl">
         <nav aria-label="Breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
-            <?php foreach ($breadcrumbs as $index => $crumb): ?>
-                <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <ol class="breadcrumb mb-0 small">
+                <?php foreach ($breadcrumbs as $index => $crumb): ?>
+                <li class="breadcrumb-item<?= $crumb['url'] === null ? ' active' : '' ?>"
+                    itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
+                    <?= $crumb['url'] === null ? ' aria-current="page"' : '' ?>>
                     <?php if ($crumb['url'] !== null): ?>
                         <a href="<?= htmlspecialchars($crumb['url']) ?>" itemprop="item">
                             <span itemprop="name"><?= htmlspecialchars($crumb['label']) ?></span>
                         </a>
-                        <meta itemprop="position" content="<?= $index + 1 ?>">
-                        <span class="separator"> / </span>
                     <?php else: ?>
-                        <span class="current" itemprop="name"><?= htmlspecialchars($crumb['label']) ?></span>
-                        <meta itemprop="position" content="<?= $index + 1 ?>">
+                        <span itemprop="name"><?= htmlspecialchars($crumb['label']) ?></span>
                     <?php endif; ?>
-                </span>
-            <?php endforeach; ?>
+                    <meta itemprop="position" content="<?= $index + 1 ?>">
+                </li>
+                <?php endforeach; ?>
+            </ol>
         </nav>
     </div>
 </div>
