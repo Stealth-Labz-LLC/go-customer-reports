@@ -46,7 +46,7 @@ ob_start();
 <section class="position-relative text-white category-hero-section">
     <img src="<?= $catHeroImg ?>" alt="<?= htmlspecialchars($category->name) ?>" class="category-hero-img">
     <div class="category-hero-overlay"></div>
-    <div class="container-xl position-relative py-5" style="z-index:2;">
+    <div class="container-xl category-hero-content py-5">
         <div class="row align-items-center">
             <div class="col-lg-7">
                 <h1 class="display-5 fw-bold mb-2"><?= htmlspecialchars($category->name) ?></h1>
@@ -56,10 +56,10 @@ ob_start();
                 <div class="d-flex flex-wrap gap-3 mb-3">
                     <span class="badge bg-success fs-6 py-2 px-3"><i class="fas fa-file-alt me-1"></i> <?= number_format($articleCount) ?> Articles</span>
                     <?php if ($reviewCount > 0): ?>
-                    <span class="badge bg-warning text-dark fs-6 py-2 px-3"><i class="fas fa-star me-1"></i> <?= $reviewCount ?> Reviews</span>
+                    <span class="badge bg-amber text-white fs-6 py-2 px-3"><i class="fas fa-star me-1"></i> <?= $reviewCount ?> Reviews</span>
                     <?php endif; ?>
                     <?php if ($listicleCount > 0): ?>
-                    <span class="badge bg-info fs-6 py-2 px-3"><i class="fas fa-trophy me-1"></i> <?= $listicleCount ?> Guides</span>
+                    <span class="badge bg-dark bg-opacity-10 text-dark fs-6 py-2 px-3"><i class="fas fa-trophy me-1"></i> <?= $listicleCount ?> Guides</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -76,13 +76,14 @@ ob_start();
 ?>
 <section class="py-5">
     <div class="container-xl">
-        <h2 class="h5 fw-bold mb-3"><i class="fas fa-bolt text-warning me-2"></i>Featured Article</h2>
+        <span class="section-eyebrow"><i class="fas fa-bolt me-1"></i> Featured</span>
+        <h2 class="h5 fw-bold mb-3 section-heading">Featured Article</h2>
         <div class="card border-0 shadow overflow-hidden">
             <div class="row g-0">
                 <?php if (!empty($featuredArticle->featured_image)): ?>
                 <div class="col-lg-6">
                     <a href="<?= $featUrl ?>">
-                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($featuredArticle->featured_image) ?>" alt="<?= htmlspecialchars($featuredArticle->title) ?>" class="w-100 h-100" style="object-fit:cover;min-height:280px;">
+                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($featuredArticle->featured_image) ?>" alt="<?= htmlspecialchars($featuredArticle->title) ?>" class="card-img-top w-100 h-100">
                     </a>
                 </div>
                 <?php endif; ?>
@@ -115,7 +116,8 @@ ob_start();
     <div class="container-xl">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="h5 fw-bold mb-1"><i class="fas fa-star text-warning me-2"></i>Product Reviews</h2>
+                <span class="section-eyebrow section-eyebrow-amber"><i class="fas fa-star me-1"></i> Expert Rated</span>
+                <h2 class="h5 fw-bold mb-1 section-heading">Product Reviews</h2>
                 <p class="text-muted small mb-0"><?= $reviewCount ?> expert reviews in <?= htmlspecialchars($category->name) ?></p>
             </div>
             <a href="<?= BASE_URL ?>/reviews?category=<?= urlencode($category->slug) ?>" class="btn btn-outline-success btn-sm">View All <i class="fas fa-arrow-right ms-1"></i></a>
@@ -137,7 +139,8 @@ ob_start();
     <div class="container-xl">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="h5 fw-bold mb-1"><i class="fas fa-trophy text-warning me-2"></i>Buying Guides</h2>
+                <span class="section-eyebrow"><i class="fas fa-trophy me-1"></i> Top Picks</span>
+                <h2 class="h5 fw-bold mb-1 section-heading">Buying Guides</h2>
                 <p class="text-muted small mb-0">Top picks and comparison guides in <?= htmlspecialchars($category->name) ?></p>
             </div>
         </div>
@@ -157,7 +160,7 @@ ob_start();
                     </a>
                     <?php endif; ?>
                     <div class="card-body d-flex flex-column">
-                        <span class="badge bg-info mb-2 align-self-start">Buying Guide</span>
+                        <span class="badge bg-dark bg-opacity-10 text-dark mb-2 align-self-start">Buying Guide</span>
                         <h5 class="card-title fw-bold">
                             <a href="<?= $listicleUrl ?>" class="text-dark text-decoration-none"><?= htmlspecialchars($listicle->title) ?></a>
                         </h5>
@@ -181,7 +184,8 @@ ob_start();
             <!-- Main Column -->
             <div class="col-lg-9">
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                    <h2 class="h5 fw-bold mb-0"><i class="fas fa-file-alt text-success me-2"></i>All Articles</h2>
+                    <span class="section-eyebrow"><i class="fas fa-file-alt me-1"></i> Articles</span>
+                <h2 class="h5 fw-bold mb-0 section-heading">All Articles</h2>
                     <div class="d-flex align-items-center gap-2">
                         <span class="text-muted small me-1">Sort:</span>
                         <?php
@@ -227,7 +231,7 @@ ob_start();
 
             <!-- Sidebar -->
             <div class="col-lg-3">
-                <div class="sticky-lg-top" style="top:80px;">
+                <div class="sticky-lg-top sidebar-sticky">
                     <!-- Browse Categories -->
                     <div class="card border-0 shadow-sm mb-3">
                         <div class="card-header bg-dark text-white fw-bold small">

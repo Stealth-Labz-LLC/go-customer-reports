@@ -34,17 +34,18 @@ ob_start();
 ?>
 
 <!-- Hero -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col-lg-7">
+                <span class="section-eyebrow"><i class="fas fa-th-large me-1"></i> Explore Topics</span>
                 <h1 class="display-5 fw-bold mb-3">Browse All Categories</h1>
                 <p class="lead text-white-50 mb-4">Explore <?= count($categories) ?> expert-curated topics covering everything from health and nutrition to travel and home improvement.</p>
-                <div class="d-flex flex-wrap gap-4 text-white-50">
-                    <span><i class="fas fa-folder-open me-1"></i> <strong class="text-white"><?= count($categories) ?></strong> Categories</span>
-                    <span><i class="fas fa-file-alt me-1"></i> <strong class="text-white"><?= number_format($totalArticles) ?></strong> Articles</span>
-                    <span><i class="fas fa-star me-1"></i> <strong class="text-white"><?= number_format($totalReviews) ?></strong> Reviews</span>
-                    <span><i class="fas fa-trophy me-1"></i> <strong class="text-white"><?= number_format($totalGuides) ?></strong> Buying Guides</span>
+                <div class="d-flex flex-wrap gap-3">
+                    <span class="hero-stat"><i class="fas fa-folder-open"></i> <strong><?= count($categories) ?></strong> Categories</span>
+                    <span class="hero-stat"><i class="fas fa-file-alt"></i> <strong><?= number_format($totalArticles) ?></strong> Articles</span>
+                    <span class="hero-stat"><i class="fas fa-star"></i> <strong><?= number_format($totalReviews) ?></strong> Reviews</span>
+                    <span class="hero-stat"><i class="fas fa-trophy"></i> <strong><?= number_format($totalGuides) ?></strong> Buying Guides</span>
                 </div>
             </div>
             <div class="col-lg-5 mt-4 mt-lg-0">
@@ -88,10 +89,10 @@ ob_start();
                     <div class="d-flex flex-wrap gap-2 mb-3">
                         <span class="badge bg-success"><?= number_format($cat->article_count) ?> articles</span>
                         <?php if ($cat->review_count > 0): ?>
-                        <span class="badge bg-warning text-dark"><?= $cat->review_count ?> reviews</span>
+                        <span class="badge bg-amber text-white"><?= $cat->review_count ?> reviews</span>
                         <?php endif; ?>
                         <?php if ($cat->listicle_count > 0): ?>
-                        <span class="badge bg-info"><?= $cat->listicle_count ?> guides</span>
+                        <span class="badge bg-dark bg-opacity-10 text-dark"><?= $cat->listicle_count ?> guides</span>
                         <?php endif; ?>
                     </div>
                     <span class="text-success small fw-bold mt-auto">Browse Category <i class="fas fa-arrow-right ms-1"></i></span>
@@ -103,7 +104,7 @@ ob_start();
 </div>
 
 <!-- CTA -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl text-center">
         <h2 class="h4 fw-bold mb-2">Can't find what you're looking for?</h2>
         <p class="text-white-50 mb-4">Search across <?= number_format($totalArticles) ?> articles, <?= number_format($totalReviews) ?> reviews, and <?= number_format($totalGuides) ?> buying guides.</p>

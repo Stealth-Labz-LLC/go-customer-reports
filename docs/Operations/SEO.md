@@ -1,6 +1,6 @@
 # Customer Reports - SEO
 
-Technical SEO implementation details.
+Technical SEO implementation.
 
 ---
 
@@ -18,22 +18,19 @@ All content uses category-based URLs for SEO hierarchy:
 
 ### 301 Redirects
 
-Old WordPress-style URLs automatically redirect:
+Old URLs automatically redirect to category-based structure:
 
 | Old URL | Redirects To |
 |---------|--------------|
 | `/articles/{slug}` | `/category/{cat}/{slug}` |
 | `/reviews/{slug}` | `/category/{cat}/reviews/{slug}` |
 | `/top/{slug}` | `/category/{cat}/top/{slug}` |
-| `/articles` | `/categories` |
-| `/reviews` | `/categories` |
-| `/top` | `/categories` |
 
 ---
 
 ## Schema.org Markup
 
-JSON-LD structured data is automatically generated for all content types.
+JSON-LD structured data is generated for all content types.
 
 ### Product Reviews (`reviews/show.php`)
 
@@ -49,10 +46,7 @@ JSON-LD structured data is automatically generated for all content types.
       "ratingValue": "4.5",
       "bestRating": "5"
     },
-    "author": {
-      "@type": "Person",
-      "name": "Author Name"
-    }
+    "author": { "@type": "Person", "name": "Author Name" }
   },
   "aggregateRating": {
     "@type": "AggregateRating",
@@ -72,12 +66,7 @@ JSON-LD structured data is automatically generated for all content types.
   "name": "Top 10 Best Products",
   "numberOfItems": 10,
   "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Product Name",
-      "url": "/category/cat/reviews/product-slug"
-    }
+    { "@type": "ListItem", "position": 1, "name": "Product Name" }
   ]
 }
 ```
@@ -89,15 +78,8 @@ JSON-LD structured data is automatically generated for all content types.
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Article Title",
-  "author": {
-    "@type": "Person",
-    "name": "Author Name"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Customer Reports"
-  },
-  "datePublished": "2026-01-25T00:00:00+00:00"
+  "author": { "@type": "Person", "name": "Author Name" },
+  "publisher": { "@type": "Organization", "name": "Customer Reports" }
 }
 ```
 
@@ -127,9 +109,9 @@ All pages include via `layouts/app.php`:
 ```
 
 **og:type values:**
-- `website` - Homepage, category pages
-- `article` - Articles
-- `product` - Reviews
+- `website` — Homepage, category pages
+- `article` — Articles
+- `product` — Reviews
 
 ### Twitter Cards
 
@@ -144,31 +126,36 @@ All pages include via `layouts/app.php`:
 
 ## Sitemap
 
+### Sitemap Index
+
 **URL:** `/sitemap.xml`
 
-Dynamically generated via `Router::sitemap()`. Includes:
-
-- Homepage
-- All categories
-- All articles (with category URLs)
-- All reviews (with category URLs)
-- All listicles (with category URLs)
-
-### Format
+The sitemap uses an index structure with sub-sitemaps per content type:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://customer-reports.org/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://customer-reports.org/category/nutrition/protein-guide</loc>
-  </url>
-</urlset>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>https://customer-reports.org/sitemap-articles.xml</loc></sitemap>
+  <sitemap><loc>https://customer-reports.org/sitemap-reviews.xml</loc></sitemap>
+  <sitemap><loc>https://customer-reports.org/sitemap-listicles.xml</loc></sitemap>
+  <sitemap><loc>https://customer-reports.org/sitemap-categories.xml</loc></sitemap>
+  <sitemap><loc>https://customer-reports.org/sitemap-pages.xml</loc></sitemap>
+</sitemapindex>
 ```
+
+### Sub-Sitemaps
+
+| Sub-Sitemap | Contents |
+|-------------|----------|
+| `sitemap-articles.xml` | Homepage + `/articles` browse page + all published articles |
+| `sitemap-reviews.xml` | `/reviews` browse page + all published reviews |
+| `sitemap-listicles.xml` | All published listicles |
+| `sitemap-categories.xml` | `/categories` + all categories |
+| `sitemap-pages.xml` | All published static pages |
+
+Each URL includes `<changefreq>` and `<priority>` values. Content URLs include `<lastmod>` when available.
+
+**Note:** Pages with `status = 'draft'` are automatically excluded since the Page model filters by `status = 'published'`.
 
 ---
 
@@ -176,24 +163,18 @@ Dynamically generated via `Router::sitemap()`. Includes:
 
 **URL:** `/robots.txt`
 
-Dynamically generated via `Router::robotsTxt()`.
+Dynamically generated:
 
 ```
-# robots.txt for Customer Reports
-
 User-agent: *
 Allow: /
 
-# Sitemap
 Sitemap: https://customer-reports.org/sitemap.xml
 
-# Disallow admin/API paths
 Disallow: /api/
 Disallow: /cli/
 Disallow: /config/
 Disallow: /app/
-
-# Disallow campaign/funnel directories
 Disallow: /cr/
 Disallow: /eb/
 Disallow: /ee25/
@@ -206,30 +187,19 @@ Disallow: /ss/
 
 ## Favicon
 
-**Files:**
-- `/favicon.svg` - Primary (all modern browsers)
-- `/favicon-32x32.png` - Fallback
-- `/favicon-16x16.png` - Fallback
-- `/apple-touch-icon.png` - iOS
-
-Favicon is the Customer Reports shield icon extracted from the logo.
+- `/favicon.svg` — Primary (all modern browsers)
+- `/favicon-32x32.png` — Fallback
+- `/favicon-16x16.png` — Fallback
+- `/apple-touch-icon.png` — iOS
 
 ---
 
 ## Internal Linking
 
 Automated internal linking via `cli/add-internal-links.php`:
-
 - Scans article content for category keywords
 - Links keywords to relevant articles in matching categories
 - Max 3 cross-category links per article
-- Keywords mapped: "weight loss", "nutrition", "workout", "wellness", etc.
-
-**Usage:**
-```bash
-php cli/add-internal-links.php --dry-run
-php cli/add-internal-links.php
-```
 
 ---
 
@@ -237,14 +207,14 @@ php cli/add-internal-links.php
 
 Campaign directories (`/cr/`, `/eb/`, `/ee25/`, `/qr/`, `/sc/`, `/ss/`) are protected from indexing:
 
-1. **robots.txt** - `Disallow` rules for all directories
-2. **Meta tags** - `<meta name="robots" content="noindex, nofollow">` in all PHP files
+1. **robots.txt** — `Disallow` rules for all directories
+2. **Meta tags** — `<meta name="robots" content="noindex, nofollow">` in all campaign PHP files
 
 ---
 
 ## Page Variables
 
-Templates can set these variables before including `layouts/app.php`:
+Templates set these variables before including `layouts/app.php`:
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
@@ -252,16 +222,3 @@ Templates can set these variables before including `layouts/app.php`:
 | `$metaDescription` | Meta description | `$site->tagline` |
 | `$ogImage` | Open Graph image | `null` |
 | `$ogType` | Open Graph type | `website` |
-
-**Example:**
-```php
-<?php
-$pageTitle = $review->name . ' Review | ' . $site->name;
-$metaDescription = $review->short_description;
-$ogImage = $review->featured_image;
-$ogType = 'product';
-```
-
----
-
-*SEO implementation completed January 2026.*

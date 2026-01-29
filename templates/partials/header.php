@@ -14,7 +14,6 @@
                     <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/reviews">Reviews</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/categories">Categories</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/about-us">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/contact">Contact</a></li>
                 </ul>
                 <?php if (empty($hideHeaderSearch)): ?>
                 <form action="<?= BASE_URL ?>/search" method="GET" class="d-flex">

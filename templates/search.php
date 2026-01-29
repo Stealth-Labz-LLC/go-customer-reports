@@ -8,9 +8,10 @@ ob_start();
 ?>
 
 <!-- Search Hero -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
-        <h1 class="mb-3">Search</h1>
+        <span class="section-eyebrow"><i class="fas fa-search me-1"></i> Search</span>
+        <h1 class="fw-bold mb-3">Search</h1>
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <?php $size = 'lg'; require __DIR__ . '/partials/search-bar.php'; ?>
@@ -85,7 +86,7 @@ ob_start();
                     <a href="<?= $listicleUrl ?>"><img src="<?= IMAGE_BASE_URL . htmlspecialchars($listicle->featured_image) ?>" class="card-img-top" alt="<?= htmlspecialchars($listicle->title) ?>"></a>
                     <?php endif; ?>
                     <div class="card-body">
-                        <span class="badge bg-info mb-2">Buying Guide</span>
+                        <span class="badge bg-dark bg-opacity-10 text-dark mb-2">Buying Guide</span>
                         <h5 class="card-title"><a href="<?= $listicleUrl ?>" class="text-decoration-none text-dark"><?= htmlspecialchars($listicle->title) ?></a></h5>
                         <?php if (!empty($listicle->excerpt)): ?>
                         <p class="card-text text-muted small"><?= htmlspecialchars(mb_substr($listicle->excerpt, 0, 120)) ?>...</p>

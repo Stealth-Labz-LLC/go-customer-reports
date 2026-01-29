@@ -49,7 +49,7 @@ If needed, manual deployment via FTP:
 
 | Requirement | Minimum |
 |-------------|---------|
-| PHP | 7.4+ |
+| PHP | 8.3 |
 | MySQL | 5.7+ |
 | Apache | mod_rewrite enabled |
 
@@ -59,6 +59,7 @@ If needed, manual deployment via FTP:
 - PDO_MySQL
 - JSON
 - mbstring
+- cURL (for webhook)
 
 ---
 
@@ -88,29 +89,11 @@ return [
     'db_name' => 'customerreports_articles',
     'db_user' => 'your_db_user',
     'db_pass' => 'your_db_password',
+    'webhook_url' => 'https://...',
 ];
 ```
 
 This file is gitignored and must exist on the server.
-
----
-
-## Database Setup
-
-### Initial Setup
-
-1. Create database `customerreports_articles`
-2. Import schema (tables created during migration)
-3. Insert site record:
-
-```sql
-INSERT INTO content_sites (domain, name, tagline)
-VALUES ('customer-reports.org', 'Customer Reports', 'Trusted Reviews. Smarter Choices.');
-```
-
-### Migrations
-
-No migration system — schema changes applied directly via SQL.
 
 ---
 
@@ -122,11 +105,6 @@ To rollback a deployment:
 2. Revert: `git revert <commit-hash>`
 3. Push to main: `git push`
 4. GitHub Actions will deploy the reverted state
-
-Or manually:
-
-1. Download previous release from GitHub
-2. Upload via FTP
 
 ---
 
@@ -151,5 +129,6 @@ Check `storage/logs/` for application errors.
 - [ ] Listicle pages load with products
 - [ ] Article pages load
 - [ ] Images display correctly
-- [ ] Sitemap.xml generates
+- [ ] Sitemap.xml generates (index + sub-sitemaps)
+- [ ] Newsletter signup works
 - [ ] 404 page works for invalid URLs

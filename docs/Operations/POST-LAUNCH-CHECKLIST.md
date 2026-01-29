@@ -1,99 +1,111 @@
 # Post-Launch Checklist
 
-**Run this checklist after every site update goes live.** This is the standard process for auditing, hardening, and verifying affiliate review platforms.
-
-> **When to use:** After initial development is complete and the site is live. Every major update should go through this before being considered "done."
+**Run this checklist after every site update goes live.**
 
 ---
 
 ## Phase 1: Functional Audit
 
-### 1.1 Test Core Pages
-- [ ] Homepage loads - all sections render
-- [ ] `/categories` - category listing page works
-- [ ] `/category/{slug}` - category page shows articles, reviews, listicles
-- [ ] `/category/{cat}/{slug}` - single article page loads
-- [ ] `/category/{cat}/reviews/{slug}` - single review page loads
-- [ ] `/category/{cat}/top/{slug}` - single listicle page loads
-- [ ] `/privacy`, `/terms`, `/contact` - static pages load
-- [ ] `/sitemap.xml` - generates valid XML
-- [ ] `/robots.txt` - generates valid robots file
+### 1.1 Core Pages
+- [ ] Homepage loads — all sections render
+- [ ] `/articles` — article listing with pagination
+- [ ] `/reviews` — review listing with pagination and sorting
+- [ ] `/categories` — category listing page
+- [ ] `/category/{slug}` — category page shows articles, reviews, listicles
+- [ ] `/category/{cat}/{slug}` — single article page loads
+- [ ] `/category/{cat}/reviews/{slug}` — single review page loads
+- [ ] `/category/{cat}/top/{slug}` — single listicle page loads
+- [ ] `/search` — search page loads and returns results
+- [ ] `/about-us`, `/privacy`, `/terms` — static pages load
+- [ ] `/sitemap.xml` — generates valid XML sitemap index
+- [ ] `/sitemap-articles.xml` — sub-sitemap generates
+- [ ] `/robots.txt` — generates valid robots file
 
-### 1.2 Test Content Display
+### 1.2 Content Display
 - [ ] Featured images display correctly
 - [ ] Star ratings render properly
+- [ ] Sub-ratings with progress bars display
 - [ ] Pros/cons lists display
 - [ ] CTA buttons visible and styled
-- [ ] Affiliate links working
+- [ ] Affiliate links working (open in new tab, nofollow)
 - [ ] Pagination working on index pages
+- [ ] Breadcrumbs display on content pages
 
-### 1.3 Test Responsiveness
+### 1.3 Responsiveness
 - [ ] Homepage on mobile viewport
-- [ ] Review pages on mobile
+- [ ] Review pages on mobile (sticky CTA bar visible)
 - [ ] Listicle pages on mobile
-- [ ] Navigation works on mobile
+- [ ] Navigation hamburger menu works on mobile
 - [ ] Images scale properly
 
-### 1.4 Test Error Handling
-- [ ] Invalid slug returns 404 page
-- [ ] 404 page styled correctly
+### 1.4 Error Handling
+- [ ] Invalid slug returns styled 404 page
 - [ ] No PHP errors in browser
 - [ ] No broken images (check console)
 
 ---
 
-## Phase 2: UI/UX Cleanup
+## Phase 2: UI/UX
 
 ### 2.1 Header
 - [ ] Logo displays correctly
-- [ ] Navigation links work
+- [ ] Navigation links: Home, Articles, Reviews, Categories, About
+- [ ] Search bar functional
 - [ ] Mobile menu functions
 - [ ] Consistent across all pages
 
 ### 2.2 Footer
-- [ ] Logo displays correctly
-- [ ] Links work (Privacy, Terms, etc.)
+- [ ] Newsletter signup form submits successfully
+- [ ] Footer links work (About, Privacy, Terms)
 - [ ] Copyright year current
 - [ ] Consistent across all pages
 
-### 2.3 Content Cards
-- [ ] Review cards display uniformly
+### 2.3 Design System
+- [ ] Hero sections use `.hero-section` (home) or `.hero-section-simple` (inner)
+- [ ] Section eyebrows display correctly
+- [ ] Badge palette consistent (bg-success, bg-amber, bg-dark)
+- [ ] No inline styles in templates (except dynamic/framework-required)
+- [ ] Teal/amber/slate color scheme consistent
+
+### 2.4 Content Cards
+- [ ] Review cards display uniformly (vertical and horizontal)
 - [ ] Article cards display uniformly
-- [ ] Listicle cards display uniformly
 - [ ] Placeholder icons show for missing images
 - [ ] Hover states work
 
-### 2.4 Sidebars
-- [ ] Review sidebar displays correctly
-- [ ] Listicle sidebar displays correctly
+### 2.5 Sidebars
+- [ ] Review sidebar sticky and displays correctly
+- [ ] Listicle sidebar widgets all render
 - [ ] CTA buttons prominent
 - [ ] Trust signals visible
 
 ---
 
-## Phase 3: Content Verification
+## Phase 3: Integrations
 
-### 3.1 Database Content
-- [ ] Reviews have featured images
-- [ ] Articles have featured images
-- [ ] Listicles have items populated
-- [ ] Categories have content assigned
-- [ ] No orphaned content
+### 3.1 Newsletter Signup
+- [ ] Footer form captures name + email
+- [ ] Form submits to `/api/submit.php`
+- [ ] Success/error messages display
+- [ ] Data reaches webhook endpoint
 
-### 3.2 Image Paths
-- [ ] Images load from `/uploads/`
-- [ ] No broken image links
-- [ ] No references to old WordPress paths
-- [ ] Placeholder icons work for missing images
+### 3.2 Webhook
+- [ ] `api/webhook-helper.php` loads config from secrets
+- [ ] Lead data formatted correctly (E.164 phone, ISO date)
+- [ ] Webhook POST succeeds (check Stealth Labz portal)
 
-### 3.3 Affiliate Links
-- [ ] CTA buttons have valid URLs
-- [ ] Affiliate links open correctly
-- [ ] Fallback behavior for missing URLs
+### 3.3 GTM
+- [ ] GTM container loads (check page source)
+- [ ] GTM noscript iframe present
+
+### 3.4 Cookie Banner
+- [ ] Banner appears on first visit
+- [ ] Accept button hides banner
+- [ ] Consent persisted in cookie
 
 ---
 
-## Phase 4: SEO Verification
+## Phase 4: SEO
 
 ### 4.1 Meta Tags
 - [ ] Each page has unique title
@@ -104,130 +116,59 @@
 
 ### 4.2 URL Structure
 - [ ] URLs are category-based (`/category/{cat}/...`)
-- [ ] URLs are lowercase with hyphens
-- [ ] Legacy URLs (`/articles/`, `/reviews/`, `/top/`) 301 redirect
+- [ ] Legacy URLs 301 redirect correctly
 - [ ] Canonical URLs consistent
 
 ### 4.3 Sitemap & Robots
-- [ ] `/sitemap.xml` accessible and valid
+- [ ] `/sitemap.xml` returns sitemap index with 5 sub-sitemaps
+- [ ] All sub-sitemaps generate valid XML
 - [ ] All content types included with category URLs
-- [ ] `/robots.txt` accessible
-- [ ] Campaign directories blocked in robots.txt
+- [ ] Draft pages excluded from sitemap
+- [ ] `/robots.txt` blocks campaign directories
 
-### 4.4 Schema.org Markup
+### 4.4 Schema.org
 - [ ] Reviews have Product + Review schema
 - [ ] Listicles have ItemList schema
 - [ ] Articles have Article schema
-- [ ] Test with Google Rich Results Test
-
-### 4.5 Favicon
-- [ ] `/favicon.svg` loads
-- [ ] Favicon displays in browser tab
 
 ---
 
-## Phase 5: Performance Check
+## Phase 5: Security
 
-### 5.1 Page Load
-- [ ] Homepage loads < 3 seconds
-- [ ] Review pages load < 3 seconds
-- [ ] Images optimized
-- [ ] No render-blocking issues
-
-### 5.2 Database
-- [ ] Queries performing well
-- [ ] No N+1 query issues
-- [ ] Indexes on slug columns
-
----
-
-## Phase 6: Security Check
-
-### 6.1 Input/Output
+### 5.1 Input/Output
 - [ ] All output escaped with `htmlspecialchars()`
 - [ ] All queries use prepared statements
 - [ ] No raw user input in SQL
 
-### 6.2 Configuration
+### 5.2 Configuration
 - [ ] `secrets.php` not in git
 - [ ] Error display off in production
 - [ ] Security headers in `.htaccess`
 
-### 6.3 Files
+### 5.3 Files
 - [ ] No sensitive files web-accessible
 - [ ] `/config/` protected
 - [ ] `/storage/` protected
 
 ---
 
-## Phase 7: Documentation Check
+## Phase 6: Git Hygiene
 
-### 7.1 Business Docs
-- [ ] OVERVIEW.md current
-- [ ] PRODUCT.md current
-- [ ] TECHNOLOGY.md current
-- [ ] COST.md current
-- [ ] OPPORTUNITY.md current
-
-### 7.2 Operations Docs
-- [ ] ARCHITECTURE.md current
-- [ ] DEPLOYMENT.md current
-- [ ] DEVELOPMENT.md current
-- [ ] CONVENTIONS.md current
-- [ ] This checklist current
-
----
-
-## Phase 8: Git Hygiene
-
-### 8.1 Repository State
 - [ ] No uncommitted changes
 - [ ] No sensitive files committed
 - [ ] `.gitignore` up to date
-- [ ] Recent commits documented
-
-### 8.2 Deployment
-- [ ] GitHub Actions working
-- [ ] Production matches main branch
-- [ ] No failed deployments
-
----
-
-## Quick Fixes Reference
-
-### Images Not Loading
-```sql
--- Check image paths
-SELECT slug, featured_image FROM content_reviews WHERE featured_image IS NOT NULL LIMIT 10;
-
--- Fix WordPress paths
-UPDATE content_reviews SET featured_image = REPLACE(featured_image, '/wp-content/uploads/', '/uploads/');
-```
-
-### 404 on Valid URLs
-- Check Router.php regex patterns
-- Ensure case-insensitive matching (`#i` flag)
-- Verify slug exists in database
-
-### Blank Page
-- Enable error display temporarily
-- Check PHP error logs
-- Verify database connection
+- [ ] GitHub Actions deploying successfully
 
 ---
 
 ## Completion Criteria
 
-A site is "production ready" when:
+A site update is "production ready" when:
 
-1. **Functional** - All pages load without errors
-2. **Content** - Images display, links work
-3. **Responsive** - Works on mobile and desktop
-4. **SEO** - Meta tags, sitemap, clean URLs
-5. **Secure** - Escaping, prepared statements, headers
-6. **Documented** - All docs current
-7. **Clean** - No uncommitted changes, no secrets in git
-
----
-
-*Checklist version: 1.0 | January 2026*
+1. **Functional** — All pages load without errors
+2. **Content** — Images display, links work, affiliate CTAs functional
+3. **Responsive** — Works on mobile and desktop
+4. **Integrations** — Newsletter, webhook, GTM all working
+5. **SEO** — Meta tags, sitemap, schema, clean URLs
+6. **Secure** — Escaping, prepared statements, headers
+7. **Clean** — No uncommitted changes, no secrets in git

@@ -81,12 +81,12 @@ ob_start();
 <?php endif; ?>
 
 <!-- Review Hero -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col-lg-7">
                 <?php if ($isTopPick): ?>
-                <span class="badge bg-warning text-dark mb-2"><i class="fas fa-award me-1"></i> Editor's Choice</span>
+                <span class="badge bg-amber text-white mb-2"><i class="fas fa-award me-1"></i> Editor's Choice</span>
                 <?php endif; ?>
 
                 <h1 class="fw-bold mb-2"><?= htmlspecialchars($review->name) ?> Review</h1>
@@ -118,7 +118,7 @@ ob_start();
 
             <?php if (!empty($review->featured_image)): ?>
             <div class="col-lg-5 d-none d-lg-block text-center">
-                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="img-fluid rounded shadow" style="max-height:300px;object-fit:contain;">
+                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="img-fluid rounded shadow product-hero-img">
             </div>
             <?php endif; ?>
         </div>
@@ -129,19 +129,19 @@ ob_start();
     <div class="row">
         <!-- LEFT COLUMN - Product Card (Sticky) -->
         <div class="col-lg-3">
-            <div class="sticky-lg-top" style="top:80px;">
+            <div class="sticky-lg-top sidebar-sticky">
                 <div class="card border-0 shadow-sm mb-3">
                     <?php if ($isTopPick): ?>
-                    <div class="bg-warning text-dark text-center small fw-bold py-1">
+                    <div class="bg-amber text-white text-center small fw-bold py-1">
                         <i class="fas fa-award me-1"></i> Editor's Choice
                     </div>
                     <?php endif; ?>
 
                     <!-- Product Image -->
                     <?php if (!empty($review->featured_image)): ?>
-                    <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="card-img-top" style="height:180px;object-fit:contain;padding:1rem;background:#f8f9fa;">
+                    <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="card-img-top product-card-img">
                     <?php else: ?>
-                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:180px;">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center product-card-img">
                         <i class="fas fa-box fa-3x text-muted"></i>
                     </div>
                     <?php endif; ?>
@@ -162,7 +162,7 @@ ob_start();
                                     <?php if ($hasHalf): ?><i class="fas fa-star-half-alt"></i><?php endif; ?>
                                     <?php for ($i = 0; $i < $emptyStars; $i++): ?><i class="far fa-star"></i><?php endfor; ?>
                                 </div>
-                                <span class="text-muted" style="font-size:.7rem;">Overall Score</span>
+                                <span class="text-muted small">Overall Score</span>
                             </div>
                         </div>
                         <?php endif; ?>
@@ -179,11 +179,11 @@ ob_start();
                         <div class="mb-3">
                             <?php foreach ($subRatings as $label => $val): ?>
                             <div class="d-flex align-items-center mb-1 small">
-                                <span class="text-muted me-2" style="min-width:80px;font-size:.75rem;"><?= $label ?></span>
-                                <div class="progress flex-grow-1" style="height:5px;">
+                                <span class="text-muted me-2 text-nowrap"><?= $label ?></span>
+                                <div class="progress progress-sm flex-grow-1">
                                     <div class="progress-bar bg-amber" style="width:<?= ($val / 5) * 100 ?>%"></div>
                                 </div>
-                                <span class="text-muted ms-2" style="font-size:.75rem;"><?= number_format($val, 1) ?></span>
+                                <span class="text-muted ms-2 small"><?= number_format($val, 1) ?></span>
                             </div>
                             <?php endforeach; ?>
                         </div>
@@ -261,7 +261,7 @@ ob_start();
             <div class="row g-3 mb-4">
                 <?php if (!empty($review->pros)): ?>
                 <div class="col-md-6">
-                    <div class="card border-0 h-100" style="background-color: #d4edda;">
+                    <div class="card card-pros h-100">
                         <div class="card-body">
                             <h3 class="h6 fw-bold text-success mb-3"><i class="fas fa-thumbs-up me-1"></i> Pros</h3>
                             <ul class="list-unstyled mb-0 small">
@@ -275,7 +275,7 @@ ob_start();
                 <?php endif; ?>
                 <?php if (!empty($review->cons)): ?>
                 <div class="col-md-6">
-                    <div class="card border-0 h-100" style="background-color: #f8d7da;">
+                    <div class="card card-cons h-100">
                         <div class="card-body">
                             <h3 class="h6 fw-bold text-danger mb-3"><i class="fas fa-thumbs-down me-1"></i> Cons</h3>
                             <ul class="list-unstyled mb-0 small">
@@ -303,7 +303,7 @@ ob_start();
                     <table class="table table-striped mb-0">
                         <?php if ($review->brand): ?>
                         <tr>
-                            <td class="fw-bold small" style="width:30%">Brand</td>
+                            <td class="fw-bold small w-25">Brand</td>
                             <td class="small"><?= htmlspecialchars($review->brand) ?></td>
                         </tr>
                         <?php endif; ?>
@@ -343,7 +343,7 @@ ob_start();
                     <div class="row align-items-center">
                         <div class="col-auto text-center">
                             <?php if (!empty($review->featured_image)): ?>
-                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="rounded mb-2" style="width:80px;height:80px;object-fit:contain;">
+                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="rounded mb-2 verdict-img">
                             <?php endif; ?>
                             <div class="h3 fw-bold text-success mb-0"><?= number_format($rating, 1) ?></div>
                             <div class="text-warning small">
@@ -352,7 +352,7 @@ ob_start();
                                 <?php for ($i = 0; $i < $emptyStars; $i++): ?><i class="far fa-star"></i><?php endfor; ?>
                             </div>
                             <?php if ($isTopPick): ?>
-                            <span class="badge bg-warning text-dark mt-1 small">Editor's Choice</span>
+                            <span class="badge bg-amber text-white mt-1 small">Editor's Choice</span>
                             <?php endif; ?>
                         </div>
                         <div class="col">
@@ -391,42 +391,21 @@ ob_start();
 
 <!-- Related Reviews -->
 <?php if (!empty($relatedReviews)): ?>
-<section class="bg-light py-5">
+<section class="section-alt py-5">
     <div class="container-xl">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h4 fw-bold mb-0">Related Reviews</h2>
+            <div>
+                <span class="section-eyebrow section-eyebrow-amber"><i class="fas fa-star me-1"></i> More Reviews</span>
+                <h2 class="h4 fw-bold mb-0 section-heading">Related Reviews</h2>
+            </div>
             <?php if ($primaryCategory): ?>
-            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="text-success text-decoration-none small">View All <?= htmlspecialchars($primaryCategory->name) ?> Reviews <i class="fas fa-arrow-right"></i></a>
+            <a href="<?= BASE_URL ?>/category/<?= htmlspecialchars($primaryCategory->slug) ?>" class="btn btn-outline-success btn-sm">View All <?= htmlspecialchars($primaryCategory->name) ?> Reviews <i class="fas fa-arrow-right ms-1"></i></a>
             <?php endif; ?>
         </div>
         <div class="row g-4">
-            <?php foreach ($relatedReviews as $relReview):
-                $relUrl = BASE_URL . ($primaryCategory
-                    ? '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($relReview->slug)
-                    : '/reviews/' . htmlspecialchars($relReview->slug));
-            ?>
+            <?php foreach ($relatedReviews as $review): ?>
             <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm overflow-hidden review-card">
-                    <?php if (!empty($relReview->featured_image)): ?>
-                    <a href="<?= $relUrl ?>">
-                        <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relReview->featured_image) ?>" class="card-img-top" alt="<?= htmlspecialchars($relReview->name) ?>">
-                    </a>
-                    <?php endif; ?>
-                    <div class="card-body">
-                        <h3 class="h6 fw-bold">
-                            <a href="<?= $relUrl ?>" class="text-dark text-decoration-none"><?= htmlspecialchars($relReview->name) ?></a>
-                        </h3>
-                        <?php if ($relReview->rating_overall): ?>
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-success"><?= number_format(floatval($relReview->rating_overall), 1) ?></span>
-                            <span class="text-warning small">
-                                <?php $rs = floor(floatval($relReview->rating_overall)); for ($i = 0; $i < $rs; $i++): ?><i class="fas fa-star"></i><?php endfor; ?>
-                            </span>
-                        </div>
-                        <?php endif; ?>
-                        <a href="<?= $relUrl ?>" class="btn btn-outline-success btn-sm w-100">Read Review</a>
-                    </div>
-                </div>
+                <?php require __DIR__ . '/../partials/review-card.php'; ?>
             </div>
             <?php endforeach; ?>
         </div>
@@ -436,7 +415,7 @@ ob_start();
 
 <!-- Mobile Sticky CTA Bar -->
 <?php if (!empty($review->affiliate_url)): ?>
-<div class="fixed-bottom bg-dark text-white d-lg-none border-top border-secondary mobile-cta-bar" style="z-index:1040;">
+<div class="fixed-bottom bg-dark text-white d-lg-none border-top border-secondary mobile-cta-bar">
     <div class="container-xl py-2 d-flex justify-content-between align-items-center">
         <div>
             <span class="small fw-bold"><?= htmlspecialchars($review->name) ?></span>

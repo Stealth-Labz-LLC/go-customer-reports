@@ -15,16 +15,25 @@ class Listicle
         );
     }
 
-    public static function latest(int $siteId, int $limit = 12, int $offset = 0): array
+    public static function latest(int $siteId, int $limit = 12, int $offset = 0, array $excludeCategorySlugs = []): array
     {
         $db = Database::getInstance();
+        $params = [$siteId];
+        $excludeClause = '';
+        if (!empty($excludeCategorySlugs)) {
+            $placeholders = implode(',', array_fill(0, count($excludeCategorySlugs), '?'));
+            $excludeClause = " AND (c.slug IS NULL OR c.slug NOT IN ($placeholders))";
+            $params = array_merge($params, $excludeCategorySlugs);
+        }
+        $params[] = $limit;
+        $params[] = $offset;
         return $db->fetchAll(
             "SELECT l.*, c.slug as category_slug, c.name as category_name
              FROM content_listicles l
              LEFT JOIN content_categories c ON l.primary_category_id = c.id
-             WHERE l.site_id = ? AND l.status = 'published'
+             WHERE l.site_id = ? AND l.status = 'published'{$excludeClause}
              ORDER BY l.published_at DESC LIMIT ? OFFSET ?",
-            [$siteId, $limit, $offset]
+            $params
         );
     }
 

@@ -10,7 +10,7 @@
 - Config: `config/{name}.php` (lowercase)
 
 ### Frontend Assets
-- CSS: `css/style.css` (single file)
+- CSS: `css/style.css` (single file — all styles)
 - Images: `images/` (static) or `uploads/` (user content)
 
 ---
@@ -28,57 +28,96 @@
 
 ### CSS
 - Use CSS custom properties (design tokens) from `:root`
-- BEM-ish naming: `.cr-component`, `.cr-component-element`
-- Prefix all classes with `cr-` for namespacing
+- Component classes: descriptive names (`.hero-section`, `.review-card-h`, `.footer-cta-form-panel`)
 - Mobile-first responsive design
 - No `!important` unless absolutely necessary
+- **No inline styles** — all styling via CSS classes
 
 ### HTML/Templates
 - Always escape output: `<?= htmlspecialchars($var) ?>`
 - Use semantic HTML5 elements
 - Include alt text on images
 - Use proper heading hierarchy (h1 → h2 → h3)
+- Use Bootstrap utility classes for layout and spacing
 
 ---
 
-## CSS Token System
+## Design System
 
-### Required: Use Design Tokens
+### Color Tokens
 
-All CSS values should use tokens from `:root`:
+All colors use CSS custom properties defined in `:root`:
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--cr-teal` | #0d7377 | Primary brand, success, nav |
+| `--cr-teal-dark` | #0a5c5f | Hover states |
+| `--cr-amber` | #e6a817 | Accent, ratings, CTAs |
+| `--cr-amber-dark` | #c48f13 | Hover states |
+| `--cr-slate` | #1a2332 | Dark backgrounds, heroes |
+| `--cr-gray-50` | #f8f9fa | Light section backgrounds |
 
 ```css
-/* CORRECT */
-.cr-button {
-    background: var(--cr-green);
+/* CORRECT — use tokens */
+.component {
+    background: var(--cr-teal);
     color: #fff;
-    border-radius: 4px;
 }
 
-/* INCORRECT - hardcoded brand colors */
-.cr-button {
-    background: #34b269;
-}
-```
-
-### Available Tokens
-
-| Category | Examples |
-|----------|----------|
-| Colors | `--cr-green`, `--cr-navy`, `--cr-gold`, `--cr-text` |
-| Backgrounds | `--cr-bg`, `--cr-bg-light` |
-| Borders | `--cr-border` |
-| Hover states | `--cr-green-hover`, `--cr-navy-light` |
-
-### Adding New Tokens
-
-If you need a new value, add it to `:root` in `css/style.css` first:
-
-```css
-:root {
-    --cr-new-color: #abc123;
+/* INCORRECT — hardcoded brand colors */
+.component {
+    background: #0d7377;
 }
 ```
+
+### Hero Sections
+
+| Class | Usage |
+|-------|-------|
+| `.hero-section` | Homepage — large gradient with overlay, stats row |
+| `.hero-section-simple` | All inner pages — compact teal-to-slate gradient |
+
+Every page uses one of these hero classes. No custom one-off hero backgrounds.
+
+### Section Eyebrows
+
+| Class | Usage |
+|-------|-------|
+| `.section-eyebrow` | Teal uppercase label with underline (default) |
+| `.section-eyebrow-amber` | Amber uppercase label (reviews, listicles) |
+
+### Badge Palette
+
+Only these badge styles are used:
+
+| Class | Usage |
+|-------|-------|
+| `bg-success` | Category tags, positive states |
+| `bg-amber text-white` | Rating badges, highlights, editor's choice |
+| `bg-dark bg-opacity-10 text-dark` | Neutral/secondary badges |
+| `bg-danger` | Low ratings (< 3.0) |
+
+**Banned:** `bg-warning`, `bg-info`, `bg-primary` — not in the design system.
+
+### Button Styles
+
+| Class | Usage |
+|-------|-------|
+| `btn-success` | Primary CTA (green) |
+| `btn-amber` | Amber CTA (newsletter, highlights) |
+| `btn-outline-success` | Secondary CTA |
+| `btn-outline-light` | CTA on dark backgrounds |
+| `btn-outline-amber` | Secondary amber CTA |
+
+### Inline Styles Policy
+
+**No inline styles in templates.** The only acceptable inline styles are:
+- Dynamic progress bar `width:` (computed from PHP)
+- GTM noscript `display:none;visibility:hidden` (required by Google)
+- JS-toggled `display:none` (cookie banner, newsletter message)
+- Logo `filter: brightness(0) invert(1)` (dynamic logo inversion)
+
+Everything else must be a CSS class in `css/style.css`.
 
 ---
 
@@ -100,20 +139,12 @@ If you need a new value, add it to `:root` in `css/style.css` first:
 ## Security Rules
 
 ### Input Sanitization
-All user input must be sanitized:
-
 ```php
 // Escape for HTML output
 <?= htmlspecialchars($userInput) ?>
 
 // Use prepared statements for database
 $db->fetchOne("SELECT * FROM table WHERE id = ?", [$id]);
-```
-
-### Output Escaping
-Always escape output in templates:
-```php
-<?= htmlspecialchars($variable) ?>
 ```
 
 ### General Rules
@@ -127,7 +158,7 @@ Always escape output in templates:
 ## Git Workflow
 
 ### Branches
-- `main` - Production (auto-deploys)
+- `main` - Production (auto-deploys via GitHub Actions)
 
 ### Commit Messages
 Use conventional commits:
@@ -137,14 +168,6 @@ Use conventional commits:
 - `style:` formatting, CSS
 - `docs:` documentation
 - `chore:` maintenance
-
-Examples:
-```
-feat: add listicle index page
-fix: resolve image path issue
-refactor: standardize URL routes
-docs: add project documentation
-```
 
 ### Never Commit
 - `config/secrets.php` (credentials)
@@ -202,30 +225,14 @@ require __DIR__ . '/../layouts/app.php';
 Static methods that return objects:
 
 ```php
-class Review
-{
-    public static function findBySlug(int $siteId, string $slug): ?object
-    {
-        $db = Database::getInstance();
-        return $db->fetchOne(
-            "SELECT * FROM content_reviews WHERE site_id = ? AND slug = ?",
-            [$siteId, $slug]
-        );
-    }
-}
-```
-
-### Query Patterns
-
-```php
 // Single record
 $review = Review::findBySlug($siteId, $slug);
 
-// Multiple records
-$reviews = Review::latest($siteId, 12);
+// Multiple records (with optional category exclusion for homepage)
+$articles = Article::latest($siteId, 6, 0, ['city-guide', 'state-guide']);
 
 // With pagination
-$reviews = Review::latest($siteId, $perPage, $offset);
+$reviews = Review::latestPaginated($siteId, $perPage, $offset, $sort);
 
 // By relationship
 $reviews = Review::byCategory($siteId, $categoryId);
@@ -251,22 +258,5 @@ All content uses category-based URLs:
 
 - Lowercase only
 - Hyphens for word separation
-- No underscores (converted on input)
+- No underscores
 - No special characters
-
-### Legacy URL Handling
-
-Old URLs (`/articles/`, `/reviews/`, `/top/`) automatically 301 redirect to the new category-based structure.
-
----
-
-## Comments
-
-- Comment the **why**, not the **what**
-- Use PHPDoc for complex functions
-- Keep inline comments short
-- Remove TODO comments before committing (or create issues)
-
----
-
-*Conventions established January 2026.*

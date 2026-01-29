@@ -61,8 +61,9 @@ ob_start();
 <?php endif; ?>
 
 <!-- Listicle Header -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
+        <span class="section-eyebrow section-eyebrow-amber"><i class="fas fa-trophy me-1"></i> Buying Guide</span>
         <h1 class="fw-bold mb-2"><?= htmlspecialchars($listicle->title) ?></h1>
         <?php if (!empty($listicle->excerpt)): ?>
         <p class="lead text-white-50 mb-3"><?= htmlspecialchars($listicle->excerpt) ?></p>
@@ -107,9 +108,9 @@ ob_start();
                             <div class="col-auto text-center">
                                 <div class="listicle-rank"><?= $rank ?></div>
                                 <?php if (!empty($item['brand_logo'])): ?>
-                                <img src="<?= htmlspecialchars($item['brand_logo']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="mt-2 rounded" style="max-width:80px;max-height:60px;object-fit:contain;">
+                                <img src="<?= htmlspecialchars($item['brand_logo']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="mt-2 rounded listicle-brand-img">
                                 <?php elseif (!empty($item['image'])): ?>
-                                <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="mt-2 rounded" style="max-width:80px;max-height:60px;object-fit:contain;">
+                                <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="mt-2 rounded listicle-brand-img">
                                 <?php endif; ?>
                             </div>
 
@@ -132,7 +133,7 @@ ob_start();
                                 <h3 class="h5 fw-bold mb-2"><?= htmlspecialchars($item['name'] ?? '') ?></h3>
 
                                 <?php if (!empty($item['savings'])): ?>
-                                <span class="badge bg-warning text-dark mb-2"><i class="fas fa-tag me-1"></i> Save <?= htmlspecialchars($item['savings']) ?></span>
+                                <span class="badge bg-amber text-white mb-2"><i class="fas fa-tag me-1"></i> Save <?= htmlspecialchars($item['savings']) ?></span>
                                 <?php endif; ?>
 
                                 <!-- Feature Bullets -->
@@ -155,7 +156,7 @@ ob_start();
                                 <?php if (!empty($item['affiliate_url'])): ?>
                                 <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored">
                                 <?php endif; ?>
-                                    <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="rounded" style="max-width:120px;max-height:100px;object-fit:contain;">
+                                    <img src="<?= htmlspecialchars($item['product_image']) ?>" alt="<?= htmlspecialchars($item['name'] ?? '') ?>" class="rounded listicle-product-img">
                                 <?php if (!empty($item['affiliate_url'])): ?>
                                 </a>
                                 <?php endif; ?>
@@ -196,7 +197,7 @@ ob_start();
                                         <span class="badge bg-dark rounded-pill me-1"><?= $idx + 1 ?></span>
                                         <?= htmlspecialchars($item['name'] ?? '') ?>
                                         <?php if (!empty($item['product_image']) || !empty($item['brand_logo'])): ?>
-                                        <br><img src="<?= htmlspecialchars($item['product_image'] ?? $item['brand_logo'] ?? '') ?>" alt="" style="max-width:50px;max-height:35px;object-fit:contain;" class="mt-1">
+                                        <br><img src="<?= htmlspecialchars($item['product_image'] ?? $item['brand_logo'] ?? '') ?>" alt="" class="mt-1 listicle-compare-img">
                                         <?php endif; ?>
                                     </th>
                                     <?php endforeach; ?>

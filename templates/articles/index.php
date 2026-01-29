@@ -8,11 +8,12 @@ ob_start();
 ?>
 
 <!-- Header -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col-lg-7">
-                <h1 class="mb-2"><?= $activeCategory ? htmlspecialchars($activeCategory->name) . ' Articles' : 'All Articles' ?></h1>
+                <span class="section-eyebrow"><i class="fas fa-file-alt me-1"></i> Fresh Content</span>
+                <h1 class="fw-bold mb-2"><?= $activeCategory ? htmlspecialchars($activeCategory->name) . ' Articles' : 'All Articles' ?></h1>
                 <p class="text-white-50 mb-0"><?= number_format($totalArticles) ?> articles to explore</p>
             </div>
             <div class="col-lg-5 mt-3 mt-lg-0">

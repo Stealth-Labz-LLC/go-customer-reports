@@ -62,9 +62,9 @@ $categories = \App\Models\Category::topLevel($site->id);
         <?php if (!empty($item['affiliate_url'])): ?>
         <a href="<?= htmlspecialchars($item['affiliate_url']) ?>" target="_blank" rel="nofollow sponsored" class="list-group-item list-group-item-action d-flex align-items-center gap-2 small">
             <?php if (!empty($item['brand_logo'])): ?>
-            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($item['brand_logo']) ?>" alt="" style="width:30px;height:30px;object-fit:contain;">
+            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($item['brand_logo']) ?>" alt="" class="listicle-sidebar-thumb">
             <?php elseif (!empty($item['image'])): ?>
-            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($item['image']) ?>" alt="" style="width:30px;height:30px;object-fit:contain;">
+            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($item['image']) ?>" alt="" class="listicle-sidebar-thumb">
             <?php endif; ?>
             <span><?= htmlspecialchars($item['name'] ?? '') ?></span>
         </a>
@@ -90,15 +90,15 @@ $categories = \App\Models\Category::topLevel($site->id);
         <div class="row g-2">
             <div class="col-6">
                 <div class="h5 fw-bold text-success mb-0"><?= count($listicle->items ?? []) ?>+</div>
-                <div class="text-muted" style="font-size:.7rem;">Models Evaluated</div>
+                <div class="text-muted listicle-stat-label">Models Evaluated</div>
             </div>
             <div class="col-6">
                 <div class="h5 fw-bold text-success mb-0">5</div>
-                <div class="text-muted" style="font-size:.7rem;">Topics Considered</div>
+                <div class="text-muted listicle-stat-label">Topics Considered</div>
             </div>
             <div class="col-6">
                 <div class="h5 fw-bold text-success mb-0">15+</div>
-                <div class="text-muted" style="font-size:.7rem;">Hours Research</div>
+                <div class="text-muted listicle-stat-label">Hours Research</div>
             </div>
         </div>
     </div>

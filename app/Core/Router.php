@@ -118,9 +118,10 @@ class Router
         $site = $this->site;
         $siteId = $site->id;
 
-        $latestArticles = \App\Models\Article::latest($siteId, 6);
-        $latestReviews = \App\Models\Review::latest($siteId, 6);
-        $latestListicles = \App\Models\Listicle::latest($siteId, 4);
+        $excludeSlugs = ['city-guide', 'state-guide'];
+        $latestArticles = \App\Models\Article::latest($siteId, 6, 0, $excludeSlugs);
+        $latestReviews = \App\Models\Review::latest($siteId, 4, 0, $excludeSlugs);
+        $latestListicles = \App\Models\Listicle::latest($siteId, 4, 0, $excludeSlugs);
         $categories = \App\Models\Category::allWithCounts($siteId);
 
         $totalArticles = \App\Models\Article::count($siteId);
@@ -512,6 +513,14 @@ class Router
 
     private function render(string $template, array $data = []): void
     {
+        // Provide site-wide counts for footer CTA (skip if already set by caller)
+        if (!isset($data['totalArticles'])) {
+            $data['totalArticles'] = \App\Models\Article::count($this->site->id);
+        }
+        if (!isset($data['totalReviews'])) {
+            $data['totalReviews'] = \App\Models\Review::count($this->site->id);
+        }
+
         extract($data);
         $templateFile = $this->templateDir . '/' . $template . '.php';
 

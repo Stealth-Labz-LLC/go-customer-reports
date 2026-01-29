@@ -54,7 +54,7 @@ ob_start();
 <?php endif; ?>
 
 <!-- Article Hero -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
         <?php if (!empty($articleCategories)): ?>
         <div class="mb-2">
@@ -89,7 +89,7 @@ ob_start();
         <!-- Main Content -->
         <div class="col-lg-8">
             <?php if (!empty($article->featured_image)): ?>
-            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>" class="img-fluid rounded shadow-sm mb-4 w-100" style="max-height:450px;object-fit:cover;">
+            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($article->featured_image) ?>" alt="<?= htmlspecialchars($article->title) ?>" class="img-fluid rounded shadow-sm mb-4 article-hero-img">
             <?php endif; ?>
 
             <article class="article-content">
@@ -118,33 +118,12 @@ ob_start();
             <!-- Related Reviews (Cross-link to money pages) -->
             <?php if (!empty($relatedReviews)): ?>
             <div class="mt-4">
-                <h3 class="h5 fw-bold mb-3"><i class="fas fa-star text-warning me-2"></i>Related Product Reviews</h3>
+                <span class="section-eyebrow section-eyebrow-amber"><i class="fas fa-star me-1"></i> Related Reviews</span>
+                <h3 class="h5 fw-bold mb-3 section-heading">Related Product Reviews</h3>
                 <div class="row g-3">
-                    <?php foreach ($relatedReviews as $review):
-                        $reviewUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/reviews/' . htmlspecialchars($review->slug);
-                    ?>
+                    <?php foreach ($relatedReviews as $review): ?>
                     <div class="col-md-6">
-                        <a href="<?= $reviewUrl ?>" class="card border-0 shadow-sm h-100 text-decoration-none overflow-hidden">
-                            <div class="row g-0">
-                                <?php if (!empty($review->featured_image)): ?>
-                                <div class="col-4">
-                                    <img src="<?= IMAGE_BASE_URL . htmlspecialchars($review->featured_image) ?>" alt="<?= htmlspecialchars($review->name) ?>" class="img-fluid h-100" style="object-fit:cover;">
-                                </div>
-                                <div class="col-8">
-                                <?php else: ?>
-                                <div class="col-12">
-                                <?php endif; ?>
-                                    <div class="card-body py-2">
-                                        <span class="fw-bold text-dark small"><?= htmlspecialchars($review->name) ?></span>
-                                        <?php if ($review->rating_overall): ?>
-                                        <div class="mt-1">
-                                            <span class="badge bg-success"><?= number_format(floatval($review->rating_overall), 1) ?> <i class="fas fa-star"></i></span>
-                                        </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                        <?php require __DIR__ . '/../partials/review-card.php'; ?>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -154,7 +133,8 @@ ob_start();
             <!-- Related Articles -->
             <?php if (!empty($relatedArticles)): ?>
             <div class="mt-5">
-                <h2 class="h5 fw-bold mb-3">Keep Reading</h2>
+                <span class="section-eyebrow"><i class="fas fa-book-open me-1"></i> More to Read</span>
+                <h2 class="h5 fw-bold mb-3 section-heading">Keep Reading</h2>
                 <div class="row g-3">
                     <?php foreach ($relatedArticles as $relArticle):
                         $relArticleUrl = BASE_URL . '/category/' . htmlspecialchars($primaryCategory->slug) . '/' . htmlspecialchars($relArticle->slug);
@@ -163,7 +143,7 @@ ob_start();
                         <div class="card border-0 shadow-sm h-100 overflow-hidden">
                             <?php if (!empty($relArticle->featured_image)): ?>
                             <a href="<?= $relArticleUrl ?>">
-                                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="<?= htmlspecialchars($relArticle->title) ?>" class="card-img-top" style="height:150px;object-fit:cover;">
+                                <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="<?= htmlspecialchars($relArticle->title) ?>" class="card-img-top">
                             </a>
                             <?php endif; ?>
                             <div class="card-body">
@@ -185,7 +165,7 @@ ob_start();
 
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <div class="sticky-lg-top" style="top:80px;">
+            <div class="sticky-lg-top sidebar-sticky">
                 <!-- More in Category -->
                 <?php if (!empty($relatedArticles)): ?>
                 <div class="card border-0 shadow-sm mb-3">
@@ -198,7 +178,7 @@ ob_start();
                         ?>
                         <a href="<?= $relArticleUrl ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2 small">
                             <?php if (!empty($relArticle->featured_image)): ?>
-                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="" class="rounded" style="width:40px;height:40px;object-fit:cover;">
+                            <img src="<?= IMAGE_BASE_URL . htmlspecialchars($relArticle->featured_image) ?>" alt="" class="sidebar-thumb">
                             <?php endif; ?>
                             <span class="text-truncate"><?= htmlspecialchars($relArticle->title) ?></span>
                         </a>

@@ -8,12 +8,12 @@ ob_start();
 ?>
 
 <!-- Header -->
-<section class="bg-dark text-white py-5">
+<section class="hero-section-simple text-white">
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col-lg-7">
-                <span class="badge bg-warning text-dark mb-2"><i class="fas fa-star"></i> Product Reviews</span>
-                <h1 class="mb-2"><?= $activeCategory ? htmlspecialchars($activeCategory->name) . ' Reviews' : 'Expert Product Reviews' ?></h1>
+                <span class="section-eyebrow section-eyebrow-amber"><i class="fas fa-star me-1"></i> Expert Rated</span>
+                <h1 class="fw-bold mb-2"><?= $activeCategory ? htmlspecialchars($activeCategory->name) . ' Reviews' : 'Expert Product Reviews' ?></h1>
                 <p class="text-white-50 mb-0">Honest ratings, real research, and unbiased recommendations. <?= number_format($totalReviews) ?> reviews and counting.</p>
             </div>
             <div class="col-lg-5 mt-3 mt-lg-0">

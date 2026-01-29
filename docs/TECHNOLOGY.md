@@ -1,6 +1,6 @@
 # Customer Reports - Technology
 
-A high-level overview of the technology stack, architecture, and design philosophy.
+Tech stack, architecture, and design system.
 
 ---
 
@@ -9,12 +9,12 @@ A high-level overview of the technology stack, architecture, and design philosop
 | Layer | Technology | Notes |
 |-------|------------|-------|
 | **Backend** | PHP 8.3 | Custom MVC framework, no dependencies |
-| **Frontend** | Bootstrap 5 + Vanilla JS | Responsive, no build step |
-| **CSS** | Custom CSS with design tokens | CSS variables for theming |
+| **Frontend** | Bootstrap 5.3.3 + Vanilla JS | Responsive, no build step |
+| **CSS** | Custom design system with CSS tokens | Teal/amber/slate palette |
 | **Templates** | PHP server-side rendering | Templates + reusable partials |
 | **Database** | MySQL | Multi-site content storage |
-| **Deployment** | GitHub Actions | Auto-deploy via SFTP |
-| **Images** | File-based | `/uploads/` directory |
+| **Deployment** | GitHub Actions | Auto-deploy via SFTP on push to `main` |
+| **Images** | File-based | `/uploads/` directory, `IMAGE_BASE_URL` config |
 
 ---
 
@@ -30,15 +30,17 @@ REQUEST → Front Controller → Router → Controller Method → Model → Temp
 
 No Composer, no npm, no build step. The entire codebase is self-contained and runs on any PHP hosting with MySQL.
 
-### Key Architectural Components
+### Key Components
 
-| Component | Files | Purpose |
+| Component | Count | Purpose |
 |-----------|-------|---------|
-| Router | 1 | URL matching, dispatches to controller methods |
+| Router | 1 | URL matching, controller methods, sitemap generation |
 | Models | 6 | Article, Review, Listicle, Category, Page, Site |
 | Core Framework | 5 | Database, Router, Security, LeadStorage, Logger |
-| Templates | 17 | Pages + reusable partials |
+| Templates | 18 | Page templates + layouts |
+| Partials | 8 | Reusable components (cards, sidebar, header, footer, etc.) |
 | Config | 2 | Environment detection, secrets |
+| API | 2 | Lead submission endpoint, webhook helper |
 
 ---
 
@@ -59,16 +61,20 @@ No Composer, no npm, no build step. The entire codebase is self-contained and ru
 ┌─────────────────────────────────────────────────────────┐
 │                     Router.php                           │
 │   /  →  home()                                          │
+│   /search  →  searchPage()                              │
 │   /category/{cat}/{slug}  →  articleShow()              │
 │   /category/{cat}/reviews/{slug}  →  reviewShow()       │
 │   /category/{cat}/top/{slug}  →  listicleShow()         │
-│   /sitemap.xml  →  sitemap()  |  /robots.txt  →  robots │
+│   /sitemap.xml  →  sitemapIndex()                       │
+│   /sitemap-{section}.xml  →  sitemapSection()           │
+│   /robots.txt  →  robotsTxt()                           │
 └─────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────┐
 │                    Model Layer                           │
 │     Review::findBySlug()  |  Article::latest()          │
+│     Category::allWithCounts()  |  Page::findBySlug()    │
 │              Database queries via PDO                    │
 └─────────────────────────────────────────────────────────┘
                             │
@@ -76,9 +82,63 @@ No Composer, no npm, no build step. The entire codebase is self-contained and ru
 ┌─────────────────────────────────────────────────────────┐
 │              Template + Data → HTML                      │
 │     + Schema.org JSON-LD  |  + Open Graph tags          │
-│     reviews/show.php  |  partials/review-card.php       │
+│     layouts/app.php wraps all page templates             │
+│     partials/ shared across pages                        │
 └─────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Design System
+
+### Color Palette (CSS Tokens)
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--cr-teal` | #0d7377 | Primary brand, success states, nav, buttons |
+| `--cr-teal-dark` | #0a5c5f | Hover states |
+| `--cr-amber` | #e6a817 | Accent highlights, rating badges, CTAs |
+| `--cr-amber-dark` | #c48f13 | Hover states |
+| `--cr-slate` | #1a2332 | Dark backgrounds, hero gradients |
+| `--cr-gray-50` | #f8f9fa | Light backgrounds, alternating sections |
+
+### Hero Sections
+
+| Class | Usage |
+|-------|-------|
+| `.hero-section` | Homepage — full gradient with overlay |
+| `.hero-section-simple` | Inner pages — compact teal-to-slate gradient |
+
+### Section Eyebrows
+
+| Class | Usage |
+|-------|-------|
+| `.section-eyebrow` | Uppercase label, teal underline |
+| `.section-eyebrow-amber` | Uppercase label, amber underline (for reviews/listicles) |
+
+### Badge Palette
+
+| Badge | Usage |
+|-------|-------|
+| `bg-success` | Category badges, positive states |
+| `bg-amber text-white` | Rating badges, highlights |
+| `bg-dark bg-opacity-10 text-dark` | Neutral/secondary badges |
+
+**Banned:** `bg-warning`, `bg-info` — not in the design system.
+
+### Utility Classes
+
+| Class | Purpose |
+|-------|---------|
+| `.btn-amber` | Amber CTA button |
+| `.btn-outline-amber` | Amber outline button |
+| `.bg-amber` | Amber background |
+| `.progress-sm` | Thin progress bars (6px) |
+| `.sub-rating-label` | Sub-rating label (min-width: 85px) |
+| `.sidebar-sticky` | Sidebar sticky offset |
+| `.product-card-img` | Product image in sidebar card |
+| `.product-hero-img` | Product image in hero section |
+| `.article-hero-img` | Article featured image |
 
 ---
 
@@ -88,12 +148,12 @@ No Composer, no npm, no build step. The entire codebase is self-contained and ru
 
 | Table | Purpose |
 |-------|---------|
-| `content_sites` | Multi-site support (domain, name, tagline) |
+| `content_sites` | Multi-site support (domain, name, tagline, GTM ID) |
 | `content_articles` | Blog posts / informational content |
 | `content_reviews` | Product reviews with ratings |
 | `content_listicles` | "Top X" comparison lists |
 | `content_categories` | Content categorization |
-| `content_pages` | Static pages |
+| `content_pages` | Static pages (about, privacy, terms) |
 
 ### Junction Tables
 
@@ -126,27 +186,36 @@ go-customer-reports/
 │       ├── Category.php
 │       ├── Page.php
 │       └── Site.php
+├── api/                    # Lead submission endpoint
+│   ├── submit.php          # Form handler
+│   └── webhook-helper.php  # Webhook to Stealth Labz portal
 ├── cli/                    # Command-line scripts
-│   ├── add-internal-links.php  # SEO internal linking
-│   ├── add-noindex.php         # Add noindex to campaigns
-│   └── import-wordpress.php    # WP migration (legacy)
+│   ├── add-internal-links.php
+│   └── add-noindex.php
 ├── config/                 # Configuration
 │   ├── environment.php     # Environment detection
-│   └── secrets.php         # DB credentials (gitignored)
+│   └── secrets.php         # DB + webhook credentials (gitignored)
 ├── templates/              # Views
-│   ├── layouts/app.php     # Master layout (with SEO meta)
-│   ├── partials/           # Reusable components
-│   ├── articles/           # Article templates
-│   ├── reviews/            # Review templates
-│   ├── listicles/          # Listicle templates
-│   ├── categories/         # Category templates
-│   └── pages/              # Static page templates
-├── public/                 # Public assets
-│   └── favicon.svg         # Site favicon
-├── css/style.css           # All styles (no inline CSS)
+│   ├── layouts/app.php     # Master layout (SEO meta, GTM, cookie banner)
+│   ├── home.php            # Homepage
+│   ├── search.php          # Search results
+│   ├── 404.php             # Not found
+│   ├── articles/           # Article templates (index, show)
+│   ├── reviews/            # Review templates (index, show)
+│   ├── listicles/          # Listicle templates (show)
+│   ├── categories/         # Category templates (index, show)
+│   ├── pages/              # Static page templates (default)
+│   └── partials/           # Reusable components
+│       ├── header.php
+│       ├── footer.php
+│       ├── review-card.php     # Vertical + horizontal card
+│       ├── article-card.php
+│       ├── listicle-sidebar.php
+│       ├── search-bar.php
+│       └── breadcrumbs.php
+├── css/style.css           # All styles — design system + components
 ├── images/                 # Static images (logo)
 ├── uploads/                # User-uploaded content
-├── api/                    # Lead submission endpoint
 ├── storage/                # Logs (gitignored)
 ├── cr/, eb/, ee25/, qr/, sc/, ss/  # Campaign funnels (noindex)
 └── .github/workflows/      # CI/CD pipeline
@@ -162,8 +231,9 @@ go-customer-reports/
 | No framework (Laravel, etc.) | Minimal footprint, runs anywhere |
 | MySQL database | Proper content management, relationships |
 | PHP templates | Simple, no build step, fast rendering |
-| Bootstrap 5 | Responsive out of the box, familiar |
-| CSS variables | Runtime theming, easy customization |
+| Bootstrap 5.3.3 | Responsive out of the box, familiar |
+| CSS design tokens | Runtime theming, consistent palette |
+| Zero inline styles | All styling via CSS classes |
 | SFTP deployment | Simple, reliable for cPanel hosting |
 
 ---
@@ -177,6 +247,7 @@ go-customer-reports/
 | CSRF Protection | Token validation on forms |
 | Input Sanitization | `Security::sanitize()` for all input |
 | Security Headers | CSP, X-Frame-Options in .htaccess |
+| Campaign Protection | noindex meta + robots.txt Disallow |
 
 ---
 

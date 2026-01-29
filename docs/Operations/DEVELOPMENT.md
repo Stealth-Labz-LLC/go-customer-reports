@@ -67,6 +67,7 @@ return [
     'db_name' => 'customerreports_articles',
     'db_user' => 'root',
     'db_pass' => '',
+    'webhook_url' => '',  // Optional for local dev
 ];
 ```
 
@@ -112,23 +113,11 @@ go-customer-reports/
 
 ### Making Changes
 
-1. Create feature branch: `git checkout -b feature/my-feature`
-2. Make changes
-3. Test locally
-4. Commit: `git commit -m "Add feature"`
-5. Push: `git push origin feature/my-feature`
-6. Create PR to `main`
-7. Merge triggers auto-deploy
-
-### Quick Fixes
-
-For small fixes, commit directly to `main`:
-
-```bash
-git add .
-git commit -m "Fix typo"
-git push
-```
+1. Make changes
+2. Test locally
+3. Commit: `git commit -m "feat: description"`
+4. Push: `git push origin main`
+5. GitHub Actions auto-deploys to production
 
 ---
 
@@ -160,19 +149,6 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 ```
 
-### Database Queries
-
-Add logging to `Database.php`:
-
-```php
-public function fetchOne(string $sql, array $params = []): ?object
-{
-    error_log("SQL: $sql");
-    error_log("Params: " . json_encode($params));
-    // ... rest of method
-}
-```
-
 ### Check Logs
 
 ```bash
@@ -186,47 +162,36 @@ tail -f storage/logs/app.log
 | URL | Expected |
 |-----|----------|
 | `/` | Homepage |
+| `/articles` | Article listing |
+| `/reviews` | Review listing |
 | `/categories` | Category listing |
-| `/category/nutrition` | Category page |
-| `/category/nutrition/protein-guide` | Single article |
-| `/category/supplements/reviews/whey-protein` | Single review |
-| `/category/fitness/top/best-treadmills` | Single listicle |
-| `/privacy` | Privacy policy (static page) |
-| `/sitemap.xml` | XML sitemap |
+| `/category/{slug}` | Category page |
+| `/search` | Search page |
+| `/about-us` | About page |
+| `/privacy` | Privacy policy |
+| `/sitemap.xml` | XML sitemap index |
 | `/robots.txt` | Robots file |
 | `/nonexistent` | 404 page |
-
-### Legacy URL Redirects (should 301)
-
-| URL | Redirects To |
-|-----|--------------|
-| `/articles/protein-guide` | `/category/nutrition/protein-guide` |
-| `/reviews/whey-protein` | `/category/supplements/reviews/whey-protein` |
-| `/top/best-treadmills` | `/category/fitness/top/best-treadmills` |
 
 ---
 
 ## Common Issues
 
 ### 404 on All Pages
-
 - Check `.htaccess` exists and mod_rewrite is enabled
 - Verify `AllowOverride All` in Apache config
 
 ### Database Connection Failed
-
 - Verify `config/secrets.php` credentials
 - Check MySQL is running
 - Verify database exists
 
 ### Images Not Loading
-
 - Check `uploads/` folder exists
-- Verify image paths in database
+- Verify `IMAGE_BASE_URL` is set correctly in environment config
 - Check file permissions
 
 ### Blank Page
-
 - Enable PHP error display
 - Check Apache/PHP error logs
 - Verify syntax errors in PHP files
