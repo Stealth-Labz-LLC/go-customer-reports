@@ -901,6 +901,21 @@ footer a:hover {
     font-size: .7rem;
 }
 
+/* ---------- Mobile Scroll Strips (filter pills, breadcrumbs) ---------- */
+.overflow-auto::-webkit-scrollbar {
+    display: none;
+}
+.overflow-auto {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.overflow-auto .btn,
+.overflow-auto .breadcrumb-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
 /* ---------- Misc ---------- */
 .text-truncate {
     max-width: 200px;

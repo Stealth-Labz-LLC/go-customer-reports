@@ -26,8 +26,8 @@ ob_start();
 <!-- Category Filter Pills -->
 <div class="bg-light border-bottom py-3">
     <div class="container-xl">
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <span class="text-muted small me-1">Filter:</span>
+        <div class="d-flex flex-nowrap overflow-auto gap-2 align-items-center pb-1">
+            <span class="text-muted small me-1 flex-shrink-0">Filter:</span>
             <a href="<?= BASE_URL ?>/reviews?sort=<?= urlencode($sort) ?>"
                class="btn btn-sm <?= !$categorySlug ? 'btn-success' : 'btn-outline-secondary' ?>">All</a>
             <?php foreach ($categories as $cat):
@@ -45,7 +45,7 @@ ob_start();
 
 <!-- Sort + Results Info -->
 <div class="container-xl pt-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
         <div class="d-flex gap-2 align-items-center">
             <span class="text-muted small">Sort:</span>
             <?php

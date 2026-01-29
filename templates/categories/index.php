@@ -63,8 +63,8 @@ ob_start();
 <!-- Quick Jump -->
 <div class="bg-light border-bottom py-3">
     <div class="container-xl">
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <span class="text-muted small fw-bold me-1">Jump to:</span>
+        <div class="d-flex flex-nowrap overflow-auto gap-2 align-items-center pb-1">
+            <span class="text-muted small fw-bold me-1 flex-shrink-0">Jump to:</span>
             <?php foreach ($categories as $cat): ?>
             <a href="#cat-<?= htmlspecialchars($cat->slug) ?>" class="btn btn-sm btn-outline-secondary"><?= htmlspecialchars($cat->name) ?></a>
             <?php endforeach; ?>

@@ -16,7 +16,7 @@
                     <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/about-us">About</a></li>
                 </ul>
                 <?php if (empty($hideHeaderSearch)): ?>
-                <form action="<?= BASE_URL ?>/search" method="GET" class="d-flex">
+                <form action="<?= BASE_URL ?>/search" method="GET" class="d-none d-lg-flex">
                     <div class="input-group input-group-sm">
                         <input type="search" name="q" class="form-control bg-secondary bg-opacity-50 border-0 text-white" placeholder="Search..." aria-label="Search">
                         <button type="submit" class="btn btn-success"><i class="fas fa-search"></i></button>

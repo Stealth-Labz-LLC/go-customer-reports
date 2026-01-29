@@ -14,7 +14,7 @@ if (empty($breadcrumbs)) return;
 <div class="bg-light border-bottom py-2">
     <div class="container-xl">
         <nav aria-label="Breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
-            <ol class="breadcrumb mb-0 small">
+            <ol class="breadcrumb mb-0 small flex-nowrap overflow-auto">
                 <?php foreach ($breadcrumbs as $index => $crumb): ?>
                 <li class="breadcrumb-item<?= $crumb['url'] === null ? ' active' : '' ?>"
                     itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
